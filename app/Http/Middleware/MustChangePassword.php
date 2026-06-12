@@ -19,8 +19,8 @@ class MustChangePassword
         // Se o usuário está autenticado e precisa alterar a senha
         if (Auth::check() && Auth::user()->must_change_password) {
             // Se a rota atual não for de alteração de senha ou logout, redireciona
-            if (!$request->routeIs('change-password.show', 'change-password.update', 'logout')) {
-                return redirect()->route('change-password.show');
+            if (!$request->is('change-password') && !$request->routeIs('logout')) {
+                return redirect()->route('password.change');
             }
         }
 

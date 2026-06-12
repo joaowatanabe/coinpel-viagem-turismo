@@ -14,7 +14,7 @@ class ChangePasswordController extends Controller
     /**
      * Exibir o formulário de alteração de senha.
      */
-    public function showChangePassword(): View
+    public function show(): View
     {
         return view('auth.change-password');
     }
@@ -22,24 +22,24 @@ class ChangePasswordController extends Controller
     /**
      * Alterar a senha do usuário.
      */
-    public function changePassword(Request $request): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
         $request->validate([
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
-            'password.required' => 'A senha é obrigatória.',
-            'password.string' => 'A senha deve ser um texto.',
-            'password.min' => 'A senha deve ter pelo menos :min caracteres.',
-            'password.confirmed' => 'As senhas não coincidem.',
+            'new_password.required' => 'A nova senha é obrigatória.',
+            'new_password.string' => 'A nova senha deve ser um texto.',
+            'new_password.min' => 'A nova senha deve ter pelo menos :min caracteres.',
+            'new_password.confirmed' => 'As senhas não coincidem.',
         ]);
 
         $user = Auth::user();
         
         // Atualizar senha e definir flag do primeiro acesso
-        $user->password = Hash::make($request->password);
+        $user->password = Hash::make($request->new_password);
         $user->must_change_password = false;
         $user->save();
 
-        return redirect()->route('trips.index')->with('status', 'Senha redefinida com sucesso.');
+        return redirect()->route('trips.index')->with('status', 'Senha alterada com sucesso.');
     }
 }

@@ -40,7 +40,7 @@
             </p>
 
             <!-- Formulário -->
-            <form action="{{ route('change-password.update') }}" method="POST" class="mt-6 space-y-5">
+            <form action="{{ url('/change-password') }}" method="POST" class="mt-6 space-y-5">
                 @csrf
 
                 <!-- Exibição de Erros -->
@@ -63,9 +63,9 @@
 
                 <!-- Nova Senha -->
                 <div>
-                    <label for="password" class="block text-xs font-bold uppercase tracking-wider text-gray-500">Nova Senha</label>
+                    <label for="new_password" class="block text-xs font-bold uppercase tracking-wider text-gray-500">Nova Senha</label>
                     <div class="mt-1.5">
-                        <input id="password" name="password" type="password" required minlength="8"
+                        <input id="new_password" name="new_password" type="password" required minlength="8"
                             class="block w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition duration-150 ease-in-out text-sm"
                             placeholder="Mínimo 8 caracteres">
                     </div>
@@ -73,9 +73,9 @@
 
                 <!-- Confirmar Senha -->
                 <div>
-                    <label for="password_confirmation" class="block text-xs font-bold uppercase tracking-wider text-gray-500">Repetir Senha</label>
+                    <label for="new_password_confirmation" class="block text-xs font-bold uppercase tracking-wider text-gray-500">Repetir Senha</label>
                     <div class="mt-1.5">
-                        <input id="password_confirmation" name="password_confirmation" type="password" required minlength="8"
+                        <input id="new_password_confirmation" name="new_password_confirmation" type="password" required minlength="8"
                             class="block w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition duration-150 ease-in-out text-sm"
                             placeholder="Repita a nova senha">
                     </div>
