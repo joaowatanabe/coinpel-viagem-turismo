@@ -20,22 +20,52 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
     'status',
     'vehicle_id',
     'driver_id',
-    'created_by'
+    'created_by',
 ])]
 class Trip extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const STATUS_SCHEDULED  = 'scheduled';
+    const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_COMPLETED  = 'completed';
+    const STATUS_CANCELLED  = 'cancelled';
+
+    const STATUSES = [
+        self::STATUS_SCHEDULED   => 'Agendada',
+        self::STATUS_IN_PROGRESS => 'Em andamento',
+        self::STATUS_COMPLETED   => 'Concluída',
+        self::STATUS_CANCELLED   => 'Cancelada',
+    ];
+
+    const STATUS_COLORS = [
+        self::STATUS_SCHEDULED   => 'blue',
+        self::STATUS_IN_PROGRESS => 'amber',
+        self::STATUS_COMPLETED   => 'green',
+        self::STATUS_CANCELLED   => 'red',
+    ];
+
     protected function casts(): array
     {
         return [
-            'date' => 'date',
-            'ticket_price' => 'decimal:2',
+            'date'            => 'date',
+            'departure_time'  => 'string',
+            'ticket_price'    => 'decimal:2',
             'passenger_count' => 'integer',
-            'vehicle_id' => 'integer',
-            'driver_id' => 'integer',
-            'created_by' => 'integer',
+            'vehicle_id'      => 'integer',
+            'driver_id'       => 'integer',
+            'created_by'      => 'integer',
         ];
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return self::STATUSES[$this->status] ?? $this->status;
+    }
+
+    public function getStatusColorAttribute(): string
+    {
+        return self::STATUS_COLORS[$this->status] ?? 'gray';
     }
 
     public function driver(): BelongsTo
