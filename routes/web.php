@@ -18,7 +18,11 @@ Route::middleware('auth')->group(function () {
 
 // Rotas protegidas (autenticado + senha já definida)
 Route::middleware(['auth', 'must.change.password'])->group(function () {
-    Route::get('/', fn() => redirect()->route('trips.index'));
+    Route::get('/', fn() => redirect()->route('dashboard'));
+
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
     Route::get('/trips', function () {
         return view('trips.index');

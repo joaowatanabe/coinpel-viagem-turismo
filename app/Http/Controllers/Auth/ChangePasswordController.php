@@ -40,6 +40,6 @@ class ChangePasswordController extends Controller
         $user->must_change_password = false;
         $user->save();
 
-        return redirect()->route('trips.index')->with('status', 'Senha alterada com sucesso.');
+        return redirect()->route('dashboard')->with('status', 'Senha alterada com sucesso. Bem-vindo ao COINPEL!');
     }
 }
