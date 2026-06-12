@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\TripController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -21,9 +22,7 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/trips', function () {
-        return view('trips.index');
-    })->name('trips.index');
+    Route::resource('trips', TripController::class)->except(['show']);
 
     Route::get('/vehicles', function () {
         return view('vehicles.index');
