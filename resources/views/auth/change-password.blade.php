@@ -16,11 +16,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.02 5.912L9 17.25H7.5v-1.5M9 15.75H7.5v-1.5M7.5 14.25H6v-1.5H4.5v-1.5a4.833 4.833 0 0 1 1.14-3.14l4.58-4.58a5 5 0 0 1 7.15 7.15l-1.12 1.12Z"></path>
                     </svg>
                 </span>
-                <h2 class="text-xl font-bold text-gray-900 font-sans tracking-tight">Primeiro Acesso</h2>
+                <h2 class="text-xl font-bold text-gray-900 font-sans tracking-tight">Crie uma nova senha:</h2>
             </div>
 
             <p class="mt-4 text-sm text-gray-600 leading-relaxed">
-                No seu primeiro acesso é necessário trocar a senha provisória por questões de segurança.
+                No seu primeiro acesso é necessário trocar a senha provisória. É obrigatório que a senha tenha no mínimo 8 caracteres.
             </p>
 
             <!-- Formulário -->
