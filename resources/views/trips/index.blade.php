@@ -3,131 +3,254 @@
 @section('page-title', 'Viagens')
 
 @section('content')
-<div class="space-y-6">
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Viagens</h1>
-            <p class="text-sm text-gray-500 mt-1">Gerencie a escala e as rotas das viagens de turismo da COINPEL.</p>
-        </div>
-        <div>
-            <button class="inline-flex items-center gap-2 px-4 py-2.5 bg-coinpel-primary hover:bg-coinpel-primary-dark text-white text-sm font-semibold rounded-xl transition shadow-lg shadow-coinpel-primary/20 cursor-pointer">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
+<div class="flex flex-col gap-0 -m-6">
+
+    {{-- Toolbar --}}
+    <div class="flex items-center gap-3 px-6 py-4 bg-white border-b border-gray-100">
+        <a href="{{ route('trips.create') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 bg-coinpel-primary hover:bg-coinpel-primary-dark text-white text-sm font-semibold rounded-lg transition shadow-sm shadow-coinpel-primary/20 shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+            </svg>
+            + Adicionar viagem
+        </a>
+
+        <button id="filter-toggle"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-semibold rounded-lg transition shrink-0">
+            Filtrar
+        </button>
+
+        <div class="flex-1"></div>
+
+        <form method="GET" action="{{ route('trips.index') }}" class="relative w-72">
+            <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z"/>
                 </svg>
-                Nova Viagem
+            </span>
+            <input type="text"
+                   id="search"
+                   name="search"
+                   value="{{ $search ?? '' }}"
+                   placeholder="Pesquisar viagem"
+                   class="block w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+        </form>
+    </div>
+
+    {{-- Filter Panel (hidden by default) --}}
+    <div id="filter-panel" class="hidden px-6 py-4 bg-gray-50 border-b border-gray-100">
+        <form method="GET" action="{{ route('trips.index') }}" class="flex flex-wrap items-end gap-4">
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">Status</label>
+                <select name="status" class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coinpel-primary">
+                    <option value="">Todos</option>
+                    @foreach(\App\Models\Trip::STATUSES as $value => $label)
+                        <option value="{{ $value }}" {{ request('status') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">Data inicial</label>
+                <input type="date" name="date_from" value="{{ request('date_from') }}"
+                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coinpel-primary">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">Data final</label>
+                <input type="date" name="date_to" value="{{ request('date_to') }}"
+                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coinpel-primary">
+            </div>
+            @if(request('search'))
+                <input type="hidden" name="search" value="{{ request('search') }}">
+            @endif
+            <button type="submit"
+                    class="px-4 py-2 bg-coinpel-primary text-white text-sm font-semibold rounded-lg hover:bg-coinpel-primary-dark transition">
+                Aplicar
             </button>
-        </div>
+            <a href="{{ route('trips.index') }}"
+               class="px-4 py-2 bg-white border border-gray-300 text-gray-600 text-sm font-semibold rounded-lg hover:bg-gray-50 transition">
+                Limpar
+            </a>
+        </form>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
-        <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-sm flex items-center gap-4">
-            <span class="p-3 bg-coinpel-primary/10 text-coinpel-primary rounded-xl">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124l-.375-6a3.75 3.75 0 0 0-3.75-3.75H6.375c-.621 0-1.129.504-1.09 1.124l.375 6A3.75 3.75 0 0 0 9.42 15h4.16a3.75 3.75 0 0 0 3.75-3.75h0"></path></svg>
-            </span>
-            <div>
-                <span class="text-xs font-semibold text-gray-400 block uppercase tracking-wider">Total de Viagens</span>
-                <span class="text-2xl font-bold text-gray-800 leading-tight">12</span>
-            </div>
-        </div>
+    {{-- Table --}}
+    <div class="bg-white overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="border-b border-gray-100">
+                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Nome</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Data</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Horário</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Rota</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Veículo</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Regra</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Motorista</th>
+                    <th class="px-6 py-3 w-12"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                @forelse ($trips as $trip)
+                    <tr class="hover:bg-gray-50/60 transition group">
 
-        <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-sm flex items-center gap-4">
-            <span class="p-3 bg-amber-50 text-amber-600 rounded-xl">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path></svg>
-            </span>
-            <div>
-                <span class="text-xs font-semibold text-gray-400 block uppercase tracking-wider">Agendadas</span>
-                <span class="text-2xl font-bold text-gray-800 leading-tight">5</span>
-            </div>
-        </div>
-
-        <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-sm flex items-center gap-4">
-            <span class="p-3 bg-blue-50 text-blue-600 rounded-xl">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 0M19.5 12a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"></path></svg>
-            </span>
-            <div>
-                <span class="text-xs font-semibold text-gray-400 block uppercase tracking-wider">Em Andamento</span>
-                <span class="text-2xl font-bold text-gray-800 leading-tight">2</span>
-            </div>
-        </div>
-
-        <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-sm flex items-center gap-4">
-            <span class="p-3 bg-green-50 text-green-600 rounded-xl">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path></svg>
-            </span>
-            <div>
-                <span class="text-xs font-semibold text-gray-400 block uppercase tracking-wider">Concluídas</span>
-                <span class="text-2xl font-bold text-gray-800 leading-tight">5</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="relative w-full md:w-80">
-                    <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z"></path></svg>
-                    </span>
-                    <input type="text" placeholder="Buscar viagem por nome, destino..." class="block w-full pl-9 pr-4 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition duration-150">
-                </div>
-                <button class="inline-flex items-center gap-1.5 px-3 py-2 border border-gray-300 hover:bg-gray-50 text-gray-600 rounded-xl text-sm font-semibold transition cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z"></path></svg>
-                    Filtrar
-                </button>
-            </div>
-            <span class="text-xs font-medium text-gray-400">Mostrando 1 de 1 viagens cadastradas</span>
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-50/75 border-b border-gray-100 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                        <th class="px-6 py-4">Status</th>
-                        <th class="px-6 py-4">Nome da Viagem</th>
-                        <th class="px-6 py-4">Data</th>
-                        <th class="px-6 py-4">Horário</th>
-                        <th class="px-6 py-4">Rota</th>
-                        <th class="px-6 py-4">Regra</th>
-                        <th class="px-6 py-4">Motorista / Veículo</th>
-                        <th class="px-6 py-4 text-right">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-                    <tr class="hover:bg-gray-50/50 transition duration-150">
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-amber-800 bg-amber-50 rounded-full border border-amber-200">
-                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                Em andamento
+                        {{-- Status --}}
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @php
+                                $color = $trip->status_color;
+                                $badgeClasses = match($color) {
+                                    'amber' => 'text-amber-700',
+                                    'green' => 'text-green-700',
+                                    'red'   => 'text-red-600',
+                                    'blue'  => 'text-blue-700',
+                                    default => 'text-gray-500',
+                                };
+                            @endphp
+                            <span class="text-sm {{ $badgeClasses }}">
+                                {{ $trip->status_label }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 font-semibold text-gray-900">ChocoFest 2026</td>
-                        <td class="px-6 py-4">25/06/2026</td>
-                        <td class="px-6 py-4">08:00</td>
-                        <td class="px-6 py-4">
+
+                        {{-- Nome --}}
+                        <td class="px-6 py-4 text-sm text-gray-800 font-medium whitespace-nowrap">
+                            {{ $trip->name }}
+                        </td>
+
+                        {{-- Data --}}
+                        <td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
+                            {{ $trip->date->format('d/m/Y') }}
+                        </td>
+
+                        {{-- Horário --}}
+                        <td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
+                            {{ \Illuminate\Support\Str::substr($trip->departure_time, 0, 5) }}
+                        </td>
+
+                        {{-- Rota --}}
+                        <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
                             <div class="flex items-center gap-1.5">
-                                <span class="font-medium">Pelotas</span>
-                                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"></path></svg>
-                                <span class="font-medium">Gramado</span>
+                                <span>{{ $trip->origin }}</span>
+                                <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                                </svg>
+                                <span class="max-w-[120px] truncate" title="{{ $trip->destination }}">{{ $trip->destination }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="px-2 py-1 text-xs font-semibold text-gray-500 bg-gray-100 rounded-md">Turismo</span>
+
+                        {{-- Veículo --}}
+                        <td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
+                            @if ($trip->vehicle)
+                                {{ $trip->vehicle->prefix }} - {{ $trip->vehicle->model }}
+                            @else
+                                <span class="text-gray-400">—</span>
+                            @endif
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="flex flex-col">
-                                <span class="font-medium text-gray-900">Carlos Silva</span>
-                                <span class="text-xs text-gray-400">Prefixo: 204 (Placa: ABC-1234)</span>
+
+                        {{-- Regra --}}
+                        <td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
+                            {{ $trip->rule }}
+                        </td>
+
+                        {{-- Motorista --}}
+                        <td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
+                            @if ($trip->driver)
+                                {{ \Illuminate\Support\Str::before($trip->driver->name, ' ') }}
+                            @else
+                                <span class="text-gray-400">—</span>
+                            @endif
+                        </td>
+
+                        {{-- Ações --}}
+                        <td class="px-4 py-4 text-right whitespace-nowrap">
+                            <div class="relative inline-block" x-data="{ open: false }">
+                                <button @click="open = !open; $event.stopPropagation()"
+                                        class="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition cursor-pointer">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
+                                    </svg>
+                                </button>
+
+                                <div x-show="open"
+                                     @click.outside="open = false"
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     x-transition:leave="transition ease-in duration-75"
+                                     x-transition:leave-start="opacity-100 scale-100"
+                                     x-transition:leave-end="opacity-0 scale-95"
+                                     class="absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 origin-top-right"
+                                     style="display: none;">
+                                    <a href="{{ route('trips.edit', $trip) }}"
+                                       class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/>
+                                        </svg>
+                                        Editar viagem
+                                    </a>
+                                    <div class="h-px bg-gray-100 mx-2 my-1"></div>
+                                    <form method="POST" action="{{ route('trips.destroy', $trip) }}"
+                                          onsubmit="return confirm('Confirma a exclusão desta viagem?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="flex items-center gap-2.5 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition cursor-pointer">
+                                            <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                                            </svg>
+                                            Deletar viagem
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="p-1 hover:bg-gray-100 text-gray-400 hover:text-gray-600 rounded-lg transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"></path></svg>
-                            </button>
                         </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
+                @empty
+                    <tr>
+                        <td colspan="9" class="px-6 py-16 text-center">
+                            <div class="flex flex-col items-center gap-3 text-gray-400">
+                                <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124l-.375-6a3.75 3.75 0 0 0-3.75-3.75H6.375c-.621 0-1.129.504-1.09 1.124l.375 6A3.75 3.75 0 0 0 9.42 15h4.16a3.75 3.75 0 0 0 3.75-3.75h0"/>
+                                </svg>
+                                <p class="text-sm font-medium">
+                                    @if($search ?? false)
+                                        Nenhuma viagem encontrada para "{{ $search }}"
+                                    @else
+                                        Nenhuma viagem cadastrada ainda.
+                                    @endif
+                                </p>
+                                @if(!($search ?? false))
+                                    <a href="{{ route('trips.create') }}"
+                                       class="text-sm font-semibold text-coinpel-primary hover:underline">
+                                        + Adicionar primeira viagem
+                                    </a>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
+
+    {{-- Pagination --}}
+    @if ($trips->hasPages())
+        <div class="px-6 py-4 bg-white border-t border-gray-100">
+            {{ $trips->links() }}
+        </div>
+    @endif
+
 </div>
+
+@push('scripts')
+<script>
+    const filterToggle = document.getElementById('filter-toggle');
+    const filterPanel  = document.getElementById('filter-panel');
+    filterToggle?.addEventListener('click', () => {
+        filterPanel.classList.toggle('hidden');
+    });
+
+    @if(request()->hasAny(['status', 'date_from', 'date_to']))
+        filterPanel?.classList.remove('hidden');
+    @endif
+</script>
+@endpush
 @endsection
