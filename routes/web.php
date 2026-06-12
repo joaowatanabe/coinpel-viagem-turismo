@@ -3,6 +3,9 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\DriverController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -24,17 +27,11 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
 
     Route::resource('trips', TripController::class)->except(['show']);
 
-    Route::get('/vehicles', function () {
-        return view('vehicles.index');
-    })->name('vehicles.index');
+    Route::resource('vehicles', VehicleController::class)->except(['show', 'create', 'edit']);
 
-    Route::get('/drivers', function () {
-        return view('drivers.index');
-    })->name('drivers.index');
+    Route::resource('drivers', DriverController::class)->except(['show', 'create', 'edit']);
 
-    Route::get('/users', function () {
-        return view('users.index');
-    })->name('users.index');
+    Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
