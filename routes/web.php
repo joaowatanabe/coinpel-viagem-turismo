@@ -22,7 +22,12 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
     Route::get('/', fn() => redirect()->route('dashboard'));
 
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return view('dashboard', [
+            'tripsCount'    => \App\Models\Trip::count(),
+            'vehiclesCount' => \App\Models\Vehicle::count(),
+            'driversCount'  => \App\Models\Driver::count(),
+            'usersCount'    => \App\Models\User::count(),
+        ]);
     })->name('dashboard');
 
     Route::resource('trips', TripController::class)->except(['show']);

@@ -12,7 +12,7 @@
             </div>
             <div>
                 <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Viagens</p>
-                <p class="text-2xl font-extrabold text-gray-800 leading-tight">—</p>
+                <p class="text-2xl font-extrabold text-gray-800 leading-tight">{{ $tripsCount }}</p>
             </div>
         </div>
 
@@ -24,7 +24,7 @@
             </div>
             <div>
                 <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Veículos</p>
-                <p class="text-2xl font-extrabold text-gray-800 leading-tight">—</p>
+                <p class="text-2xl font-extrabold text-gray-800 leading-tight">{{ $vehiclesCount }}</p>
             </div>
         </div>
 
@@ -36,7 +36,7 @@
             </div>
             <div>
                 <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Motoristas</p>
-                <p class="text-2xl font-extrabold text-gray-800 leading-tight">—</p>
+                <p class="text-2xl font-extrabold text-gray-800 leading-tight">{{ $driversCount }}</p>
             </div>
         </div>
 
@@ -47,8 +47,8 @@
                 </svg>
             </div>
             <div>
-                <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Clientes</p>
-                <p class="text-2xl font-extrabold text-gray-800 leading-tight">—</p>
+                <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Administradores</p>
+                <p class="text-2xl font-extrabold text-gray-800 leading-tight">{{ $usersCount }}</p>
             </div>
         </div>
     </div>

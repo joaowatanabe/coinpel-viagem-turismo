@@ -1,49 +1,35 @@
 @extends('layouts.auth')
 
 @section('content')
-<div class="space-y-6">
-    <div>
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900 font-sans">
-            Faça login:
-        </h2>
-    </div>
+<div class="space-y-4">
+    <h2 class="text-lg font-bold text-gray-800 tracking-tight font-sans">
+        Faça login:
+    </h2>
 
-    <form action="{{ url('/login') }}" method="POST" class="space-y-5">
+    <form action="{{ url('/login') }}" method="POST" class="space-y-4">
         @csrf
 
         <div>
-            <label for="email" class="block text-sm font-semibold text-gray-700">E-mail</label>
-            <div class="mt-1.5">
-                <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}"
-                    class="block w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition duration-150 ease-in-out text-sm"
-                    placeholder="E-mail">
-            </div>
+            <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}"
+                class="block w-full px-4 py-2.5 text-gray-900 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition text-sm bg-white placeholder-gray-400"
+                placeholder="E-mail">
         </div>
 
         <div>
-            <label for="password" class="block text-sm font-semibold text-gray-700">Senha</label>
-            <div class="mt-1.5">
-                <input id="password" name="password" type="password" autocomplete="current-password" required
-                    class="block w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition duration-150 ease-in-out text-sm"
-                    placeholder="Senha">
-            </div>
-        </div>
-
-        <div class="flex items-center">
-            <input id="remember" name="remember" type="checkbox"
-                class="w-4 h-4 text-coinpel-primary border-gray-300 rounded focus:ring-coinpel-primary cursor-pointer">
-            <label for="remember" class="block ml-2 text-sm text-gray-600 cursor-pointer">Lembrar-me</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required
+                class="block w-full px-4 py-2.5 text-gray-900 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition text-sm bg-white placeholder-gray-400"
+                placeholder="Senha">
         </div>
 
         <div>
             <button type="submit"
-                class="flex justify-center w-full px-4 py-2.5 text-sm font-semibold text-white transition duration-150 ease-in-out border border-transparent rounded-xl bg-coinpel-primary hover:bg-coinpel-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coinpel-primary shadow-lg shadow-coinpel-primary/25 cursor-pointer">
+                class="flex justify-center w-full px-4 py-2.5 text-sm font-semibold text-white transition duration-150 ease-in-out border border-transparent rounded-xl bg-coinpel-primary hover:bg-coinpel-primary-dark focus:outline-none focus:ring-2 focus:ring-coinpel-primary cursor-pointer">
                 Entrar
             </button>
         </div>
         
         @if ($errors->any())
-            <div class="p-3.5 rounded-xl bg-red-50 border border-red-200">
+            <div class="p-3.5 rounded-xl bg-red-50 border border-red-200 mt-3">
                 <div class="flex">
                     <div class="shrink-0">
                         <svg class="w-5 h-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
