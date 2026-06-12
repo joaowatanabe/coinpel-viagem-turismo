@@ -11,17 +11,11 @@ use Illuminate\View\View;
 
 class ChangePasswordController extends Controller
 {
-    /**
-     * Exibir o formulário de alteração de senha.
-     */
     public function show(): View
     {
         return view('auth.change-password');
     }
 
-    /**
-     * Alterar a senha do usuário.
-     */
     public function update(Request $request): RedirectResponse
     {
         $request->validate([
@@ -35,7 +29,6 @@ class ChangePasswordController extends Controller
 
         $user = Auth::user();
         
-        // Atualizar senha e definir flag do primeiro acesso
         $user->password = Hash::make($request->new_password);
         $user->must_change_password = false;
         $user->save();

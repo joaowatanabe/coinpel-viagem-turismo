@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Topo da página -->
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Viagens</h1>
@@ -20,7 +19,6 @@
         </div>
     </div>
 
-    <!-- Cards de Estatísticas rápidos -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
         <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-sm flex items-center gap-4">
             <span class="p-3 bg-coinpel-primary/10 text-coinpel-primary rounded-xl">
@@ -63,7 +61,6 @@
         </div>
     </div>
 
-    <!-- Tabela Mock / Tabela Principal -->
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-3">

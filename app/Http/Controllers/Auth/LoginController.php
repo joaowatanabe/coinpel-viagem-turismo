@@ -12,17 +12,11 @@ use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    /**
-     * Exibir a tela de login.
-     */
     public function showLogin(): View
     {
         return view('auth.login');
     }
 
-    /**
-     * Processar a tentativa de autenticação.
-     */
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
@@ -32,30 +26,24 @@ class LoginController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        // Verificar se credenciais são válidas
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return back()->withErrors([
                 'email' => 'Credenciais inválidas.',
             ])->onlyInput('email');
         }
 
-        // Verificar se o usuário está bloqueado
         if ($user->is_blocked) {
             return back()->withErrors([
                 'email' => 'Usuário bloqueado.',
             ])->onlyInput('email');
         }
 
-        // Efetuar o login
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        return redirect()->intended(route('trips.index'));
+        return redirect()->intended(route('dashboard'));
     }
 
-    /**
-     * Efetuar o logout do usuário.
-     */
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();

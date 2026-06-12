@@ -26,11 +26,6 @@ class Trip extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -43,25 +38,16 @@ class Trip extends Model
         ];
     }
 
-    /**
-     * Obter o motorista da viagem.
-     */
     public function driver(): BelongsTo
     {
         return $this->belongsTo(Driver::class);
     }
 
-    /**
-     * Obter o veículo da viagem.
-     */
     public function vehicle(): BelongsTo
     {
         return $this->belongsTo(Vehicle::class);
     }
 
-    /**
-     * Obter o usuário que criou a viagem.
-     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

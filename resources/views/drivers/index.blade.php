@@ -19,7 +19,6 @@
         </div>
     </div>
 
-    <!-- Barra de busca e filtros -->
     <div class="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="relative w-full md:w-80">
             <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
@@ -29,12 +28,9 @@
         </div>
     </div>
 
-    <!-- Grid de cards (2 colunas) conforme requisitado pelo Figma -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Card 1 -->
         <div class="p-6 bg-white rounded-2xl border border-gray-200/80 shadow-sm flex items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <!-- Foto circular / iniciais -->
                 <div class="flex items-center justify-center w-16 h-16 rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-xl uppercase border border-coinpel-primary/20">
                     CS
                 </div>
@@ -51,7 +47,6 @@
             </div>
         </div>
 
-        <!-- Card 2 -->
         <div class="p-6 bg-white rounded-2xl border border-gray-200/80 shadow-sm flex items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-center w-16 h-16 rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-xl uppercase border border-coinpel-primary/20">

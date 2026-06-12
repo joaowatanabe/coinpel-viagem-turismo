@@ -4,19 +4,16 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use Illuminate\Support\Facades\Route;
 
-// Rotas públicas (somente para não autenticados)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
 });
 
-// Primeiro acesso (autenticado mas sem senha definitiva)
 Route::middleware('auth')->group(function () {
     Route::get('/change-password', [ChangePasswordController::class, 'show'])->name('password.change');
     Route::post('/change-password', [ChangePasswordController::class, 'update']);
 });
 
-// Rotas protegidas (autenticado + senha já definida)
 Route::middleware(['auth', 'must.change.password'])->group(function () {
     Route::get('/', fn() => redirect()->route('dashboard'));
 

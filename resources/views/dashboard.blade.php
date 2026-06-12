@@ -3,9 +3,7 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
-    {{-- Cards de resumo --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
-        {{-- Card Viagens --}}
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-center gap-4 hover:shadow-md transition">
             <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-coinpel-primary/10 text-coinpel-primary shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -18,7 +16,6 @@
             </div>
         </div>
 
-        {{-- Card Veículos --}}
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-center gap-4 hover:shadow-md transition">
             <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-500 shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -31,7 +28,6 @@
             </div>
         </div>
 
-        {{-- Card Motoristas --}}
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-center gap-4 hover:shadow-md transition">
             <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -44,7 +40,6 @@
             </div>
         </div>
 
-        {{-- Card Clientes --}}
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-center gap-4 hover:shadow-md transition">
             <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-amber-50 text-coinpel-accent shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -58,7 +53,6 @@
         </div>
     </div>
 
-    {{-- Boas-vindas --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center justify-center text-center">
         <div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-coinpel-primary/10 text-coinpel-primary mb-5">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">

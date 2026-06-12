@@ -4,17 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>COINPEL — Painel Administrativo</title>
-    <!-- Fonts and Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full font-sans antialiased text-gray-900">
     <div class="flex h-full overflow-hidden">
-        <!-- Backdrop para Mobile (oculto por padrão) -->
         <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 z-20 bg-black/50 hidden lg:hidden"></div>
 
-        <!-- Sidebar esquerda (w-40 = 160px) -->
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 flex flex-col w-40 bg-coinpel-primary text-white shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shrink-0">
-            <!-- Header do Sidebar / Logo -->
             <div class="flex items-center justify-center h-14 border-b border-white/10 shrink-0">
                 <a href="{{ route('trips.index') }}" class="flex items-center gap-1.5 hover:opacity-95 transition-opacity">
                     <span class="flex items-center justify-center w-7 h-7 text-coinpel-primary bg-white rounded-lg shadow">
@@ -26,9 +22,7 @@
                 </a>
             </div>
 
-            <!-- Links de Navegação -->
             <nav class="flex-1 px-2.5 py-4 space-y-1 overflow-y-auto">
-                <!-- Clientes -->
                 <a href="#" 
                    class="flex flex-col items-center justify-center py-2.5 rounded-xl transition duration-150 ease-in-out gap-1 text-white/70 hover:bg-white/10 hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -37,7 +31,6 @@
                     <span class="text-[10px] font-medium tracking-wide">Clientes</span>
                 </a>
 
-                <!-- Motoristas -->
                 <a href="{{ route('drivers.index') }}" 
                    class="flex flex-col items-center justify-center py-2.5 rounded-xl transition duration-150 ease-in-out gap-1 {{ request()->routeIs('drivers.*') ? 'bg-white/15 text-white font-semibold shadow-inner' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +39,6 @@
                     <span class="text-[10px] font-medium tracking-wide">Motoristas</span>
                 </a>
 
-                <!-- Estatísticas -->
                 <a href="#" 
                    class="flex flex-col items-center justify-center py-2.5 rounded-xl transition duration-150 ease-in-out gap-1 text-white/70 hover:bg-white/10 hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -55,7 +47,6 @@
                     <span class="text-[10px] font-medium tracking-wide">Estatísticas</span>
                 </a>
 
-                <!-- Veículos -->
                 <a href="{{ route('vehicles.index') }}" 
                    class="flex flex-col items-center justify-center py-2.5 rounded-xl transition duration-150 ease-in-out gap-1 {{ request()->routeIs('vehicles.*') ? 'bg-white/15 text-white font-semibold shadow-inner' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +56,6 @@
                     <span class="text-[10px] font-medium tracking-wide">Veículos</span>
                 </a>
 
-                <!-- Viagens -->
                 <a href="{{ route('trips.index') }}" 
                    class="flex flex-col items-center justify-center py-2.5 rounded-xl transition duration-150 ease-in-out gap-1 {{ request()->routeIs('trips.*') ? 'bg-white/15 text-white font-semibold shadow-inner' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -74,7 +64,6 @@
                     <span class="text-[10px] font-medium tracking-wide">Viagens</span>
                 </a>
 
-                <!-- Contratos -->
                 <a href="#" 
                    class="flex flex-col items-center justify-center py-2.5 rounded-xl transition duration-150 ease-in-out gap-1 text-white/70 hover:bg-white/10 hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -83,7 +72,6 @@
                     <span class="text-[10px] font-medium tracking-wide">Contratos</span>
                 </a>
 
-                <!-- Pacotes -->
                 <a href="#" 
                    class="flex flex-col items-center justify-center py-2.5 rounded-xl transition duration-150 ease-in-out gap-1 text-white/70 hover:bg-white/10 hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -93,24 +81,19 @@
                 </a>
             </nav>
 
-            <!-- Rodapé / Versão -->
             <div class="p-3 border-t border-white/10 text-center text-[9px] text-white/40 font-mono shrink-0">
                 v1.2.0
             </div>
         </aside>
 
-        <!-- Área Principal -->
         <div class="flex-1 flex flex-col lg:pl-40 min-h-full overflow-hidden">
-            <!-- Header superior (h-14) -->
             <header class="flex items-center justify-between h-14 px-6 bg-white border-b border-gray-200 shrink-0">
-                <!-- Hamburger Button -->
                 <button onclick="toggleSidebar()" class="lg:hidden p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg focus:outline-none transition cursor-pointer">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
                     </svg>
                 </button>
 
-                <!-- Título dinâmico da página atual -->
                 <div class="flex items-center">
                     <span class="text-xs font-semibold text-gray-400 font-sans tracking-wide uppercase hidden sm:inline">
                         COINPEL
@@ -121,9 +104,7 @@
                     </span>
                 </div>
 
-                <!-- Lado Direito: Sino, Perfil, Dropdown -->
                 <div class="flex items-center gap-4">
-                    <!-- Sino de Notificações -->
                     <button class="text-gray-400 hover:text-gray-600 focus:outline-none transition relative cursor-pointer">
                         <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-coinpel-accent rounded-full"></span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -131,10 +112,8 @@
                         </svg>
                     </button>
 
-                    <!-- Divisor -->
                     <div class="w-px h-5 bg-gray-200"></div>
 
-                    <!-- Perfil do Administrador com Dropdown -->
                     <div class="relative" id="profile-dropdown">
                         <button onclick="toggleDropdown(event)" class="flex items-center gap-2.5 focus:outline-none cursor-pointer group text-left">
                             <span class="flex items-center justify-center w-8 h-8 text-xs font-bold text-white rounded-full bg-coinpel-primary group-hover:bg-coinpel-primary-dark shadow shadow-coinpel-primary/20 transition uppercase">
@@ -151,7 +130,6 @@
                             </svg>
                         </button>
 
-                        <!-- Menu Dropdown -->
                         <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 transform origin-top-right">
                             <a href="{{ route('users.index') }}" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -171,7 +149,6 @@
                 </div>
             </header>
 
-            <!-- Área de Conteúdo -->
             <main class="flex-1 p-6 overflow-y-auto bg-coinpel-bg">
                 @if (session('status'))
                     <div class="mb-5 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-800 font-medium">

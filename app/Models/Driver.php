@@ -27,11 +27,6 @@ class Driver extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -39,9 +34,6 @@ class Driver extends Model
         ];
     }
 
-    /**
-     * Obter as viagens associadas a este motorista.
-     */
     public function trips(): HasMany
     {
         return $this->hasMany(Trip::class);

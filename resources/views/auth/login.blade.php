@@ -11,7 +11,6 @@
     <form action="{{ url('/login') }}" method="POST" class="space-y-5">
         @csrf
 
-        <!-- Campo E-mail -->
         <div>
             <label for="email" class="block text-sm font-semibold text-gray-700">E-mail</label>
             <div class="mt-1.5">
@@ -21,7 +20,6 @@
             </div>
         </div>
 
-        <!-- Campo Senha -->
         <div>
             <label for="password" class="block text-sm font-semibold text-gray-700">Senha</label>
             <div class="mt-1.5">
@@ -31,14 +29,12 @@
             </div>
         </div>
 
-        <!-- Lembrar-me -->
         <div class="flex items-center">
             <input id="remember" name="remember" type="checkbox"
                 class="w-4 h-4 text-coinpel-primary border-gray-300 rounded focus:ring-coinpel-primary cursor-pointer">
             <label for="remember" class="block ml-2 text-sm text-gray-600 cursor-pointer">Lembrar-me</label>
         </div>
 
-        <!-- Botão Entrar -->
         <div>
             <button type="submit"
                 class="flex justify-center w-full px-4 py-2.5 text-sm font-semibold text-white transition duration-150 ease-in-out border border-transparent rounded-xl bg-coinpel-primary hover:bg-coinpel-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coinpel-primary shadow-lg shadow-coinpel-primary/25 cursor-pointer">
@@ -46,7 +42,6 @@
             </button>
         </div>
         
-        <!-- Exibição de Erros Globais (Abaixo do formulário) -->
         @if ($errors->any())
             <div class="p-3.5 rounded-xl bg-red-50 border border-red-200">
                 <div class="flex">
