@@ -1,23 +1,7 @@
 @extends('layouts.auth')
 
 @section('content')
-<!-- Fundo Split Screen Borrado (Simulando o fundo do login por trás do modal) -->
-<div class="flex flex-1 filter blur-sm select-none pointer-events-none">
-    <div class="flex flex-col justify-center flex-1 px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white">
-        <div class="w-full max-w-sm mx-auto lg:w-96">
-            <div class="flex items-center gap-3">
-                <span class="flex items-center justify-center w-12 h-12 text-white rounded-xl bg-coinpel-primary shadow-lg">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124l-.375-6a3.75 3.75 0 0 0-3.75-3.75H6.375c-.621 0-1.129.504-1.09 1.124l.375 6A3.75 3.75 0 0 0 9.42 15h4.16a3.75 3.75 0 0 0 3.75-3.75h0"></path></svg>
-                </span>
-                <span class="text-2xl font-bold tracking-wider text-gray-900 font-sans">COINPEL</span>
-            </div>
-            <h2 class="mt-8 text-3xl font-extrabold tracking-tight text-gray-900">Iniciar Sessão</h2>
-        </div>
-    </div>
-    <div class="relative flex-1 hidden w-0 lg:block bg-coinpel-primary"></div>
-</div>
-
-<!-- Modal Centralizado -->
+<!-- Modal Centralizado que cobre a tela inteira e borra o layout de login de fundo -->
 <div class="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
     <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all duration-300">
         <!-- Barra de Destaque Superior -->
