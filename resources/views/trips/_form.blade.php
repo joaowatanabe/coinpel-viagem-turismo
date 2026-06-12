@@ -365,7 +365,6 @@
     }
 
     function syncPassengerCount() {
-        if (passengerInput.value !== '') return;
         const selected = vehicleSelect.options[vehicleSelect.selectedIndex];
         if (selected?.dataset.capacity) {
             passengerInput.value = selected.dataset.capacity;
