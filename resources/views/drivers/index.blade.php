@@ -2,35 +2,44 @@
 
 @section('page-title', 'Motoristas')
 
+@section('header-left')
+<div class="flex items-center gap-3">
+    <button id="btn-add-driver"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-coinpel-primary hover:opacity-95 text-white text-sm font-semibold rounded-lg transition shadow-sm shrink-0 cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+        + Adicionar motorista
+    </button>
+
+    <button id="filter-toggle"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-semibold rounded-lg transition shrink-0 cursor-pointer">
+        <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9"/>
+        </svg>
+        Filtrar
+    </button>
+</div>
+@endsection
+
+@section('header-right-action')
+<form method="GET" action="{{ route('drivers.index') }}" class="relative w-64 md:w-72">
+    <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z"/>
+        </svg>
+    </span>
+    <input type="text"
+           id="search"
+           name="search"
+           value="{{ $search ?? '' }}"
+           placeholder="Pesquisar motorista"
+           class="block w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+</form>
+@endsection
+
 @section('content')
-<div class="flex flex-col gap-0 -m-6">
-
-    {{-- Toolbar --}}
-    <div class="flex items-center gap-3 px-6 py-4 bg-white border-b border-gray-100">
-        <button id="btn-add-driver"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-coinpel-primary hover:bg-coinpel-primary-dark text-white text-sm font-semibold rounded-lg transition shadow-sm shadow-coinpel-primary/20 shrink-0 cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-            </svg>
-            + Adicionar motorista
-        </button>
-
-        <div class="flex-1"></div>
-
-        <form method="GET" action="{{ route('drivers.index') }}" class="relative w-72">
-            <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z"/>
-                </svg>
-            </span>
-            <input type="text"
-                   id="search"
-                   name="search"
-                   value="{{ $search ?? '' }}"
-                   placeholder="Pesquisar motorista"
-                   class="block w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
-        </form>
-    </div>
+<div class="flex flex-col gap-0">
 
     {{-- Card Grid / Main Body --}}
     <div class="p-6">
@@ -48,13 +57,27 @@
                 </button>
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 @foreach($drivers as $driver)
-                    <div class="relative p-5 bg-white border border-gray-100 hover:border-coinpel-primary/20 hover:shadow-md rounded-2xl flex flex-col justify-between transition group">
+                    <div class="relative p-6 bg-white border border-gray-100 hover:border-coinpel-primary/20 hover:shadow-md rounded-2xl flex items-center justify-between transition group">
                         
+                        <div class="flex items-center gap-4.5">
+                            @if($driver->profile_photo_path)
+                                <img src="{{ Storage::url($driver->profile_photo_path) }}" alt="{{ $driver->name }}" class="w-16 h-16 rounded-full object-cover border border-gray-100 shrink-0 shadow-sm">
+                            @else
+                                <div class="flex items-center justify-center w-16 h-16 rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-xl uppercase border border-coinpel-primary/20 shrink-0 shadow-sm">
+                                    {{ substr($driver->name, 0, 2) }}
+                                </div>
+                            @endif
+                            <div class="flex flex-col">
+                                <h3 class="font-bold text-coinpel-font-tertiary text-base leading-tight">{{ $driver->name }}</h3>
+                                <span class="text-sm text-coinpel-font-primary mt-1">{{ $driver->email }}</span>
+                            </div>
+                        </div>
+
                         {{-- Dropdown de Ações --}}
                         <div class="absolute top-4 right-4 driver-actions-wrapper">
-                            <button class="driver-actions-btn p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition focus:outline-none cursor-pointer">
+                            <button class="driver-actions-btn p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition focus:outline-none cursor-pointer">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
                                 </svg>
@@ -84,42 +107,6 @@
                                         data-name="{{ $driver->name }}">
                                     Excluir motorista
                                 </button>
-                            </div>
-                        </div>
-
-                        {{-- Card Header: Avatar e Nome --}}
-                        <div class="flex flex-col items-center text-center pb-4 border-b border-gray-50">
-                            @if($driver->profile_photo_path)
-                                <img src="{{ Storage::url($driver->profile_photo_path) }}" alt="{{ $driver->name }}" class="w-16 h-16 rounded-full object-cover shadow-sm bg-gray-50 mb-3 border border-gray-100">
-                            @else
-                                <div class="flex items-center justify-center w-16 h-16 rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-xl uppercase border border-coinpel-primary/20 mb-3">
-                                    {{ substr($driver->name, 0, 2) }}
-                                </div>
-                            @endif
-                            
-                            <h3 class="font-bold text-gray-800 text-base line-clamp-1 px-4">{{ $driver->name }}</h3>
-                            <span class="text-xs text-gray-400 font-mono mt-0.5">Matrícula: {{ $driver->registration }}</span>
-                        </div>
-
-                        {{-- Card Content: Detalhes do Contato --}}
-                        <div class="flex-1 pt-4 space-y-2">
-                            <div class="flex items-center gap-2.5 text-xs text-gray-500">
-                                <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/>
-                                </svg>
-                                <span class="truncate">{{ $driver->email }}</span>
-                            </div>
-                            <div class="flex items-center gap-2.5 text-xs text-gray-500">
-                                <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.802-5.188-4.166-8-7l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"/>
-                                </svg>
-                                <span>{{ $driver->phone }}</span>
-                            </div>
-                            <div class="flex items-center gap-2.5 text-xs text-gray-500">
-                                <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0ZM6 15a3 3 0 0 1 6 0H6Z"/>
-                                </svg>
-                                <span>CPF: {{ $driver->cpf }} | RG: {{ $driver->rg }}</span>
                             </div>
                         </div>
 

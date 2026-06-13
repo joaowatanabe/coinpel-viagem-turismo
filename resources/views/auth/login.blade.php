@@ -1,8 +1,8 @@
 @extends('layouts.auth')
 
 @section('content')
-<div class="space-y-4">
-    <h2 class="text-lg font-bold text-gray-800 tracking-tight font-sans">
+<div class="space-y-6">
+    <h2 class="text-sm font-semibold text-coinpel-font-tertiary tracking-tight font-sans">
         Faça login:
     </h2>
 
@@ -11,19 +11,19 @@
 
         <div>
             <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}"
-                class="block w-full px-4 py-2.5 text-gray-900 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition text-sm bg-white placeholder-gray-400"
+                class="block w-full px-4 py-3 text-gray-900 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition text-sm bg-white placeholder-gray-400"
                 placeholder="E-mail">
         </div>
 
         <div>
             <input id="password" name="password" type="password" autocomplete="current-password" required
-                class="block w-full px-4 py-2.5 text-gray-900 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition text-sm bg-white placeholder-gray-400"
+                class="block w-full px-4 py-3 text-gray-900 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition text-sm bg-white placeholder-gray-400"
                 placeholder="Senha">
         </div>
 
         <div>
             <button type="submit"
-                class="flex justify-center w-full px-4 py-2.5 text-sm font-semibold text-white transition duration-150 ease-in-out border border-transparent rounded-xl bg-coinpel-primary hover:bg-coinpel-primary-dark focus:outline-none focus:ring-2 focus:ring-coinpel-primary cursor-pointer">
+                class="flex justify-center w-full px-4 py-3 text-sm font-semibold text-white transition duration-150 ease-in-out border border-transparent rounded-lg bg-coinpel-primary hover:bg-[#4A3163] focus:outline-none focus:ring-2 focus:ring-coinpel-primary cursor-pointer">
                 Entrar
             </button>
         </div>

@@ -101,10 +101,10 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             @php
                                 $statusClasses = match($trip->status_color) {
-                                    'amber' => 'text-amber-700',
-                                    'green' => 'text-green-700',
-                                    'red'   => 'text-red-600',
-                                    'blue'  => 'text-blue-700',
+                                    'amber' => 'text-coinpel-in-progress',
+                                    'green' => 'text-coinpel-completed',
+                                    'red'   => 'text-coinpel-cancelled',
+                                    'blue'  => 'text-blue-500',
                                     default => 'text-gray-500',
                                 };
                             @endphp

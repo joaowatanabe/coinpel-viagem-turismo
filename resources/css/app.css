@@ -6,8 +6,23 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-coinpel-primary: #5B2D8E;
-    --color-coinpel-primary-dark: #4A2275;
-    --color-coinpel-accent: #F5A623;
+    
+    --color-coinpel-primary: #593E75;
+    --color-coinpel-tertiary: #E5E5E5;
+    --color-coinpel-quaternary: #979797;
+    
+    --color-coinpel-font-primary: #9E9E9E;
+    --color-coinpel-font-secondary: #BDBDBD;
+    --color-coinpel-font-tertiary: #383838;
+    
+    --color-coinpel-graph2: #381794;
+    --color-coinpel-test-app: #15C5C5;
+    
+    --color-coinpel-notification-red: #EB5757;
+    
+    --color-coinpel-completed: #6FCF97;
+    --color-coinpel-in-progress: #F2C94C;
+    --color-coinpel-cancelled: #EB5757;
+    
     --color-coinpel-bg: #F5F5F5;
 }
