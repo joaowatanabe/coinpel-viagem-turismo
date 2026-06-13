@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -49,11 +50,9 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        if (Auth::id() === $user->id && (bool)$data['is_blocked']) {
+        if (Auth::id() === $user->id && (bool) $data['is_blocked']) {
             return response()->json([
-                'errors' => [
-                    'is_blocked' => ['Você não pode bloquear o seu próprio usuário.']
-                ]
+                'errors' => ['is_blocked' => ['Você não pode bloquear o seu próprio usuário.']]
             ], 422);
         }
 
@@ -68,6 +67,24 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Usuário atualizado com sucesso.',
+            'user'    => $user->fresh(),
+        ]);
+    }
+
+    public function toggleBlock(Request $request, User $user): JsonResponse
+    {
+        if (Auth::id() === $user->id) {
+            return response()->json([
+                'message' => 'Você não pode bloquear o seu próprio usuário.'
+            ], 422);
+        }
+
+        $block = $request->boolean('block');
+        $user->update(['is_blocked' => $block]);
+        $label = $block ? 'bloqueado' : 'desbloqueado';
+
+        return response()->json([
+            'message' => "Usuário {$label} com sucesso.",
             'user'    => $user->fresh(),
         ]);
     }

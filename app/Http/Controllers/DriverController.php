@@ -12,7 +12,9 @@ class DriverController extends Controller
 {
     public function index(): View
     {
-        $search = request('search');
+        $search       = request('search');
+        $filterName   = request('name');
+        $filterReg    = request('registration');
 
         $drivers = Driver::when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -22,6 +24,8 @@ class DriverController extends Controller
                       ->orWhere('email', 'ilike', "%{$search}%");
                 });
             })
+            ->when($filterName, fn($q, $v) => $q->where('name', 'ilike', "%{$v}%"))
+            ->when($filterReg,  fn($q, $v) => $q->where('registration', 'ilike', "%{$v}%"))
             ->orderBy('name')
             ->paginate(12)
             ->withQueryString();

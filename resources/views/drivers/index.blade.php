@@ -39,7 +39,36 @@
 @endsection
 
 @section('content')
-<div class="flex flex-col gap-0">
+<div class="flex flex-col gap-0 -m-6">
+
+    {{-- Filter Panel --}}
+    <div id="filter-panel" class="{{ request()->hasAny(['name', 'registration']) ? '' : 'hidden' }} px-6 py-4 bg-gray-50 border-b border-gray-100">
+        <form method="GET" action="{{ route('drivers.index') }}" class="flex flex-wrap items-end gap-4">
+            @if(request('search'))
+                <input type="hidden" name="search" value="{{ request('search') }}">
+            @endif
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Nome</label>
+                <input type="text" name="name" value="{{ request('name') }}"
+                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coinpel-primary bg-white"
+                       placeholder="Ex: Carlos...">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Matrícula</label>
+                <input type="text" name="registration" value="{{ request('registration') }}"
+                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coinpel-primary bg-white"
+                       placeholder="Ex: 12548793">
+            </div>
+            <button type="submit"
+                    class="px-4 py-2 bg-coinpel-primary text-white text-sm font-semibold rounded-lg hover:opacity-95 transition cursor-pointer">
+                Aplicar filtros
+            </button>
+            <a href="{{ route('drivers.index') }}"
+               class="px-4 py-2 bg-white border border-gray-300 text-gray-600 text-sm font-semibold rounded-lg hover:bg-gray-50 transition">
+                Limpar
+            </a>
+        </form>
+    </div>
 
     {{-- Card Grid / Main Body --}}
     <div class="p-6">
@@ -614,6 +643,11 @@
         document.body.appendChild(flashEl);
         setTimeout(() => flashEl.remove(), 4000);
     }
+
+    // ── Filter toggle ─────────────────────────────────────────────────────
+    document.getElementById('filter-toggle')?.addEventListener('click', function () {
+        document.getElementById('filter-panel')?.classList.toggle('hidden');
+    });
 
 })();
 </script>
