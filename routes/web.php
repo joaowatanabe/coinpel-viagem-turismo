@@ -37,6 +37,13 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
     Route::resource('drivers', DriverController::class)->except(['show', 'create', 'edit']);
 
     Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
+
+    // Placeholders for sidebar modules
+    Route::get('/customers', fn() => view('placeholders.customers'))->name('customers.index');
+    Route::get('/statistics', fn() => view('placeholders.statistics'))->name('statistics.index');
+    Route::get('/contracts', fn() => view('placeholders.contracts'))->name('contracts.index');
+    Route::get('/packages', fn() => view('placeholders.packages'))->name('packages.index');
+    Route::get('/settings', fn() => view('placeholders.settings'))->name('settings.index');
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
