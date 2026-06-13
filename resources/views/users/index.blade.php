@@ -2,35 +2,36 @@
 
 @section('page-title', 'Usuários')
 
+@section('header-left')
+<div class="flex items-center gap-3">
+    <button id="btn-add-user"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-coinpel-primary hover:opacity-95 text-white text-sm font-semibold rounded-lg transition shadow-sm shrink-0 cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+        + Adicionar usuário
+    </button>
+</div>
+@endsection
+
+@section('header-right-action')
+<form method="GET" action="{{ route('users.index') }}" class="relative w-64 md:w-72">
+    <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z"/>
+        </svg>
+    </span>
+    <input type="text"
+           id="search"
+           name="search"
+           value="{{ $search ?? '' }}"
+           placeholder="Pesquisar usuário"
+           class="block w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+</form>
+@endsection
+
 @section('content')
 <div class="flex flex-col gap-0 -m-6">
-
-    {{-- Toolbar --}}
-    <div class="flex items-center gap-3 px-6 py-4 bg-white border-b border-gray-100">
-        <button id="btn-add-user"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-coinpel-primary hover:bg-coinpel-primary-dark text-white text-sm font-semibold rounded-lg transition shadow-sm shadow-coinpel-primary/20 shrink-0 cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-            </svg>
-            + Adicionar usuário
-        </button>
-
-        <div class="flex-1"></div>
-
-        <form method="GET" action="{{ route('users.index') }}" class="relative w-72">
-            <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z"/>
-                </svg>
-            </span>
-            <input type="text"
-                   id="search"
-                   name="search"
-                   value="{{ $search ?? '' }}"
-                   placeholder="Pesquisar usuário"
-                   class="block w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
-        </form>
-    </div>
 
     {{-- Table --}}
     <div class="bg-white overflow-x-auto">

@@ -2,6 +2,12 @@
 
 @section('page-title', 'Dashboard')
 
+@section('header-left')
+<div class="flex items-center gap-3">
+    <span class="text-sm font-bold text-gray-800 font-sans tracking-tight">Dashboard</span>
+</div>
+@endsection
+
 @section('content')
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         {{-- Card: Viagens --}}
