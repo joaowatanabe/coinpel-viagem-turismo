@@ -16,8 +16,17 @@
             </div>
 
             <nav class="flex-1 px-5 py-6 space-y-2.5 overflow-y-auto">
+                {{-- Dashboard --}}
+                <a href="{{ route('dashboard') }}"
+                   class="flex flex-row items-center gap-3.5 px-4 py-3 rounded-xl transition duration-150 ease-in-out {{ request()->routeIs('dashboard') ? 'bg-white/12 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5.5 h-5.5 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.25 12.75V21a.75.75 0 0 0 .75.75h5.25V16.5a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 .75.75v5.25H21a.75.75 0 0 0 .75-.75v-8.25M8.25 21V16.5M15.75 21V16.5M3 12.75 12 3.75l9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="text-sm font-medium tracking-wide">Dashboard</span>
+                </a>
+
                 {{-- Clientes --}}
-                <a href="{{ route('customers.index') }}" 
+                <a href="{{ route('customers.index') }}"
                    class="flex flex-row items-center gap-3.5 px-4 py-3 rounded-xl transition duration-150 ease-in-out {{ request()->routeIs('customers.*') ? 'bg-white/12 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                     <svg class="w-5.5 h-5.5 shrink-0" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9285 3.21429C11.9514 3.21429 12.9325 3.62067 13.6559 4.34403C14.3792 5.06738 14.7856 6.04846 14.7856 7.07144V8.35715C14.7856 8.86368 14.6858 9.36525 14.492 9.83322C14.2982 10.3012 14.014 10.7264 13.6559 11.0846C13.2977 11.4427 12.8725 11.7268 12.4045 11.9207C11.9366 12.1145 11.435 12.2143 10.9285 12.2143C10.4219 12.2143 9.92037 12.1145 9.4524 11.9207C8.98443 11.7268 8.55922 11.4427 8.20105 11.0846C7.84289 10.7264 7.55877 10.3012 7.36493 9.83322C7.17109 9.36525 7.07132 8.86368 7.07132 8.35715V7.07144C7.07132 6.04846 7.4777 5.06738 8.20105 4.34403C8.92441 3.62067 9.90549 3.21429 10.9285 3.21429V3.21429ZM19.9285 21.2143V20.2783C19.9285 16.1807 15.1893 13.5 10.9285 13.5C6.66761 13.5 1.92847 20.2783V21.2143C1.92847 21.5553 2.06393 21.8823 2.30504 22.1234C2.54616 22.3646 2.87319 22.5 3.21418 22.5H18.6427C18.9837 22.5 19.3108 22.3646 19.5519 22.1234C19.793 21.8823 19.9285 21.5553 19.9285 21.2143Z" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
@@ -25,6 +34,7 @@
                     </svg>
                     <span class="text-sm font-medium tracking-wide">Clientes</span>
                 </a>
+
 
                 {{-- Motoristas --}}
                 <a href="{{ route('drivers.index') }}" 
