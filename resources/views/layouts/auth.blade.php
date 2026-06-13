@@ -18,8 +18,8 @@
             </div>
         </div>
 
-        <div class="relative hidden lg:flex lg:w-1/2 bg-coinpel-primary flex-col justify-end overflow-hidden">
-            <img src="{{ asset('imagem-logo-page1.png') }}" alt="COINPEL Turismo" class="w-full object-contain object-bottom select-none pointer-events-none">
+        <div class="relative hidden lg:block lg:w-1/2 bg-coinpel-primary overflow-hidden">
+            <img src="{{ asset('imagem-logo-page.svg') }}" alt="COINPEL Turismo" class="absolute bottom-0 left-0 w-full h-auto select-none pointer-events-none">
         </div>
     </div>
 </body>
