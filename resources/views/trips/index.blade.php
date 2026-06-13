@@ -42,7 +42,7 @@
 @endsection
 
 @section('content')
-<div class="flex flex-col gap-0 -m-6">
+<div class="flex flex-col flex-1 gap-0 -m-6">
 
     {{-- Filter Panel (hidden by default) --}}
     <div id="filter-panel" class="{{ request()->hasAny(['status', 'date_from', 'date_to']) ? '' : 'hidden' }} px-6 py-4 bg-gray-50 border-b border-gray-100">
@@ -82,7 +82,8 @@
     </div>
 
     {{-- Table --}}
-    <div class="bg-white overflow-x-auto">
+    <div class="flex-1 bg-white pb-12">
+        <div class="overflow-x-auto">
         <table class="w-full text-left">
             <thead>
                 <tr class="border-b border-gray-100">
@@ -174,7 +175,7 @@
                                     </svg>
                                 </button>
 
-                                <div class="trip-actions-menu hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50">
+                                <div class="trip-actions-menu hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-10">
                                     <a href="{{ route('trips.edit', $trip) }}"
                                        class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
                                         <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -225,6 +226,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>{{-- /overflow-x-auto --}}
     </div>
 
     {{-- Pagination --}}

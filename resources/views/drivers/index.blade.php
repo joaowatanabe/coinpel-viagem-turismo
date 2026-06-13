@@ -39,7 +39,7 @@
 @endsection
 
 @section('content')
-<div class="flex flex-col gap-0 -m-6">
+<div class="flex flex-col flex-1 gap-0 -m-6">
 
     {{-- Filter Panel --}}
     <div id="filter-panel" class="{{ request()->hasAny(['name', 'registration']) ? '' : 'hidden' }} px-6 py-4 bg-gray-50 border-b border-gray-100">
@@ -71,7 +71,7 @@
     </div>
 
     {{-- Card Grid / Main Body --}}
-    <div class="p-6">
+    <div class="flex-1 p-6 bg-coinpel-bg">
         @if($drivers->isEmpty())
             <div class="flex flex-col items-center justify-center py-16 bg-white border border-gray-100 rounded-2xl">
                 <div class="flex items-center justify-center w-14 h-14 bg-purple-50 text-coinpel-primary rounded-full mb-3">

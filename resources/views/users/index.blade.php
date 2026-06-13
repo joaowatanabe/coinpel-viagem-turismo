@@ -31,10 +31,11 @@
 @endsection
 
 @section('content')
-<div class="flex flex-col gap-0 -m-6">
+<div class="flex flex-col flex-1 gap-0 -m-6">
 
     {{-- Table --}}
-    <div class="bg-white overflow-x-auto">
+    <div class="flex-1 bg-white pb-12">
+        <div class="overflow-x-auto">
         <table class="w-full text-left">
             <thead>
                 <tr class="border-b border-gray-100">
@@ -119,7 +120,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
                                     </svg>
                                 </button>
-                                <div class="user-actions-menu hidden absolute right-0 mt-1 w-48 bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 z-50 text-left">
+                                <div class="user-actions-menu hidden absolute right-0 mt-1 w-48 bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 z-10 text-left">
 
                                     {{-- Edit --}}
                                     <button type="button"
@@ -193,6 +194,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>{{-- /overflow-x-auto --}}
     </div>
 
     {{-- Paginação --}}
@@ -574,7 +576,7 @@
             if (!confirm(`Confirma ${label} o usuário "${name}"?`)) return;
 
             try {
-                const response = await fetch('/users/' + id, {
+                const response = await fetch('/users/' + id + '/toggle-block', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -583,10 +585,8 @@
                         'X-HTTP-Method-Override': 'PATCH',
                     },
                     body: JSON.stringify({
-                        _method:    'PATCH',
-                        is_blocked: action === 'block' ? '1' : '0',
-                        // Send current name/email so validation passes (no change intended)
-                        _toggle_block: '1',
+                        _method: 'PATCH',
+                        block: action === 'block',
                     }),
                 });
                 const json = await response.json();

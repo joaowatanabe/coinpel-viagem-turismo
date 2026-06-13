@@ -132,4 +132,34 @@ class UserTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonFragment(['message' => 'Você não pode excluir o seu próprio usuário.']);
     }
+
+    public function test_can_toggle_block_user(): void
+    {
+        $targetUser = User::factory()->create(['is_blocked' => false]);
+
+        $response = $this->actingAs($this->admin)
+            ->patchJson(route('users.toggle-block', $targetUser), ['block' => true]);
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['message' => 'Usuário bloqueado com sucesso.']);
+
+        $this->assertTrue($targetUser->fresh()->is_blocked);
+
+        $response = $this->actingAs($this->admin)
+            ->patchJson(route('users.toggle-block', $targetUser), ['block' => false]);
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['message' => 'Usuário desbloqueado com sucesso.']);
+
+        $this->assertFalse($targetUser->fresh()->is_blocked);
+    }
+
+    public function test_cannot_toggle_block_self(): void
+    {
+        $response = $this->actingAs($this->admin)
+            ->patchJson(route('users.toggle-block', $this->admin), ['block' => true]);
+
+        $response->assertStatus(422)
+            ->assertJsonFragment(['message' => 'Você não pode bloquear o seu próprio usuário.']);
+    }
 }

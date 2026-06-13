@@ -102,7 +102,7 @@
             </div>
 
             <div id="status-dropdown"
-                 class="hidden absolute left-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50">
+                 class="hidden absolute left-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-10">
                 @foreach(\App\Models\Trip::STATUSES as $value => $label)
                     <button type="button"
                             data-value="{{ $value }}"

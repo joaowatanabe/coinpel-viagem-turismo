@@ -39,7 +39,7 @@
 @endsection
 
 @section('content')
-<div class="flex flex-col gap-0 -m-6">
+<div class="flex flex-col flex-1 gap-0 -m-6">
 
     {{-- Filter Panel --}}
     <div id="filter-panel" class="{{ request()->hasAny(['vehicle_type', 'seat_type']) ? '' : 'hidden' }} px-6 py-4 bg-gray-50 border-b border-gray-100">
@@ -79,7 +79,8 @@
     </div>
 
     {{-- Table --}}
-    <div class="bg-white overflow-x-auto">
+    <div class="flex-1 bg-white pb-12">
+        <div class="overflow-x-auto">
         <table class="w-full text-left">
             <thead>
                 <tr class="border-b border-gray-100">
@@ -128,7 +129,7 @@
                                     </svg>
                                 </button>
 
-                                <div class="vehicle-actions-menu hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50">
+                                <div class="vehicle-actions-menu hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-10">
                                     <button type="button"
                                             class="btn-edit-vehicle flex items-center gap-2.5 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition cursor-pointer"
                                             data-id="{{ $vehicle->id }}"
@@ -193,8 +194,8 @@
                 @endforelse
             </tbody>
         </table>
+        </div>{{-- /overflow-x-auto --}}
     </div>
-
     {{-- Pagination --}}
     @if ($vehicles->hasPages())
         <div class="px-6 py-4 bg-white border-t border-gray-100">

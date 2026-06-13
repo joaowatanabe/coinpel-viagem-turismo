@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-coinpel-bg">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="min-h-screen bg-coinpel-bg">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>COINPEL — Painel Administrativo</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="h-full font-sans antialiased text-gray-900">
-    <div class="flex h-full overflow-hidden">
+<body class="min-h-screen font-sans antialiased text-gray-900 bg-coinpel-bg">
+    <div class="flex min-h-screen bg-coinpel-bg">
         <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 z-20 bg-black/50 hidden lg:hidden"></div>        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 flex flex-col w-[280px] bg-coinpel-primary text-white shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shrink-0">
                         <div class="flex items-center justify-center pt-8 pb-6 shrink-0">
                 <a href="{{ route('dashboard') }}" class="hover:opacity-95 transition-opacity">
@@ -128,8 +129,8 @@
             </div>
         </aside>
 
-        <div class="flex-1 flex flex-col lg:pl-[280px] min-h-full overflow-hidden">
-            <header class="flex items-center justify-between h-20 px-8 bg-white border-b border-gray-200/60 shrink-0">
+        <div class="flex-1 flex flex-col lg:pl-[280px] bg-coinpel-bg">
+            <header class="sticky top-0 z-20 flex items-center justify-between h-20 px-8 bg-white border-b border-gray-200/60 shrink-0">
                 <button onclick="toggleSidebar()" class="lg:hidden p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg focus:outline-none transition cursor-pointer">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
@@ -199,7 +200,7 @@
                 </div>
             </header>
 
-            <main class="flex-1 p-6 overflow-y-auto bg-coinpel-bg">
+            <main class="flex-1 flex flex-col p-6 bg-coinpel-bg">
                 @if (session('status'))
                     <div class="mb-5 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-800 font-medium">
                         {{ session('status') }}

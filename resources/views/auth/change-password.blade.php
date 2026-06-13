@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
 @section('content')
-<div class="bg-white rounded-2xl border border-gray-100/80 shadow-[0_12px_40px_rgba(0,0,0,0.06)] p-6 relative space-y-4 -mt-[140px] z-10">
+<div class="bg-white rounded-2xl border border-gray-100/80 shadow-[0_12px_40px_rgba(0,0,0,0.06)] p-6 relative space-y-4 mt-2 z-10">
     <div class="flex items-center justify-between">
         <h2 class="text-base font-bold text-gray-800 tracking-tight font-sans">
             Crie uma nova senha:

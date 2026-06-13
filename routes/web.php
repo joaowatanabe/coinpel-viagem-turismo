@@ -37,6 +37,7 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
     Route::resource('drivers', DriverController::class)->except(['show', 'create', 'edit']);
 
     Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
+    Route::patch('/users/{user}/toggle-block', [UserController::class, 'toggleBlock'])->name('users.toggle-block');
 
     // Placeholders for sidebar modules
     Route::get('/customers', fn() => view('placeholders.customers'))->name('customers.index');
