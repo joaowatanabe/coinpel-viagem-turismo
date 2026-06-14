@@ -1,58 +1,129 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# COINPEL — Sistema de Gerenciamento de Viagens de Turismo
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. Objetivo do Sistema
+O **COINPEL** é uma plataforma administrativa web desenvolvida para a gestão e controle de operações de viagens de turismo. O sistema centraliza o gerenciamento de:
+- **Viagens:** Cadastro de rotas, datas, horários, tarifas, controle de passageiros e status.
+- **Veículos:** Gestão de frota, capacidades, ano, tipos de poltronas e comodidades (Wi-Fi, WC, tomadas, ar condicionado).
+- **Motoristas:** Cadastro completo de informações, matrícula, contato e fotos.
+- **Usuários Administradores:** Controle de acessos de administradores com bloqueio rápido e segurança.
+- **API REST:** Listagem de viagens com dados estruturados para integração externa.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 2. Stack Utilizada
+- **Backend:** PHP / Laravel 12 (Modo Monolítico)
+- **Banco de Dados:** PostgreSQL
+- **Frontend & Templating:** Blade (Laravel) + Tailwind CSS v4 + Vanilla JS (Fetch API)
+- **Compilação de Assets:** Vite
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 3. Requisitos de Ambiente
+Antes de rodar o projeto, certifique-se de possuir instalado em sua máquina:
+- **PHP:** >= 8.3
+- **Composer** (Gerenciador de dependências PHP)
+- **Node.js** & **npm** (Gerenciador de dependências Frontend)
+- **PostgreSQL** (Banco de dados relacional)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 4. Passo a Passo para Rodar Localmente
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Clone o repositório:**
+   ```bash
+   git clone <URL_DO_REPOSITORIO>
+   cd coinpel-viagem-turismo
+   ```
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+2. **Configure o arquivo de variáveis de ambiente:**
+   Copie o arquivo `.env.example` para `.env`:
+   ```bash
+   cp .env.example .env
+   ```
 
-## Agentic Development
+3. **Instale as dependências do PHP (Composer):**
+   ```bash
+   composer install
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+4. **Instale as dependências do Frontend (npm):**
+   ```bash
+   npm install
+   ```
 
+5. **Gere a chave criptográfica da aplicação:**
+   ```bash
+   php artisan key:generate
+   ```
+
+6. **Configure as credenciais do banco no seu `.env`:**
+   Abra o arquivo `.env` e configure a conexão com o PostgreSQL:
+   ```env
+   DB_CONNECTION=pgsql
+   DB_HOST=127.0.0.1
+   DB_PORT=5432
+   DB_DATABASE=coinpel
+   DB_USERNAME=seu_usuario
+   DB_PASSWORD=sua_senha
+   ```
+
+7. **Execute as migrações e popule o banco de dados (Seeds):**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+8. **Compile os assets do frontend:**
+   - Para ambiente de desenvolvimento (com Hot Reloading):
+     ```bash
+     npm run dev
+     ```
+   - Para ambiente de produção (compilado final):
+     ```bash
+     npm run build
+     ```
+
+9. **Inicie o servidor local do Laravel:**
+   ```bash
+   php artisan serve
+   ```
+   A aplicação estará rodando em: `http://127.0.0.1:8000`.
+
+---
+
+## 5. Credenciais de Teste (Usuário Administrador)
+O seeder padrão (`AdminUserSeeder`) cria o seguinte usuário para acesso inicial:
+- **E-mail:** `admin@coinpel.com`
+- **Senha Inicial:** `Admin@123`
+
+---
+
+## 6. Fluxo de Primeiro Acesso e Autenticação
+
+### Primeiro Acesso (Troca Obrigatória de Senha)
+Para segurança de novas contas cadastradas com uma senha provisória, o sistema implementa um fluxo de troca de senha no primeiro acesso:
+- O novo usuário é cadastrado com o campo `must_change_password` setado como `true`.
+- Ao logar, o middleware `MustChangePassword` intercepta o acesso e redireciona o usuário para a tela `/change-password`.
+- O usuário é impedido de navegar em outros módulos administrativos até que defina sua nova senha definitiva.
+
+### Controle de Acesso e Segurança
+- **Bloqueio de Usuários:** Usuários marcados como bloqueados (`is_blocked = true`) são impedidos de realizar a autenticação e não conseguem logar no painel.
+- **Proteção contra Auto-Ações:** A interface do módulo de usuários impede que o administrador logado execute ações de autoexclusão ou autobloqueio, prevenindo bloqueios acidentais do próprio login de acesso.
+
+---
+
+## 7. Arquitetura do Sistema
+O projeto utiliza a arquitetura monolítica clássica do Laravel (MVC):
+- **Controllers & Requests:** Controlam os fluxos de dados e validações estruturadas das requisições (ex: `StoreTripRequest`, `VehicleController`).
+- **Blade & Vanilla JS:** Os formulários de cadastro e edição de *Veículos*, *Motoristas* e *Usuários* são gerenciados em painéis deslizantes (Drawers) laterais interativos. O envio de dados e deleções é feito assincronamente via Fetch API com o token CSRF obrigatório injetado nas requisições.
+- **API REST (Sprint 6):**
+  - Rotas expostas em `routes/api.php` (mapeada no bootstrap de inicialização do Laravel).
+  - Endpoint `GET /api/trips` retorna a lista de viagens com carregamento adiantado (*eager loading*) de `vehicle` e `driver` para evitar o problema de consulta N+1.
+  - Uso de **Eloquent Resources** (`TripResource`, `VehicleResource`, `DriverResource`) para estruturar a resposta da API, ocultando e omitindo atributos confidenciais dos motoristas (CPF, RG, endereço) e dos veículos (chassi).
+
+---
+
+## 8. Execução de Testes Automatizados
+O projeto possui cobertura de testes de feature para todos os módulos (Motoristas, Veículos, Usuários e APIs). Para rodá-los:
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php artisan test
 ```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
