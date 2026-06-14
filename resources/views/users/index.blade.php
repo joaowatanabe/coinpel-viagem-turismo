@@ -9,24 +9,24 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
         </svg>
-        + Adicionar usuário
+        Adicionar usuário
     </button>
 </div>
 @endsection
 
 @section('header-right-action')
 <form method="GET" action="{{ route('users.index') }}" class="relative w-64 md:w-72">
-    <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z"/>
-        </svg>
-    </span>
     <input type="text"
            id="search"
            name="search"
            value="{{ $search ?? '' }}"
            placeholder="Pesquisar usuário"
-           class="block w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+           class="block w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+    <span class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z"/>
+        </svg>
+    </span>
 </form>
 @endsection
 
@@ -54,7 +54,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center gap-3">
                                 <div class="relative shrink-0">
-                                    <span class="flex items-center justify-center w-9 h-9 rounded-full text-xs uppercase font-bold border
+                                    <span class="flex items-center justify-center w-14 h-14 rounded-full text-sm uppercase font-bold border
                                         {{ $user->is_blocked
                                             ? 'bg-red-50 text-red-600 border-red-200'
                                             : 'bg-coinpel-primary/10 text-coinpel-primary border-coinpel-primary/20'
@@ -62,7 +62,7 @@
                                         {{ substr($user->name, 0, 2) }}
                                     </span>
                                     @if($user->is_blocked)
-                                        <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center" title="Bloqueado">
+                                        <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center" title="Bloqueado">
                                             <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0 1 10 0v2a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Zm8-2v2H7V7a3 3 0 0 1 6 0Z" clip-rule="evenodd"/>
                                             </svg>
@@ -73,7 +73,7 @@
                                     <span class="text-sm font-bold text-gray-800 leading-tight">{{ $user->name }}</span>
                                     @if(auth()->id() === $user->id)
                                         <span class="text-[10px] font-semibold text-coinpel-primary mt-0.5 leading-none">Você</span>
-                                    @endif
+                                        @endif
                                 </div>
                             </div>
                         </td>
