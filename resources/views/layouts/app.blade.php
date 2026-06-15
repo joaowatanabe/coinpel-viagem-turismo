@@ -625,8 +625,8 @@
     </script>
 
     {{-- Global Profile Drawer --}}
-    <div id="global-profile-drawer-overlay" class="fixed inset-0 bg-black/40 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
-    <div id="global-profile-drawer" class="fixed inset-y-0 right-0 w-[440px] bg-white z-[70] shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+    <div id="global-profile-drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="global-profile-drawer" class="fixed inset-y-0 right-0 w-[440px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
             <h2 class="text-lg font-bold text-gray-800">Editar Perfil</h2>
             <button onclick="closeGlobalProfileDrawer()" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition cursor-pointer">
@@ -698,6 +698,8 @@
                 globalProfileOverlay.classList.add('hidden');
             }, 300);
         }
+
+        globalProfileOverlay.addEventListener('click', closeGlobalProfileDrawer);
 
         function previewGlobalProfilePhoto(input) {
             if (!input.files || !input.files[0]) return;

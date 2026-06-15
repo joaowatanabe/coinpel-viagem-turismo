@@ -201,9 +201,7 @@
 
 {{-- Sliding Detail Drawer --}}
 <div id="client-detail-drawer" 
-     class="hidden fixed inset-y-0 right-0 w-[420px] bg-white 
-            shadow-2xl z-50 transform translate-x-full 
-            transition-transform duration-300 overflow-y-auto">
+     class="fixed inset-y-0 right-0 w-[420px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
     <div id="client-detail-content"></div>
 </div>
 
@@ -229,9 +227,13 @@
     const btnDelete   = document.getElementById('drawer-delete');
     const drawerError = document.getElementById('drawer-error');
 
-
-
-    // ── Drawer open/close ───────────────────────────────────────────────
+    const fields = {
+        name: document.getElementById('field-name'),
+        email: document.getElementById('field-email'),
+        phone: document.getElementById('field-phone'),
+        cpf: document.getElementById('field-cpf'),
+        birth_date: document.getElementById('field-birth-date')
+    };    // ── Drawer open/close ───────────────────────────────────────────────
     function openDrawer(mode, data) {
         editingId = mode === 'edit' ? data.id : null;
 
@@ -280,7 +282,6 @@
         Object.keys(fields).forEach(key => {
             if (fields[key]) fields[key].value = '';
         });
-        filePhoto.value = '';
     }
 
     function clearErrors() {
@@ -318,10 +319,6 @@
                 formData.append(key, val);
             }
         });
-
-        if (filePhoto.files[0]) {
-            formData.append('profile_photo', filePhoto.files[0]);
-        }
 
         const url = editingId ? `/customers/${editingId}` : '/customers';
         if (editingId) {
