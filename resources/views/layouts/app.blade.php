@@ -167,7 +167,7 @@
                             </svg>
                         </button>
 
-                        <div id="notification-menu" class="hidden absolute top-full right-0 mt-2 w-[460px] bg-white rounded-xl shadow-xl border border-gray-200 z-50 transform origin-top-right flex flex-col overflow-hidden" onclick="event.stopPropagation()">
+                        <div id="notification-menu" class="hidden absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-50 transform origin-top-right flex flex-col overflow-hidden" style="max-height: 420px;" onclick="event.stopPropagation()">
                             {{-- Header --}}
                             <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white shrink-0 relative z-10">
                                 <div class="flex items-center gap-2">
@@ -187,7 +187,7 @@
                             </div>
                             
                             {{-- Content Scroll --}}
-                            <div id="notification-list" class="divide-y divide-gray-100 max-h-[360px] overflow-y-auto overscroll-contain flex-1 relative z-0">
+                            <div id="notification-list" class="divide-y divide-gray-100 overflow-y-auto overscroll-contain flex-1 relative z-0">
                                 {{-- Carregado dinamicamente via JS --}}
                             </div>
                         </div>
