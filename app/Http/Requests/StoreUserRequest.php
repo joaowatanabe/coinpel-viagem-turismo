@@ -13,13 +13,14 @@ class StoreUserRequest extends FormRequest
 
     public function rules(): array
     {
-        $userId = $this->route('user')?->id;
+        $user = $this->route('user');
+        $userId = $user instanceof \App\Models\User ? $user->id : $user;
 
         return [
             'name'          => ['required', 'string', 'max:255'],
-            'email'         => ['required', 'email', 'unique:users,email' . ($userId ? ",{$userId}" : '')],
+            'email'         => ['required', 'email', \Illuminate\Validation\Rule::unique('users', 'email')->ignore($userId)],
             'password'      => [$userId ? 'nullable' : 'required', 'string', 'min:6'],
-            'is_blocked'    => ['required', 'boolean'],
+            'is_blocked'    => [$userId ? 'nullable' : 'required', 'boolean'],
             'profile_photo' => ['nullable', 'image', 'max:2048', 'mimes:jpeg,png,jpg,webp'],
         ];
     }

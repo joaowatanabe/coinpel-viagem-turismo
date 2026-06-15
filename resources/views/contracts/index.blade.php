@@ -535,7 +535,7 @@
                 if (response.status === 422 && json.errors) {
                     showErrors(json.errors);
                 } else {
-                    drawerError.textContent = json.message || 'Ocorreu um erro ao salvar o contrato.';
+                    drawerError.textContent = 'Ocorreu um erro ao salvar o contrato. Verifique os campos e tente novamente.';
                     drawerError.classList.remove('hidden');
                 }
                 return;

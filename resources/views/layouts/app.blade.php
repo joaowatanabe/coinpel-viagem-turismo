@@ -636,11 +636,11 @@
         <div id="global-profile-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
         <div class="flex-1 overflow-y-auto px-6 py-6 space-y-5">
             <div class="flex flex-col items-center gap-2 mb-4">
-                <div id="global-profile-avatar-wrap" class="relative">
+                <div id="global-profile-avatar-wrap" class="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
                     @if(auth()->user()->profile_photo_path)
-                        <img id="global-profile-photo-preview" src="{{ Storage::url(auth()->user()->profile_photo_path) }}" class="w-24 h-24 rounded-full object-cover border-2 border-gray-200">
+                        <img id="global-profile-photo-preview" src="{{ Storage::url(auth()->user()->profile_photo_path) }}" class="w-full h-full object-cover">
                     @else
-                        <div id="global-profile-photo-preview" class="w-24 h-24 rounded-full bg-[#593E75] flex items-center justify-center text-white font-bold text-2xl">
+                        <div id="global-profile-photo-preview" class="w-full h-full flex items-center justify-center bg-[#593E75] text-white font-bold text-2xl">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}{{ str_contains(auth()->user()->name, ' ') ? strtoupper(substr(explode(' ', auth()->user()->name)[1], 0, 1)) : '' }}
                         </div>
                     @endif
@@ -711,7 +711,7 @@
             reader.onload = function(e) {
                 const wrap = document.getElementById('global-profile-avatar-wrap');
                 if (wrap) {
-                    wrap.innerHTML = `<img id="global-profile-photo-preview" src="${e.target.result}" class="w-24 h-24 rounded-full object-cover border-2 border-gray-200">`;
+                    wrap.innerHTML = `<img id="global-profile-photo-preview" src="${e.target.result}" class="w-full h-full object-cover">`;
                 }
                 document.getElementById('global-profile-remove-photo-btn').classList.remove('hidden');
             };
@@ -731,7 +731,7 @@
             .then(data => {
                 if (!data.success) throw new Error(data.message);
                 const wrap = document.getElementById('global-profile-avatar-wrap');
-                if (wrap) wrap.innerHTML = `<div id="global-profile-photo-preview" class="w-24 h-24 rounded-full bg-[#593E75] flex items-center justify-center text-white font-bold text-2xl">${data.initials}</div>`;
+                if (wrap) wrap.innerHTML = `<div id="global-profile-photo-preview" class="w-full h-full flex items-center justify-center bg-[#593E75] text-white font-bold text-2xl">${data.initials}</div>`;
                 btn.classList.add('hidden'); btn.textContent = 'Remover foto'; btn.disabled = false;
                 
                 // Update top right avatar immediately

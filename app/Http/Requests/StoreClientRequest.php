@@ -11,21 +11,44 @@ class StoreClientRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $cpf = $this->cpf ? preg_replace('/[^0-9]/', '', $this->cpf) : null;
+        $zipCode = $this->zip_code ? preg_replace('/[^0-9]/', '', $this->zip_code) : null;
+        $phone = $this->phone ? preg_replace('/[^0-9]/', '', $this->phone) : null;
+
+        $birthDate = $this->birth_date;
+        if ($birthDate && preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $birthDate)) {
+            try {
+                $birthDate = \Carbon\Carbon::createFromFormat('d/m/Y', $birthDate)->format('Y-m-d');
+            } catch (\Exception $e) {
+                // Ignore, validation will fail
+            }
+        }
+
+        $this->merge([
+            'cpf'        => $cpf,
+            'zip_code'   => $zipCode,
+            'phone'      => $phone,
+            'birth_date' => $birthDate,
+        ]);
+    }
+
     public function rules(): array
     {
-        // Route parameter is 'customer' since the route is defined as Route::resource('customers', ...)
-        $clientId = $this->route('customer')?->id ?? $this->route('client')?->id;
+        $customer = $this->route('customer') ?? $this->route('client');
+        $clientId = $customer instanceof \App\Models\Client ? $customer->id : $customer;
 
         return [
             'name'          => ['required', 'string', 'max:255'],
             'birth_date'    => ['required', 'date', 'before:today'],
-            'cpf'           => ['required', 'string', 'max:14', 'unique:clients,cpf' . ($clientId ? ",{$clientId}" : '')],
+            'cpf'           => ['required', 'string', 'max:14', \Illuminate\Validation\Rule::unique('clients', 'cpf')->ignore($clientId)],
             'zip_code'      => ['required', 'string', 'max:9'],
             'street'        => ['required', 'string', 'max:255'],
             'number'        => ['required', 'string', 'max:10'],
             'city'          => ['required', 'string', 'max:255'],
             'state'         => ['required', 'string', 'max:2'],
-            'email'         => ['required', 'email', 'unique:clients,email' . ($clientId ? ",{$clientId}" : '')],
+            'email'         => ['required', 'email', \Illuminate\Validation\Rule::unique('clients', 'email')->ignore($clientId)],
             'phone'         => ['required', 'string', 'max:20'],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
         ];

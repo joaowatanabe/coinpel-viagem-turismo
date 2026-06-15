@@ -13,10 +13,11 @@ class StoreContractRequest extends FormRequest
 
     public function rules(): array
     {
-        $contractId = $this->route('contract') ? $this->route('contract')->id : null;
+        $contract = $this->route('contract');
+        $contractId = $contract instanceof \App\Models\Contract ? $contract->id : $contract;
 
         return [
-            'number'      => ['required', 'string', 'max:255', 'unique:contracts,number,' . $contractId],
+            'number'      => ['required', 'string', 'max:255', \Illuminate\Validation\Rule::unique('contracts', 'number')->ignore($contractId)],
             'client_id'   => ['nullable', 'integer', 'exists:clients,id'],
             'trip_id'     => ['nullable', 'integer', 'exists:trips,id'],
             'description' => ['nullable', 'string'],
