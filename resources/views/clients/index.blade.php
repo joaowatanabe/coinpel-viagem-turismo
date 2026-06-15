@@ -227,43 +227,45 @@
                 {{-- CEP & Cidade --}}
                 <div class="grid grid-cols-3 gap-4">
                     <div class="col-span-1">
-                        <label for="field-zip-code" class="block text-xs font-semibold text-gray-500 mb-1.5">CEP:</label>
-                        <input id="field-zip-code" name="zip_code" type="text" required
+                        <label for="client_zip_code" class="block text-xs font-semibold text-gray-500 mb-1.5">CEP:</label>
+                        <input id="client_zip_code" name="zip_code" type="text" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                               placeholder="Ex: 96010-000">
-                        <p id="err-zip-code" class="hidden mt-1 text-xs text-red-600"></p>
+                               placeholder="Ex: 96010-000"
+                               oninput="formatCepInput(this)"
+                               onblur="fetchAddressByCep(this.value, 'client')">
+                        <p id="err-client-zip-code" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                     <div class="col-span-2">
-                        <label for="field-city" class="block text-xs font-semibold text-gray-500 mb-1.5">Cidade:</label>
-                        <input id="field-city" name="city" type="text" required
+                        <label for="client_city" class="block text-xs font-semibold text-gray-500 mb-1.5">Cidade:</label>
+                        <input id="client_city" name="city" type="text" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
                                placeholder="Ex: Pelotas">
-                        <p id="err-city" class="hidden mt-1 text-xs text-red-600"></p>
+                        <p id="err-client-city" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                 </div>
 
                 {{-- Rua & Número & Estado --}}
                 <div class="grid grid-cols-12 gap-4">
                     <div class="col-span-7">
-                        <label for="field-street" class="block text-xs font-semibold text-gray-500 mb-1.5">Rua:</label>
-                        <input id="field-street" name="street" type="text" required
+                        <label for="client_street" class="block text-xs font-semibold text-gray-500 mb-1.5">Rua:</label>
+                        <input id="client_street" name="street" type="text" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
                                placeholder="Ex: Rua Gonçalves Chaves">
-                        <p id="err-street" class="hidden mt-1 text-xs text-red-600"></p>
+                        <p id="err-client-street" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                     <div class="col-span-3">
-                        <label for="field-number" class="block text-xs font-semibold text-gray-500 mb-1.5">Número:</label>
-                        <input id="field-number" name="number" type="text" required
+                        <label for="client_number" class="block text-xs font-semibold text-gray-500 mb-1.5">Número:</label>
+                        <input id="client_number" name="number" type="text" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
                                placeholder="Ex: 456">
-                        <p id="err-number" class="hidden mt-1 text-xs text-red-600"></p>
+                        <p id="err-client-number" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                     <div class="col-span-2">
-                        <label for="field-state" class="block text-xs font-semibold text-gray-500 mb-1.5">UF:</label>
-                        <input id="field-state" name="state" type="text" required maxlength="2"
+                        <label for="client_state" class="block text-xs font-semibold text-gray-500 mb-1.5">UF:</label>
+                        <input id="client_state" name="state" type="text" required maxlength="2"
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition uppercase"
                                placeholder="RS">
-                        <p id="err-state" class="hidden mt-1 text-xs text-red-600"></p>
+                        <p id="err-client-state" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                 </div>
 
@@ -421,7 +423,9 @@
                 <div class="grid grid-cols-3 gap-4">
                     <div>
                         <label class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">CEP</label>
-                        <input type="text" name="zip_code" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+                        <input type="text" name="zip_code" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
+                               oninput="formatCepInput(this)"
+                               onblur="fetchAddressByCep(this.value, 'client_detail')">
                         <p class="hidden mt-1 text-xs text-red-600 error-field" data-field="zip_code"></p>
                     </div>
                     <div class="col-span-2">
@@ -530,11 +534,11 @@
         phone:        document.getElementById('field-phone'),
         birth_date:   document.getElementById('field-birth-date'),
         cpf:          document.getElementById('field-cpf'),
-        zip_code:     document.getElementById('field-zip-code'),
-        city:         document.getElementById('field-city'),
-        street:       document.getElementById('field-street'),
-        number:       document.getElementById('field-number'),
-        state:        document.getElementById('field-state'),
+        zip_code:     document.getElementById('client_zip_code'),
+        city:         document.getElementById('client_city'),
+        street:       document.getElementById('client_street'),
+        number:       document.getElementById('client_number'),
+        state:        document.getElementById('client_state'),
     };
 
     // ── Detail Drawer Element refs ───────────────────────────────────────
@@ -628,11 +632,11 @@
             phone:        'err-phone',
             birth_date:   'err-birth-date',
             cpf:          'err-cpf',
-            zip_code:     'err-zip-code',
-            city:         'err-city',
-            street:       'err-street',
-            number:       'err-number',
-            state:        'err-state',
+            zip_code:     'err-client-zip-code',
+            city:         'err-client-city',
+            street:       'err-client-street',
+            number:       'err-client-number',
+            state:        'err-client-state',
             profile_photo: 'err-profile-photo',
         };
         Object.entries(errors).forEach(([key, msgs]) => {
@@ -658,7 +662,11 @@
 
         const formData = new FormData();
         Object.keys(fields).forEach(key => {
-            if (fields[key]) formData.append(key, fields[key].value);
+            if (fields[key]) {
+                let val = fields[key].value;
+                if (key === 'zip_code') val = val.replace(/\D/g, '');
+                formData.append(key, val);
+            }
         });
 
         if (filePhoto.files[0]) {
@@ -1004,7 +1012,7 @@
                 name: detailDrawer.querySelector('[name="name"]').value,
                 birth_date: detailDrawer.querySelector('[name="birth_date"]').value,
                 cpf: detailDrawer.querySelector('[name="cpf"]').value,
-                zip_code: detailDrawer.querySelector('[name="zip_code"]').value,
+                zip_code: detailDrawer.querySelector('[name="zip_code"]').value.replace(/\D/g, ''),
                 city: detailDrawer.querySelector('[name="city"]').value,
                 street: detailDrawer.querySelector('[name="street"]').value,
                 number: detailDrawer.querySelector('[name="number"]').value,

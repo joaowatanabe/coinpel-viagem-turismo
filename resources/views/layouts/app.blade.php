@@ -240,6 +240,128 @@
                 menu.classList.add('hidden');
             }
         });
+
+        async function fetchAddressByCep(cep, fieldPrefix) {
+            const cleanCep = cep.replace(/\D/g, '');
+            if (cleanCep.length !== 8) return;
+
+            // Find the triggering zip input
+            let zipInput = window.event ? window.event.target : null;
+            if (!zipInput || zipInput.tagName !== 'INPUT') {
+                zipInput = document.getElementById(`${fieldPrefix}_zip_code`) || 
+                           document.getElementById(`${fieldPrefix}-zip-code`) ||
+                           document.querySelector(`input[onblur*="${fieldPrefix}"]`);
+            }
+
+            if (!zipInput) return;
+
+            // Helper to find input by prefix-based ID, name, or scoped sibling
+            const getField = (name) => {
+                // 1. Try finding by ID: {fieldPrefix}_{name} (e.g. driver_street)
+                let el = document.getElementById(`${fieldPrefix}_${name}`);
+                if (el) return el;
+
+                // 2. Try finding by ID: {fieldPrefix}-${name} (e.g. driver-street)
+                el = document.getElementById(`${fieldPrefix}-${name}`);
+                if (el) return el;
+
+                // 3. Try finding relative to the zipInput container
+                const container = zipInput.closest('form') || 
+                                  zipInput.closest('.section-edit') || 
+                                  zipInput.closest('#section-address') || 
+                                  zipInput.closest('div.grid') ||
+                                  (zipInput.parentElement ? zipInput.parentElement.parentElement : null);
+                if (container) {
+                    el = container.querySelector(`[name="${name}"]`) || 
+                         container.querySelector(`[id$="${name}"]`) || 
+                         container.querySelector(`[id$="-${name}"]`);
+                    if (el) return el;
+                }
+
+                // 4. Try globally by name
+                return document.querySelector(`[name="${name}"]`);
+            };
+
+            const streetInput = getField('street');
+            const cityInput = getField('city');
+            const stateInput = getField('state');
+            const neighborhoodInput = getField('neighborhood');
+            const numberInput = getField('number');
+
+            // Find or create error container
+            let errorEl = document.getElementById(`${fieldPrefix}_zip_code_error`) || 
+                          document.getElementById(`err-${fieldPrefix}-zip-code`) ||
+                          document.getElementById(`err-zip-code`);
+            
+            if (!errorEl && zipInput && zipInput.parentElement) {
+                errorEl = zipInput.parentElement.querySelector('.error-field') || 
+                          zipInput.parentElement.querySelector('.text-red-600') ||
+                          zipInput.parentElement.querySelector('.text-red-500');
+            }
+
+            // Reset error
+            if (errorEl) {
+                errorEl.classList.add('hidden');
+                errorEl.textContent = '';
+            }
+            zipInput.classList.remove('border-red-400', 'border-red-600');
+
+            const originalValue = zipInput.value;
+            zipInput.disabled = true;
+            zipInput.value = 'Buscando...';
+
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+                if (!response.ok) throw new Error('Erro de conexão ao buscar CEP.');
+                const data = await response.json();
+
+                if (data.erro === true || data.erro === 'true') {
+                    throw new Error('CEP não encontrado.');
+                }
+
+                // Fill fields
+                if (streetInput) streetInput.value = data.logradouro || '';
+                if (cityInput) cityInput.value = data.localidade || '';
+                if (stateInput) stateInput.value = data.uf || '';
+                if (neighborhoodInput) neighborhoodInput.value = data.bairro || '';
+
+                // Format visual value
+                zipInput.value = cleanCep.replace(/^(\d{5})(\d{3})$/, '$1-$2');
+
+                // Focus on the number field
+                if (numberInput) {
+                    setTimeout(() => numberInput.focus(), 50);
+                }
+
+            } catch (err) {
+                // Clear address fields on error
+                if (streetInput) streetInput.value = '';
+                if (cityInput) cityInput.value = '';
+                if (stateInput) stateInput.value = '';
+                if (neighborhoodInput) neighborhoodInput.value = '';
+
+                // Restore original CEP value
+                zipInput.value = originalValue;
+                zipInput.classList.add('border-red-600');
+
+                if (errorEl) {
+                    errorEl.textContent = err.message || 'CEP não encontrado.';
+                    errorEl.classList.remove('hidden');
+                }
+            } finally {
+                zipInput.disabled = false;
+            }
+        }
+
+        function formatCepInput(input) {
+            let val = input.value.replace(/\D/g, '');
+            if (val.length > 5) {
+                val = val.substring(0, 5) + '-' + val.substring(5, 8);
+            } else {
+                val = val.substring(0, 8);
+            }
+            input.value = val;
+        }
     </script>
     @stack('scripts')
 </body>
