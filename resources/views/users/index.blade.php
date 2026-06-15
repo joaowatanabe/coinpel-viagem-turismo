@@ -35,7 +35,7 @@
 
     {{-- Table --}}
     <div class="flex-1 bg-white pb-12">
-        <div class="overflow-x-auto">
+        <div class="overflow-visible relative">
         <table class="w-full text-left">
             <thead>
                 <tr class="border-b border-gray-100">
@@ -120,7 +120,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
                                     </svg>
                                 </button>
-                                <div class="user-actions-menu hidden absolute right-0 mt-1 w-48 bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 z-10 text-left">
+                                <div class="user-actions-menu hidden absolute right-0 mt-1 w-48 bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 z-50 text-left">
 
                                     {{-- Edit --}}
                                     <button type="button"
