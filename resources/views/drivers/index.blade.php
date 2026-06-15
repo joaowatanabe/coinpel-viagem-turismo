@@ -399,26 +399,26 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">Nome</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="name">—</span>
+                        <span id="lbl-name" class="text-sm font-semibold text-gray-800 view-field" data-name="name">—</span>
                     </div>
                     <div>
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">Data de Nascimento</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="birth_date">—</span>
+                        <span id="lbl-birth_date" class="text-sm font-semibold text-gray-800 view-field" data-name="birth_date">—</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">CPF</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="cpf">—</span>
+                        <span id="lbl-cpf" class="text-sm font-semibold text-gray-800 view-field" data-name="cpf">—</span>
                     </div>
                     <div>
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">RG</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="rg">—</span>
+                        <span id="lbl-rg" class="text-sm font-semibold text-gray-800 view-field" data-name="rg">—</span>
                     </div>
                 </div>
                 <div>
                     <span class="block text-[10px] font-semibold text-gray-400 uppercase">Matrícula</span>
-                    <span class="text-sm font-semibold text-gray-800 view-field" data-name="registration">—</span>
+                    <span id="lbl-registration" class="text-sm font-semibold text-gray-800 view-field" data-name="registration">—</span>
                 </div>
             </div>
 
@@ -476,21 +476,21 @@
                 <div class="grid grid-cols-3 gap-4">
                     <div>
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">CEP</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="zip_code">—</span>
+                        <span id="lbl-zip_code" class="text-sm font-semibold text-gray-800 view-field" data-name="zip_code">—</span>
                     </div>
                     <div class="col-span-2">
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">Cidade/Estado</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="city_state">—</span>
+                        <span id="lbl-city_state" class="text-sm font-semibold text-gray-800 view-field" data-name="city_state">—</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-4">
                     <div class="col-span-2">
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">Endereço</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="street">—</span>
+                        <span id="lbl-street" class="text-sm font-semibold text-gray-800 view-field" data-name="street">—</span>
                     </div>
                     <div>
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">Número</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="number">—</span>
+                        <span id="lbl-number" class="text-sm font-semibold text-gray-800 view-field" data-name="number">—</span>
                     </div>
                 </div>
             </div>
@@ -549,11 +549,11 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">E-mail</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="email">—</span>
+                        <span id="lbl-email" class="text-sm font-semibold text-gray-800 view-field" data-name="email">—</span>
                     </div>
                     <div>
                         <span class="block text-[10px] font-semibold text-gray-400 uppercase">Telefone</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="phone">—</span>
+                        <span id="lbl-phone" class="text-sm font-semibold text-gray-800 view-field" data-name="phone">—</span>
                     </div>
                 </div>
             </div>
