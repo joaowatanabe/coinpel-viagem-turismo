@@ -83,7 +83,7 @@
 
     {{-- Table --}}
     <div class="flex-1 bg-white pb-12">
-        <div class="overflow-x-auto">
+        <div class="overflow-visible relative">
         <table class="w-full text-left">
             <thead>
                 <tr class="border-b border-gray-100">
@@ -175,7 +175,7 @@
                                     </svg>
                                 </button>
 
-                                <div class="trip-actions-menu hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-10">
+                                <div class="trip-actions-menu hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50">
                                     <a href="{{ route('trips.edit', $trip) }}"
                                        class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
                                         <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -226,7 +226,7 @@
                 @endforelse
             </tbody>
         </table>
-        </div>{{-- /overflow-x-auto --}}
+        </div>{{-- /overflow-visible --}}
     </div>
 
     {{-- Pagination --}}

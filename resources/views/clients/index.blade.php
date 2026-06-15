@@ -1,34 +1,26 @@
 @extends('layouts.app')
 
-@section('page-title', 'Motoristas')
+@section('page-title', 'Clientes')
 
 @section('header-left')
 <div class="flex items-center gap-3">
-    <button id="btn-add-driver"
+    <button id="btn-add-client"
             class="inline-flex items-center gap-2 px-4 py-2 bg-coinpel-primary hover:opacity-95 text-white text-sm font-semibold rounded-lg transition shadow-sm shrink-0 cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
         </svg>
-        Adicionar motorista
-    </button>
-
-    <button id="filter-toggle"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-semibold rounded-lg transition shrink-0 cursor-pointer">
-        <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9"/>
-        </svg>
-        Filtrar
+        Adicionar cliente
     </button>
 </div>
 @endsection
 
 @section('header-right-action')
-<form method="GET" action="{{ route('drivers.index') }}" class="relative w-64 md:w-72">
+<form method="GET" action="{{ route('customers.index') }}" class="relative w-64 md:w-72">
     <input type="text"
            id="search"
            name="search"
            value="{{ $search ?? '' }}"
-           placeholder="Pesquisar motorista"
+           placeholder="Pesquisar cliente"
            class="block w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
     <span class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -41,107 +33,76 @@
 @section('content')
 <div class="flex flex-col flex-1 gap-0 -m-6">
 
-    {{-- Filter Panel --}}
-    <div id="filter-panel" class="{{ request()->hasAny(['name', 'registration']) ? '' : 'hidden' }} px-6 py-4 bg-gray-50 border-b border-gray-100">
-        <form method="GET" action="{{ route('drivers.index') }}" class="flex flex-wrap items-end gap-4">
-            @if(request('search'))
-                <input type="hidden" name="search" value="{{ request('search') }}">
-            @endif
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Nome</label>
-                <input type="text" name="name" value="{{ request('name') }}"
-                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coinpel-primary bg-white"
-                       placeholder="Ex: Carlos...">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Matrícula</label>
-                <input type="text" name="registration" value="{{ request('registration') }}"
-                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coinpel-primary bg-white"
-                       placeholder="Ex: 12548793">
-            </div>
-            <button type="submit"
-                    class="px-4 py-2 bg-coinpel-primary text-white text-sm font-semibold rounded-lg hover:opacity-95 transition cursor-pointer">
-                Aplicar filtros
-            </button>
-            <a href="{{ route('drivers.index') }}"
-               class="px-4 py-2 bg-white border border-gray-300 text-gray-600 text-sm font-semibold rounded-lg hover:bg-gray-50 transition">
-                Limpar
-            </a>
-        </form>
-    </div>
-
     {{-- Card Grid / Main Body --}}
     <div class="flex-1 p-6 bg-coinpel-bg">
-        @if($drivers->isEmpty())
+        @if($clients->isEmpty())
             <div class="flex flex-col items-center justify-center py-16 bg-white border border-gray-100 rounded-2xl">
                 <div class="flex items-center justify-center w-14 h-14 bg-purple-50 text-coinpel-primary rounded-full mb-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
                     </svg>
                 </div>
-                <h3 class="text-base font-bold text-gray-800">Nenhum motorista cadastrado</h3>
-                <p class="text-sm text-gray-500 mt-1 max-w-xs text-center">Não encontramos motoristas que correspondam aos filtros ou critérios de busca informados.</p>
-                <button id="btn-add-driver-empty" class="mt-4 px-4 py-2 bg-coinpel-primary hover:bg-coinpel-primary-dark text-white text-sm font-semibold rounded-lg transition shadow-sm cursor-pointer">
-                    Adicionar motorista
+                <h3 class="text-base font-bold text-gray-800">Nenhum cliente cadastrado ainda.</h3>
+                <p class="text-sm text-gray-500 mt-1 max-w-xs text-center">Não encontramos clientes que correspondam aos critérios de busca informados.</p>
+                <button id="btn-add-client-empty" class="mt-4 px-4 py-2 bg-coinpel-primary hover:bg-coinpel-primary-dark text-white text-sm font-semibold rounded-lg transition shadow-sm cursor-pointer">
+                    Adicionar cliente
                 </button>
             </div>
         @else
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                @foreach($drivers as $driver)
-                    <div class="driver-card relative p-6 bg-white border border-gray-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:border-coinpel-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] rounded-2xl flex items-center justify-between transition group cursor-pointer" data-id="{{ $driver->id }}">
+                @foreach($clients as $client)
+                    <div class="client-card relative p-6 bg-white border border-gray-100/80 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:border-coinpel-primary/20 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] rounded-2xl flex items-center justify-between transition group cursor-pointer" data-id="{{ $client->id }}">
                         
                         <div class="flex items-center gap-6">
-                            @if($driver->profile_photo_path)
-                                <img src="{{ Storage::url($driver->profile_photo_path) }}" alt="{{ $driver->name }}" class="w-[82px] h-[82px] rounded-full object-cover border border-gray-100 shrink-0 shadow-sm">
+                            @if($client->profile_photo_path)
+                                <img src="{{ Storage::url($client->profile_photo_path) }}" alt="{{ $client->name }}" class="w-[82px] h-[82px] rounded-full object-cover border border-gray-100 shrink-0 shadow-sm">
                             @else
                                 <div class="flex items-center justify-center w-[82px] h-[82px] rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-2xl uppercase border border-coinpel-primary/20 shrink-0 shadow-sm">
-                                    {{ substr($driver->name, 0, 2) }}
+                                    {{ substr($client->name, 0, 2) }}
                                 </div>
                             @endif
                             <div class="flex flex-col justify-center">
-                                <h3 class="font-bold text-coinpel-font-tertiary text-lg leading-tight">{{ $driver->name }}</h3>
-                                <span class="text-sm text-coinpel-font-primary mt-1">{{ $driver->email }}</span>
-                                <span class="text-xs text-coinpel-font-primary/80 mt-1.5 block">Matrícula: {{ $driver->registration }} &nbsp;•&nbsp; Tel: {{ $driver->phone }}</span>
+                                <h3 class="font-bold text-coinpel-font-tertiary text-lg leading-tight">{{ $client->name }}</h3>
+                                <span class="text-sm text-coinpel-font-primary mt-1">{{ $client->email }}</span>
+                                <span class="text-xs text-coinpel-font-primary/80 mt-1.5 block">CPF: {{ $client->cpf }} &nbsp;•&nbsp; Tel: {{ $client->phone }}</span>
                             </div>
                         </div>
 
                         {{-- Dropdown de Ações --}}
-                        <div class="absolute top-5 right-5 driver-actions-wrapper">
-                            <button class="driver-actions-btn p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition focus:outline-none cursor-pointer">
+                        <div class="absolute top-5 right-5 client-actions-wrapper">
+                            <button class="client-actions-btn p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition focus:outline-none cursor-pointer">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
                                 </svg>
                             </button>
-                            <div class="driver-actions-menu hidden absolute right-0 mt-1.5 w-44 bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 z-10">
+                            <div class="client-actions-menu hidden absolute right-0 mt-1.5 w-44 bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 z-50">
                                 <button type="button"
-                                        class="btn-edit-driver w-full text-left px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition cursor-pointer flex items-center gap-2"
-                                        data-id="{{ $driver->id }}"
-                                        data-name="{{ $driver->name }}"
-                                        data-birth_date="{{ $driver->birth_date?->format('Y-m-d') }}"
-                                        data-registration="{{ $driver->registration }}"
-                                        data-cpf="{{ $driver->cpf }}"
-                                        data-rg="{{ $driver->rg }}"
-                                        data-zip_code="{{ $driver->zip_code }}"
-                                        data-street="{{ $driver->street }}"
-                                        data-number="{{ $driver->number }}"
-                                        data-city="{{ $driver->city }}"
-                                        data-state="{{ $driver->state }}"
-                                        data-email="{{ $driver->email }}"
-                                        data-phone="{{ $driver->phone }}"
-                                        data-photo_url="{{ $driver->profile_photo_path ? Storage::url($driver->profile_photo_path) : '' }}">
+                                        class="btn-edit-client w-full text-left px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition cursor-pointer flex items-center gap-2"
+                                        data-id="{{ $client->id }}"
+                                        data-name="{{ $client->name }}"
+                                        data-birth_date="{{ $client->birth_date?->format('Y-m-d') }}"
+                                        data-cpf="{{ $client->cpf }}"
+                                        data-zip_code="{{ $client->zip_code }}"
+                                        data-street="{{ $client->street }}"
+                                        data-number="{{ $client->number }}"
+                                        data-city="{{ $client->city }}"
+                                        data-state="{{ $client->state }}"
+                                        data-email="{{ $client->email }}"
+                                        data-phone="{{ $client->phone }}"
+                                        data-photo_url="{{ $client->profile_photo_path ? Storage::url($client->profile_photo_path) : '' }}">
                                     <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
                                     </svg>
-                                    Editar motorista
+                                    Editar cliente
                                 </button>
                                 <button type="button"
-                                        class="btn-delete-driver w-full text-left px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer flex items-center gap-2"
-                                        data-id="{{ $driver->id }}"
-                                        data-name="{{ $driver->name }}">
+                                        class="btn-delete-client w-full text-left px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer flex items-center gap-2"
+                                        data-id="{{ $client->id }}"
+                                        data-name="{{ $client->name }}">
                                     <svg class="w-4 h-4 text-red-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.34 9m-4.78 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
                                     </svg>
-                                    Deletar motorista
+                                    Deletar cliente
                                 </button>
                             </div>
                         </div>
@@ -152,7 +113,7 @@
             
             {{-- Paginação --}}
             <div class="mt-8 px-2">
-                {{ $drivers->links() }}
+                {{ $clients->links() }}
             </div>
         @endif
     </div>
@@ -163,13 +124,13 @@
 <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
 {{-- Sliding Drawer --}}
-<div id="driver-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+<div id="client-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
     
     {{-- Drawer Header --}}
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <div class="flex items-center gap-2">
-            <h2 class="text-lg font-bold text-gray-800">Motorista</h2>
-            <button id="drawer-delete" class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition shrink-0 hidden cursor-pointer" title="Excluir motorista">
+            <h2 class="text-lg font-bold text-gray-800">Cliente</h2>
+            <button id="drawer-delete" class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition shrink-0 hidden cursor-pointer" title="Excluir cliente">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.34 9m-4.78 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
                 </svg>
@@ -216,7 +177,7 @@
                     <label for="field-name" class="block text-xs font-semibold text-gray-500 mb-1.5">Nome:</label>
                     <input id="field-name" name="name" type="text" required
                            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                           placeholder="Ex: Carlos Silva">
+                           placeholder="Ex: Ana Souza">
                     <p id="err-name" class="hidden mt-1 text-xs text-red-600"></p>
                 </div>
 
@@ -226,50 +187,32 @@
                         <label for="field-email" class="block text-xs font-semibold text-gray-500 mb-1.5">E-mail:</label>
                         <input id="field-email" name="email" type="email" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                               placeholder="Ex: carlos@coinpel.com">
+                               placeholder="Ex: ana@exemplo.com">
                         <p id="err-email" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                     <div>
                         <label for="field-phone" class="block text-xs font-semibold text-gray-500 mb-1.5">Telefone:</label>
                         <input id="field-phone" name="phone" type="text" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                               placeholder="Ex: (53) 99123-4567">
+                               placeholder="Ex: (53) 98765-4321">
                         <p id="err-phone" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                 </div>
 
-                {{-- Matrícula & Birth Date --}}
+                {{-- CPF & Birth Date --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="field-registration" class="block text-xs font-semibold text-gray-500 mb-1.5">Matrícula:</label>
-                        <input id="field-registration" name="registration" type="text" required
+                        <label for="field-cpf" class="block text-xs font-semibold text-gray-500 mb-1.5">CPF:</label>
+                        <input id="field-cpf" name="cpf" type="text" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                               placeholder="Ex: 12548793">
-                        <p id="err-registration" class="hidden mt-1 text-xs text-red-600"></p>
+                               placeholder="Ex: 987.654.321-00">
+                        <p id="err-cpf" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                     <div>
                         <label for="field-birth-date" class="block text-xs font-semibold text-gray-500 mb-1.5">Nascimento:</label>
                         <input id="field-birth-date" name="birth_date" type="date" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
                         <p id="err-birth-date" class="hidden mt-1 text-xs text-red-600"></p>
-                    </div>
-                </div>
-
-                {{-- CPF & RG --}}
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label for="field-cpf" class="block text-xs font-semibold text-gray-500 mb-1.5">CPF:</label>
-                        <input id="field-cpf" name="cpf" type="text" required
-                               class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                               placeholder="Ex: 123.456.789-00">
-                        <p id="err-cpf" class="hidden mt-1 text-xs text-red-600"></p>
-                    </div>
-                    <div>
-                        <label for="field-rg" class="block text-xs font-semibold text-gray-500 mb-1.5">RG:</label>
-                        <input id="field-rg" name="rg" type="text" required
-                               class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                               placeholder="Ex: 1234567890">
-                        <p id="err-rg" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                 </div>
 
@@ -305,14 +248,14 @@
                         <label for="field-street" class="block text-xs font-semibold text-gray-500 mb-1.5">Rua:</label>
                         <input id="field-street" name="street" type="text" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                               placeholder="Ex: Av. Bento Gonçalves">
+                               placeholder="Ex: Rua Gonçalves Chaves">
                         <p id="err-street" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                     <div class="col-span-3">
                         <label for="field-number" class="block text-xs font-semibold text-gray-500 mb-1.5">Número:</label>
                         <input id="field-number" name="number" type="text" required
                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                               placeholder="Ex: 1234">
+                               placeholder="Ex: 456">
                         <p id="err-number" class="hidden mt-1 text-xs text-red-600"></p>
                     </div>
                     <div class="col-span-2">
@@ -347,7 +290,7 @@
 <div id="detail-drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
 {{-- Sliding Detail Drawer --}}
-<div id="driver-detail-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+<div id="client-detail-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
     
     {{-- Drawer Header --}}
     <div class="relative flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
@@ -356,8 +299,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
             </svg>
         </button>
-        <h2 class="text-base font-bold text-gray-800 absolute left-1/2 -translate-x-1/2">Motorista</h2>
-        <button id="detail-drawer-delete" class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition shrink-0 cursor-pointer" title="Excluir motorista">
+        <h2 class="text-base font-bold text-gray-800 absolute left-1/2 -translate-x-1/2">Cliente</h2>
+        <button id="detail-drawer-delete" class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition shrink-0 cursor-pointer" title="Excluir cliente">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.34 9m-4.78 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
             </svg>
@@ -373,7 +316,7 @@
         {{-- Profile Photo --}}
         <div class="flex flex-col items-center gap-3">
             <div id="detail-avatar-container" class="w-[120px] h-[120px] rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-3xl uppercase border border-coinpel-primary/20 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
-                <!-- Image or initials populated dynamically -->
+                <!-- Imagem ou iniciais populadas dinamicamente -->
             </div>
             <div>
                 <label for="detail-field-photo" class="text-sm font-semibold text-coinpel-primary hover:underline transition cursor-pointer">
@@ -406,19 +349,9 @@
                         <span class="text-sm font-semibold text-gray-800 view-field" data-name="birth_date">—</span>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">CPF</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="cpf">—</span>
-                    </div>
-                    <div>
-                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">RG</span>
-                        <span class="text-sm font-semibold text-gray-800 view-field" data-name="rg">—</span>
-                    </div>
-                </div>
                 <div>
-                    <span class="block text-[10px] font-semibold text-gray-400 uppercase">Matrícula</span>
-                    <span class="text-sm font-semibold text-gray-800 view-field" data-name="registration">—</span>
+                    <span class="block text-[10px] font-semibold text-gray-400 uppercase">CPF</span>
+                    <span class="text-sm font-semibold text-gray-800 view-field" data-name="cpf">—</span>
                 </div>
             </div>
 
@@ -436,21 +369,9 @@
                         <p class="hidden mt-1 text-xs text-red-600 error-field" data-field="birth_date"></p>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">Matrícula</label>
-                        <input type="text" name="registration" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
-                        <p class="hidden mt-1 text-xs text-red-600 error-field" data-field="registration"></p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
                         <label class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">CPF</label>
                         <input type="text" name="cpf" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
                         <p class="hidden mt-1 text-xs text-red-600 error-field" data-field="cpf"></p>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">RG</label>
-                        <input type="text" name="rg" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
-                        <p class="hidden mt-1 text-xs text-red-600 error-field" data-field="rg"></p>
                     </div>
                 </div>
                 <div class="flex gap-2 justify-end pt-1">
@@ -591,9 +512,9 @@
 
     // ── Element refs ────────────────────────────────────────────────────
     const overlay     = document.getElementById('drawer-overlay');
-    const drawer      = document.getElementById('driver-drawer');
-    const btnAdd      = document.getElementById('btn-add-driver');
-    const btnAddEmpty = document.getElementById('btn-add-driver-empty');
+    const drawer      = document.getElementById('client-drawer');
+    const btnAdd      = document.getElementById('btn-add-client');
+    const btnAddEmpty = document.getElementById('btn-add-client-empty');
     const btnClose    = document.getElementById('drawer-close');
     const btnCancel   = document.getElementById('drawer-cancel');
     const btnSubmit   = document.getElementById('drawer-submit');
@@ -607,10 +528,8 @@
         name:         document.getElementById('field-name'),
         email:        document.getElementById('field-email'),
         phone:        document.getElementById('field-phone'),
-        registration: document.getElementById('field-registration'),
         birth_date:   document.getElementById('field-birth-date'),
         cpf:          document.getElementById('field-cpf'),
-        rg:           document.getElementById('field-rg'),
         zip_code:     document.getElementById('field-zip-code'),
         city:         document.getElementById('field-city'),
         street:       document.getElementById('field-street'),
@@ -620,14 +539,14 @@
 
     // ── Detail Drawer Element refs ───────────────────────────────────────
     const detailOverlay = document.getElementById('detail-drawer-overlay');
-    const detailDrawer  = document.getElementById('driver-detail-drawer');
+    const detailDrawer  = document.getElementById('client-detail-drawer');
     const btnDetailClose = document.getElementById('detail-drawer-close');
     const btnDetailDelete = document.getElementById('detail-drawer-delete');
     const detailError   = document.getElementById('detail-drawer-error');
     const fileDetailPhoto = document.getElementById('detail-field-photo');
     const detailAvatarContainer = document.getElementById('detail-avatar-container');
 
-    let currentDriver = null;
+    let currentClient = null;
 
     // ── Photo Preview ───────────────────────────────────────────────────
     filePhoto.addEventListener('change', function () {
@@ -635,7 +554,7 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                previewContainer.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                previewContainer.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-full">`;
             }
             reader.readAsDataURL(file);
         }
@@ -655,9 +574,9 @@
             });
 
             if (data.photo_url) {
-                previewContainer.innerHTML = `<img src="${data.photo_url}" class="w-full h-full object-cover">`;
+                previewContainer.innerHTML = `<img src="${data.photo_url}" class="w-full h-full object-cover rounded-full">`;
             } else {
-                const initials = data.name ? data.name.substring(0, 2) : 'MO';
+                const initials = data.name ? data.name.substring(0, 2) : 'CL';
                 previewContainer.innerHTML = initials;
             }
 
@@ -707,10 +626,8 @@
             name:         'err-name',
             email:        'err-email',
             phone:        'err-phone',
-            registration: 'err-registration',
             birth_date:   'err-birth-date',
             cpf:          'err-cpf',
-            rg:           'err-rg',
             zip_code:     'err-zip-code',
             city:         'err-city',
             street:       'err-street',
@@ -737,7 +654,7 @@
         drawerError.classList.add('hidden');
 
         const isEdit = editingId !== null;
-        const url    = isEdit ? '/drivers/' + editingId : '/drivers';
+        const url    = isEdit ? '/customers/' + editingId : '/customers';
 
         const formData = new FormData();
         Object.keys(fields).forEach(key => {
@@ -757,7 +674,7 @@
 
         try {
             const response = await fetch(url, {
-                method: 'POST', // always POST when sending files, overridden by Laravel _method
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken,
@@ -792,11 +709,11 @@
     // ── Delete from drawer ───────────────────────────────────────────────
     btnDelete.addEventListener('click', async function () {
         if (!editingId) return;
-        if (!confirm('Confirma a exclusão deste motorista?')) return;
+        if (!confirm('Confirma a exclusão deste cliente?')) return;
 
         btnDelete.disabled = true;
         try {
-            const response = await fetch('/drivers/' + editingId, {
+            const response = await fetch('/customers/' + editingId, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -820,14 +737,14 @@
     });
 
     // ── Delete from card actions ──────────────────────────────────────────
-    document.querySelectorAll('.btn-delete-driver').forEach(btn => {
+    document.querySelectorAll('.btn-delete-client').forEach(btn => {
         btn.addEventListener('click', async function () {
             const id   = btn.dataset.id;
             const name = btn.dataset.name;
-            if (!confirm(`Confirma a exclusão do motorista ${name}?`)) return;
+            if (!confirm(`Confirma a exclusão do cliente ${name}?`)) return;
 
             try {
-                const response = await fetch('/drivers/' + id, {
+                const response = await fetch('/customers/' + id, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -850,7 +767,7 @@
     });
 
     // ── Edit from card actions ────────────────────────────────────────────
-    document.querySelectorAll('.btn-edit-driver').forEach(btn => {
+    document.querySelectorAll('.btn-edit-client').forEach(btn => {
         btn.addEventListener('click', function () {
             closeAllActionMenus();
             openDrawer('edit', btn.dataset);
@@ -868,47 +785,45 @@
 
     // ── Action menus ──────────────────────────────────────────────────────
     function closeAllActionMenus() {
-        document.querySelectorAll('.driver-actions-menu').forEach(m => m.classList.add('hidden'));
+        document.querySelectorAll('.client-actions-menu').forEach(m => m.classList.add('hidden'));
     }
 
-    document.querySelectorAll('.driver-actions-btn').forEach(btn => {
+    document.querySelectorAll('.client-actions-btn').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.stopPropagation();
-            const menu = btn.closest('.driver-actions-wrapper').querySelector('.driver-actions-menu');
+            const menu = btn.closest('.client-actions-wrapper').querySelector('.client-actions-menu');
             closeAllActionMenus();
             menu.classList.toggle('hidden');
         });
     });
 
+    document.addEventListener('click', closeAllActionMenus);
+
     // ── Detail Drawer Functions ──────────────────────────────────────────
-    async function openDetailDrawer(driverId) {
+    async function openDetailDrawer(clientId) {
         detailError.classList.add('hidden');
         detailError.textContent = '';
         
-        // Hide edit modes, show view modes
-        document.querySelectorAll('#driver-detail-drawer .section-edit').forEach(el => el.classList.add('hidden'));
-        document.querySelectorAll('#driver-detail-drawer .section-view').forEach(el => el.classList.remove('hidden'));
-        // Hide any error fields
-        document.querySelectorAll('#driver-detail-drawer .error-field').forEach(el => {
+        document.querySelectorAll('#client-detail-drawer .section-edit').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('#client-detail-drawer .section-view').forEach(el => el.classList.remove('hidden'));
+        document.querySelectorAll('#client-detail-drawer .error-field').forEach(el => {
             el.classList.add('hidden');
             el.textContent = '';
         });
 
         try {
-            const response = await fetch(`/drivers/${driverId}`, {
+            const response = await fetch(`/customers/${clientId}`, {
                 headers: {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 }
             });
-            if (!response.ok) throw new Error('Não foi possível carregar os dados do motorista.');
+            if (!response.ok) throw new Error('Não foi possível carregar os dados do cliente.');
             const json = await response.json();
-            currentDriver = json.driver;
+            currentClient = json.client;
             
-            // Populate the views and inputs
             populateDetailFields();
 
-            // Open the drawer
             detailOverlay.classList.remove('hidden');
             setTimeout(() => detailOverlay.classList.add('opacity-100'), 10);
             detailDrawer.classList.remove('translate-x-full');
@@ -924,71 +839,64 @@
         detailOverlay.classList.remove('opacity-100');
         setTimeout(() => detailOverlay.classList.add('hidden'), 300);
         document.body.style.overflow = '';
-        currentDriver = null;
+        currentClient = null;
     }
 
     function populateDetailFields() {
-        if (!currentDriver) return;
+        if (!currentClient) return;
 
-        // View Mode Labels
         let formattedBirthDate = '—';
-        if (currentDriver.birth_date) {
-            const parts = currentDriver.birth_date.split('T')[0].split('-');
+        if (currentClient.birth_date) {
+            const parts = currentClient.birth_date.split('T')[0].split('-');
             if (parts.length === 3) {
                 formattedBirthDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
             }
         }
 
-        document.querySelector('#lbl-name').textContent = currentDriver.name || '—';
+        document.querySelector('#lbl-name').textContent = currentClient.name || '—';
         document.querySelector('#lbl-birth_date').textContent = formattedBirthDate;
-        document.querySelector('#lbl-cpf').textContent = currentDriver.cpf || '—';
-        document.querySelector('#lbl-rg').textContent = currentDriver.rg || '—';
-        document.querySelector('#lbl-registration').textContent = currentDriver.registration || '—';
-        document.querySelector('#lbl-zip_code').textContent = currentDriver.zip_code || '—';
-        document.querySelector('#lbl-city_state').textContent = `${currentDriver.city || '—'} / ${currentDriver.state || '—'}`;
-        document.querySelector('#lbl-street').textContent = currentDriver.street || '—';
-        document.querySelector('#lbl-number').textContent = currentDriver.number || '—';
-        document.querySelector('#lbl-email').textContent = currentDriver.email || '—';
-        document.querySelector('#lbl-phone').textContent = currentDriver.phone || '—';
+        document.querySelector('#lbl-cpf').textContent = currentClient.cpf || '—';
+        document.querySelector('#lbl-zip_code').textContent = currentClient.zip_code || '—';
+        document.querySelector('#lbl-city_state').textContent = `${currentClient.city || '—'} / ${currentClient.state || '—'}`;
+        document.querySelector('#lbl-street').textContent = currentClient.street || '—';
+        document.querySelector('#lbl-number').textContent = currentClient.number || '—';
+        document.querySelector('#lbl-email').textContent = currentClient.email || '—';
+        document.querySelector('#lbl-phone').textContent = currentClient.phone || '—';
 
-        // Edit Mode Inputs
         const personalForm = document.querySelector('#section-personal .section-edit');
         const addressForm = document.querySelector('#section-address .section-edit');
         const contactForm = document.querySelector('#section-contact .section-edit');
 
-        personalForm.querySelector('[name="name"]').value = currentDriver.name || '';
-        personalForm.querySelector('[name="birth_date"]').value = currentDriver.birth_date ? currentDriver.birth_date.split('T')[0] : '';
-        personalForm.querySelector('[name="cpf"]').value = currentDriver.cpf || '';
-        personalForm.querySelector('[name="rg"]').value = currentDriver.rg || '';
-        personalForm.querySelector('[name="registration"]').value = currentDriver.registration || '';
+        personalForm.querySelector('[name="name"]').value = currentClient.name || '';
+        personalForm.querySelector('[name="birth_date"]').value = currentClient.birth_date ? currentClient.birth_date.split('T')[0] : '';
+        personalForm.querySelector('[name="cpf"]').value = currentClient.cpf || '';
 
-        addressForm.querySelector('[name="zip_code"]').value = currentDriver.zip_code || '';
-        addressForm.querySelector('[name="city"]').value = currentDriver.city || '';
-        addressForm.querySelector('[name="street"]').value = currentDriver.street || '';
-        addressForm.querySelector('[name="number"]').value = currentDriver.number || '';
-        addressForm.querySelector('[name="state"]').value = currentDriver.state || '';
+        addressForm.querySelector('[name="zip_code"]').value = currentClient.zip_code || '';
+        addressForm.querySelector('[name="city"]').value = currentClient.city || '';
+        addressForm.querySelector('[name="street"]').value = currentClient.street || '';
+        addressForm.querySelector('[name="number"]').value = currentClient.number || '';
+        addressForm.querySelector('[name="state"]').value = currentClient.state || '';
 
-        contactForm.querySelector('[name="email"]').value = currentDriver.email || '';
-        contactForm.querySelector('[name="phone"]').value = currentDriver.phone || '';
+        contactForm.querySelector('[name="email"]').value = currentClient.email || '';
+        contactForm.querySelector('[name="phone"]').value = currentClient.phone || '';
 
-        // Avatar
-        if (currentDriver.profile_photo_path) {
-            const url = currentDriver.profile_photo_path.startsWith('http') 
-                ? currentDriver.profile_photo_path 
-                : `/storage/${currentDriver.profile_photo_path}`;
+        if (currentClient.profile_photo_path) {
+            const url = currentClient.profile_photo_path.startsWith('http') 
+                ? currentClient.profile_photo_path 
+                : `/storage/${currentClient.profile_photo_path}`;
             detailAvatarContainer.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-full">`;
         } else {
-            const initials = currentDriver.name ? currentDriver.name.substring(0, 2) : 'MO';
+            const initials = currentClient.name ? currentClient.name.substring(0, 2) : 'CL';
             detailAvatarContainer.innerHTML = initials;
         }
     }
 
     function clearDetailErrors() {
-        document.querySelectorAll('#driver-detail-drawer .error-field').forEach(el => {
+        document.querySelectorAll('#client-detail-drawer .error-field').forEach(el => {
             el.classList.add('hidden');
             el.textContent = '';
         });
-        document.querySelectorAll('#driver-detail-drawer input').forEach(el => {
+        document.querySelectorAll('#client-detail-drawer input').forEach(el => {
             el.classList.remove('border-red-400');
         });
     }
@@ -1010,42 +918,38 @@
         });
     }
 
-    function updateCardInList(driver) {
-        const card = document.querySelector(`.driver-card[data-id="${driver.id}"]`);
+    function updateCardInList(client) {
+        const card = document.querySelector(`.client-card[data-id="${client.id}"]`);
         if (!card) return;
 
-        // Update name
         const nameEl = card.querySelector('h3');
-        if (nameEl) nameEl.textContent = driver.name;
+        if (nameEl) nameEl.textContent = client.name;
 
-        // Update email
         const emailEl = card.querySelector('.text-coinpel-font-primary');
-        if (emailEl) emailEl.textContent = driver.email;
+        if (emailEl) emailEl.textContent = client.email;
 
-        // Update registration & phone
         const detailsEl = card.querySelector('.text-xs');
         if (detailsEl) {
-            detailsEl.innerHTML = `Matrícula: ${driver.registration} &nbsp;•&nbsp; Tel: ${driver.phone}`;
+            detailsEl.innerHTML = `CPF: ${client.cpf} &nbsp;•&nbsp; Tel: ${client.phone}`;
         }
 
-        // Update photo / initials in the card
         const imgContainer = card.querySelector('.flex.items-center.gap-6');
         if (imgContainer) {
             const img = imgContainer.querySelector('img');
             const initialsDiv = imgContainer.querySelector('.bg-coinpel-primary\\/10');
             
-            const photoUrl = driver.profile_photo_path 
-                ? (driver.profile_photo_path.startsWith('http') ? driver.profile_photo_path : `/storage/${driver.profile_photo_path}`)
+            const photoUrl = client.profile_photo_path 
+                ? (client.profile_photo_path.startsWith('http') ? client.profile_photo_path : `/storage/${client.profile_photo_path}`)
                 : null;
                 
             if (photoUrl) {
                 if (img) {
                     img.src = photoUrl;
                 } else if (initialsDiv) {
-                    initialsDiv.outerHTML = `<img src="${photoUrl}" alt="${driver.name}" class="w-[82px] h-[82px] rounded-full object-cover border border-gray-100 shrink-0 shadow-sm">`;
+                    initialsDiv.outerHTML = `<img src="${photoUrl}" alt="${client.name}" class="w-[82px] h-[82px] rounded-full object-cover border border-gray-100 shrink-0 shadow-sm">`;
                 }
             } else {
-                const initials = driver.name ? driver.name.substring(0, 2) : 'MO';
+                const initials = client.name ? client.name.substring(0, 2) : 'CL';
                 if (initialsDiv) {
                     initialsDiv.textContent = initials;
                 } else if (img) {
@@ -1056,21 +960,20 @@
     }
 
     // ── Detail Drawer Event Listeners ────────────────────────────────────
-    document.querySelectorAll('.driver-card').forEach(card => {
+    document.querySelectorAll('.client-card').forEach(card => {
         card.addEventListener('click', function (e) {
-            if (e.target.closest('.driver-actions-wrapper')) {
+            if (e.target.closest('.client-actions-wrapper')) {
                 return;
             }
-            const driverId = card.dataset.id;
-            openDetailDrawer(driverId);
+            const clientId = card.dataset.id;
+            openDetailDrawer(clientId);
         });
     });
 
     btnDetailClose.addEventListener('click', closeDetailDrawer);
     detailOverlay.addEventListener('click', closeDetailDrawer);
 
-    // Edit section buttons
-    document.querySelectorAll('#driver-detail-drawer .btn-edit-section').forEach(btn => {
+    document.querySelectorAll('#client-detail-drawer .btn-edit-section').forEach(btn => {
         btn.addEventListener('click', function () {
             const section = btn.dataset.section;
             const container = document.getElementById(`section-${section}`);
@@ -1079,8 +982,7 @@
         });
     });
 
-    // Cancel edit buttons
-    document.querySelectorAll('#driver-detail-drawer .btn-cancel-edit').forEach(btn => {
+    document.querySelectorAll('#client-detail-drawer .btn-cancel-edit').forEach(btn => {
         btn.addEventListener('click', function () {
             const section = btn.dataset.section;
             const container = document.getElementById(`section-${section}`);
@@ -1090,8 +992,7 @@
         });
     });
 
-    // Save section buttons
-    document.querySelectorAll('#driver-detail-drawer .btn-save-section').forEach(btn => {
+    document.querySelectorAll('#client-detail-drawer .btn-save-section').forEach(btn => {
         btn.addEventListener('click', async function () {
             clearDetailErrors();
             detailError.classList.add('hidden');
@@ -1103,8 +1004,6 @@
                 name: detailDrawer.querySelector('[name="name"]').value,
                 birth_date: detailDrawer.querySelector('[name="birth_date"]').value,
                 cpf: detailDrawer.querySelector('[name="cpf"]').value,
-                rg: detailDrawer.querySelector('[name="rg"]').value,
-                registration: detailDrawer.querySelector('[name="registration"]').value,
                 zip_code: detailDrawer.querySelector('[name="zip_code"]').value,
                 city: detailDrawer.querySelector('[name="city"]').value,
                 street: detailDrawer.querySelector('[name="street"]').value,
@@ -1120,7 +1019,7 @@
             btn.textContent = 'Salvando...';
 
             try {
-                const response = await fetch(`/drivers/${currentDriver.id}`, {
+                const response = await fetch(`/customers/${currentClient.id}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1142,14 +1041,14 @@
                     return;
                 }
 
-                currentDriver = json.driver;
+                currentClient = json.client;
                 populateDetailFields();
 
                 const container = document.getElementById(`section-${section}`);
                 container.querySelector('.section-view').classList.remove('hidden');
                 container.querySelector('.section-edit').classList.add('hidden');
 
-                updateCardInList(currentDriver);
+                updateCardInList(currentClient);
 
             } catch (err) {
                 detailError.textContent = 'Erro de conexão. Tente novamente.';
@@ -1161,7 +1060,6 @@
         });
     });
 
-    // Photo Upload Instant
     fileDetailPhoto.addEventListener('change', async function () {
         const file = this.files[0];
         if (!file) return;
@@ -1174,22 +1072,20 @@
 
         const formData = new FormData();
         formData.append('profile_photo', file);
-        formData.append('name', currentDriver.name || '');
-        formData.append('birth_date', currentDriver.birth_date ? currentDriver.birth_date.split('T')[0] : '');
-        formData.append('cpf', currentDriver.cpf || '');
-        formData.append('rg', currentDriver.rg || '');
-        formData.append('registration', currentDriver.registration || '');
-        formData.append('zip_code', currentDriver.zip_code || '');
-        formData.append('city', currentDriver.city || '');
-        formData.append('street', currentDriver.street || '');
-        formData.append('number', currentDriver.number || '');
-        formData.append('state', currentDriver.state || '');
-        formData.append('email', currentDriver.email || '');
-        formData.append('phone', currentDriver.phone || '');
+        formData.append('name', currentClient.name || '');
+        formData.append('birth_date', currentClient.birth_date ? currentClient.birth_date.split('T')[0] : '');
+        formData.append('cpf', currentClient.cpf || '');
+        formData.append('zip_code', currentClient.zip_code || '');
+        formData.append('city', currentClient.city || '');
+        formData.append('street', currentClient.street || '');
+        formData.append('number', currentClient.number || '');
+        formData.append('state', currentClient.state || '');
+        formData.append('email', currentClient.email || '');
+        formData.append('phone', currentClient.phone || '');
         formData.append('_method', 'PATCH');
 
         try {
-            const response = await fetch(`/drivers/${currentDriver.id}`, {
+            const response = await fetch(`/customers/${currentClient.id}`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -1211,9 +1107,9 @@
                 return;
             }
 
-            currentDriver = json.driver;
+            currentClient = json.client;
             populateDetailFields();
-            updateCardInList(currentDriver);
+            updateCardInList(currentClient);
 
         } catch (err) {
             detailError.textContent = 'Erro ao enviar foto. Tente novamente.';
@@ -1222,14 +1118,13 @@
         }
     });
 
-    // Delete from detail drawer
     btnDetailDelete.addEventListener('click', async function () {
-        if (!currentDriver) return;
-        if (!confirm(`Confirma a exclusão do motorista ${currentDriver.name}?`)) return;
+        if (!currentClient) return;
+        if (!confirm(`Confirma a exclusão do cliente ${currentClient.name}?`)) return;
 
         btnDetailDelete.disabled = true;
         try {
-            const response = await fetch('/drivers/' + currentDriver.id, {
+            const response = await fetch('/customers/' + currentClient.id, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1252,8 +1147,6 @@
         }
     });
 
-    document.addEventListener('click', closeAllActionMenus);
-
     // ── Flash from sessionStorage ──────────────────────────────────────────
     const flash = sessionStorage.getItem('flash_status');
     if (flash) {
@@ -1265,13 +1158,6 @@
         setTimeout(() => flashEl.remove(), 4000);
     }
 
-    // ── Filter toggle ─────────────────────────────────────────────────────
-    document.getElementById('filter-toggle')?.addEventListener('click', function () {
-        document.getElementById('filter-panel')?.classList.toggle('hidden');
-    });
-
 })();
 </script>
 @endpush
-
-@endsection

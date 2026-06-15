@@ -71,6 +71,13 @@ class DriverController extends Controller
         ]);
     }
 
+    public function show(Driver $driver): JsonResponse
+    {
+        return response()->json([
+            'driver' => $driver,
+        ]);
+    }
+
     public function destroy(Driver $driver): JsonResponse
     {
         $driver->delete();

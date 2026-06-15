@@ -80,7 +80,7 @@
 
     {{-- Table --}}
     <div class="flex-1 bg-white pb-12">
-        <div class="overflow-x-auto">
+        <div class="overflow-visible relative">
         <table class="w-full text-left">
             <thead>
                 <tr class="border-b border-gray-100">
@@ -129,7 +129,7 @@
                                     </svg>
                                 </button>
 
-                                <div class="vehicle-actions-menu hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-10">
+                                <div class="vehicle-actions-menu hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50">
                                     <button type="button"
                                             class="btn-edit-vehicle flex items-center gap-2.5 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition cursor-pointer"
                                             data-id="{{ $vehicle->id }}"
@@ -194,7 +194,7 @@
                 @endforelse
             </tbody>
         </table>
-        </div>{{-- /overflow-x-auto --}}
+        </div>{{-- /overflow-visible --}}
     </div>
     {{-- Pagination --}}
     @if ($vehicles->hasPages())
