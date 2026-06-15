@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\PackageController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -46,7 +47,7 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
     Route::resource('customers', ClientController::class)->except(['create', 'edit']);
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
     Route::resource('contracts', ContractController::class)->except(['create', 'edit']);
-    Route::get('/packages', fn() => view('packages.index'))->name('packages.index');
+    Route::resource('packages', PackageController::class)->except(['create', 'edit']);
     Route::get('/settings', fn() => view('settings.index'))->name('settings.index');
 });
 

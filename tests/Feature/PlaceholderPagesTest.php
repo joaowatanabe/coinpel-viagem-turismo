@@ -32,8 +32,8 @@ class PlaceholderPagesTest extends TestCase
     {
         $response = $this->actingAs($this->admin)->get(route('packages.index'));
         $response->assertStatus(200);
-        $response->assertSee('Módulo Pacotes');
-        $response->assertSee('Este módulo está em desenvolvimento.');
+        $response->assertSee('Adicionar pacote');
+        $response->assertSee('Nenhum pacote cadastrado ainda.');
     }
 
     public function test_guests_cannot_access_settings_page(): void
