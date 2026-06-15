@@ -80,15 +80,28 @@ class NotificationController extends Controller
                 ];
             });
 
-        // Merge, sort descending by date, limit to 15, and format relative timing
-        $notifications = collect()
+        // Merge and sort descending by date
+        $allNotifications = collect()
             ->concat($newTrips)
             ->concat($inProgressTrips)
             ->concat($driversAvailable)
             ->concat($pendingPasswordUsers)
             ->concat($expiringContracts)
-            ->sortByDesc('date')
-            ->take(15)
+            ->sortByDesc('date');
+
+        $totalCount = $allNotifications->count();
+
+        if (request()->boolean('countOnly')) {
+            return response()->json([
+                'count' => $totalCount,
+            ]);
+        }
+
+        $offset = (int) request('offset', 0);
+        $limit = (int) request('limit', 15);
+
+        $sliced = $allNotifications
+            ->slice($offset, $limit)
             ->map(function ($item) {
                 return [
                     'type'       => $item['type'],
@@ -100,9 +113,14 @@ class NotificationController extends Controller
             ->values()
             ->all();
 
+        $hasMore = ($offset + $limit) < $totalCount;
+        $nextOffset = $offset + $limit;
+
         return response()->json([
-            'count' => count($notifications),
-            'items' => $notifications,
+            'count'      => $totalCount,
+            'items'      => $sliced,
+            'hasMore'    => $hasMore,
+            'nextOffset' => $nextOffset,
         ]);
     }
 }

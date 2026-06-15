@@ -14,65 +14,63 @@ class DashboardController extends Controller
     /**
      * Exibe o painel administrativo (Dashboard).
      */
-    public function index(): View
+    public function index()
     {
-        $today = today()->format('Y-m-d');
+        // Contagens principais
+        $tripsCount        = \App\Models\Trip::count();
+        $tripsThisMonth    = \App\Models\Trip::whereMonth('created_at', now()->month)
+                                ->whereYear('created_at', now()->year)
+                                ->count();
 
-        // Query KPI statistics and sub-texts
-        $tripsTotal = Trip::count();
-        $tripsThisMonth = Trip::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->count();
+        $vehiclesTotal     = \App\Models\Vehicle::count();
 
-        $vehiclesTotal = Vehicle::count();
-        $vehiclesAvailable = Vehicle::whereDoesntHave('trips', function ($query) use ($today) {
-            $query->whereDate('date', $today);
-        })->count();
+        $driversTotal      = \App\Models\Driver::count();
+        $driversWithTrip   = \App\Models\Trip::whereDate('date', today())
+                                ->whereNotNull('driver_id')
+                                ->distinct('driver_id')
+                                ->count('driver_id');
 
-        $driversTotal = Driver::count();
-        $driversWithTripToday = Driver::whereHas('trips', function ($query) use ($today) {
-            $query->whereDate('date', $today);
-        })->count();
+        $adminsTotal       = \App\Models\User::count();
+        $adminsPending     = \App\Models\User::where('must_change_password', true)->count();
 
-        $adminsTotal = User::count();
-        $adminsPendingPassword = User::where('must_change_password', true)->count();
+        // Próximas viagens (a partir de hoje, máx 5)
+        $upcomingTrips     = \App\Models\Trip::with(['driver', 'vehicle'])
+                                ->where('date', '>=', today())
+                                ->orderBy('date')
+                                ->orderBy('departure_time')
+                                ->take(5)
+                                ->get();
 
-        // Query upcoming trips (max 5 rows)
-        $upcomingTrips = Trip::where('date', '>=', $today)
-            ->orderBy('date')
-            ->take(5)
-            ->with(['driver', 'vehicle'])
-            ->get();
+        // Viagens por status
+        $tripsCompleted    = \App\Models\Trip::where('status', 'completed')->count();
+        $tripsInProgress   = \App\Models\Trip::where('status', 'in_progress')->count();
+        $tripsCancelled    = \App\Models\Trip::where('status', 'cancelled')->count();
 
-        // Query trips grouped by status
-        $tripsByStatus = Trip::select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status')
-            ->toArray();
+        // Receita estimada (excluindo canceladas)
+        $estimatedRevenue  = \App\Models\Trip::where('status', '!=', 'cancelled')
+                                ->selectRaw('SUM(ticket_price * passenger_count) as total')
+                                ->value('total') ?? 0;
 
-        // Calculate estimated revenue of non-cancelled trips
-        $estimatedRevenue = Trip::where('status', '!=', Trip::STATUS_CANCELLED)
-            ->sum(DB::raw('ticket_price * passenger_count'));
+        // Atividade recente (últimas 5 viagens criadas)
+        $recentTrips       = \App\Models\Trip::with('driver')
+                                ->latest()
+                                ->take(5)
+                                ->get();
 
-        // Query recent trips activity (max 5 rows)
-        $recentTrips = Trip::with('creator')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        return view('dashboard', [
-            'tripsTotal'            => $tripsTotal,
-            'tripsThisMonth'        => $tripsThisMonth,
-            'vehiclesTotal'         => $vehiclesTotal,
-            'vehiclesAvailable'     => $vehiclesAvailable,
-            'driversTotal'          => $driversTotal,
-            'driversWithTripToday'  => $driversWithTripToday,
-            'adminsTotal'           => $adminsTotal,
-            'adminsPendingPassword' => $adminsPendingPassword,
-            'upcomingTrips'         => $upcomingTrips,
-            'tripsByStatus'         => $tripsByStatus,
-            'estimatedRevenue'      => $estimatedRevenue,
-            'recentTrips'           => $recentTrips,
-        ]);
+        return view('dashboard', compact(
+            'tripsCount',
+            'tripsThisMonth',
+            'vehiclesTotal',
+            'driversTotal',
+            'driversWithTrip',
+            'adminsTotal',
+            'adminsPending',
+            'upcomingTrips',
+            'tripsCompleted',
+            'tripsInProgress',
+            'tripsCancelled',
+            'estimatedRevenue',
+            'recentTrips'
+        ));
     }
 }

@@ -32,7 +32,7 @@
             </div>
             <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Veículos</p>
-                <p class="text-2xl font-bold text-gray-800 tracking-tight leading-tight mt-1">{{ $vehiclesCount }}</p>
+                <p class="text-2xl font-bold text-gray-800 tracking-tight leading-tight mt-1">{{ $vehiclesTotal }}</p>
             </div>
         </div>
 
@@ -45,7 +45,7 @@
             </div>
             <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Motoristas</p>
-                <p class="text-2xl font-bold text-gray-800 tracking-tight leading-tight mt-1">{{ $driversCount }}</p>
+                <p class="text-2xl font-bold text-gray-800 tracking-tight leading-tight mt-1">{{ $driversTotal }}</p>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             </div>
             <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Administradores</p>
-                <p class="text-2xl font-bold text-gray-800 tracking-tight leading-tight mt-1">{{ $usersCount }}</p>
+                <p class="text-2xl font-bold text-gray-800 tracking-tight leading-tight mt-1">{{ $adminsTotal }}</p>
             </div>
         </div>
     </div>

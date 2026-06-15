@@ -250,11 +250,22 @@
             {{-- Profile Photo Section --}}
             <div class="mb-5 flex items-center gap-4">
                 {{-- Preview Container --}}
-                <div id="user-avatar-preview" class="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center text-coinpel-primary uppercase font-bold overflow-hidden border border-gray-200 shrink-0">
-                    <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"/>
-                    </svg>
+                <div class="flex flex-col items-center">
+                    <div id="user-avatar-preview" class="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center text-coinpel-primary uppercase font-bold overflow-hidden border border-gray-200 shrink-0">
+                        <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"/>
+                        </svg>
+                    </div>
+                    <button type="button"
+                            id="btn-remove-photo-text"
+                            onclick="removeUserPhoto({{ $user->id ?? 'userId' }})"
+                            class="hidden text-xs text-red-500 hover:text-red-700 flex items-center gap-1 mt-1 cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 shrink-0">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.34 9m-4.78 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                        Remover foto
+                    </button>
                 </div>
                 
                 <div class="flex-1">
@@ -446,69 +457,83 @@
         });
     }
 
-    // Delete photo trigger
-    if (btnDeletePhoto) {
-        btnDeletePhoto.addEventListener('click', async function () {
-            if (!editingId) return;
-            if (!confirm('Deseja realmente remover a foto de perfil deste usuário?')) return;
+    // Delete photo function bound to window so onclick="removeUserPhoto()" works
+    window.removeUserPhoto = async function (id) {
+        const targetId = (typeof id === 'number' || (typeof id === 'string' && id !== 'userId')) ? id : editingId;
+        if (!targetId) return;
 
-            try {
-                const response = await fetch(`/users/${editingId}/photo`, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'X-HTTP-Method-Override': 'DELETE',
-                    },
-                    body: JSON.stringify({ _method: 'DELETE' }),
-                });
+        if (!confirm('Remover foto de perfil deste usuário?')) return;
 
-                const json = await response.json();
-                if (response.ok) {
-                    showFlashNotification('Foto removida com sucesso.');
+        try {
+            const response = await fetch(`/users/${targetId}/photo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-HTTP-Method-Override': 'DELETE',
+                },
+                body: JSON.stringify({ _method: 'DELETE' }),
+            });
+
+            const json = await response.json();
+            if (response.ok) {
+                showFlashNotification(json.message || 'Foto removida com sucesso.');
+                
+                // Reset drawer view
+                const initials = json.initials || '?';
+                const isBlocked = fields.is_blocked.value === '1';
+                const initialsClass = isBlocked ? 'bg-red-50 text-red-600 border-red-200' : 'bg-coinpel-primary/10 text-coinpel-primary border-coinpel-primary/20';
+
+                avatarPreview.innerHTML = `
+                    <span class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase font-bold border ${initialsClass}">
+                        ${initials}
+                    </span>
+                `;
+                photoInputWrapper.classList.remove('hidden');
+                photoActionsWrapper.classList.add('hidden');
+                
+                const btnRemovePhotoText = document.getElementById('btn-remove-photo-text');
+                if (btnRemovePhotoText) btnRemovePhotoText.classList.add('hidden');
+                
+                filePhoto.value = '';
+
+                // Update table row avatar dynamically
+                const rowAvatarWrapper = document.querySelector(`.user-avatar-wrapper[data-user-id="${targetId}"]`);
+                if (rowAvatarWrapper) {
+                    const avatarAvatar = rowAvatarWrapper.querySelector('.user-avatar-avatar');
+                    if (avatarAvatar) {
+                        avatarAvatar.innerHTML = `
+                            <span class="flex items-center justify-center w-14 h-14 rounded-full text-sm uppercase font-bold border ${initialsClass}">
+                                ${initials}
+                            </span>
+                        `;
+                    }
                     
-                    // Reset drawer view
-                    const initials = (fields.name.value ?? '').substring(0, 2).toUpperCase() || '?';
-                    const isBlocked = fields.is_blocked.value === '1';
-                    const initialsClass = isBlocked ? 'bg-red-50 text-red-600 border-red-200' : 'bg-coinpel-primary/10 text-coinpel-primary border-coinpel-primary/20';
-
-                    avatarPreview.innerHTML = `
-                        <span class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase font-bold border ${initialsClass}">
-                            ${initials}
-                        </span>
-                    `;
-                    photoInputWrapper.classList.remove('hidden');
-                    photoActionsWrapper.classList.add('hidden');
-                    filePhoto.value = '';
-
-                    // Update table row avatar dynamically
-                    const rowAvatarWrapper = document.querySelector(`.user-avatar-wrapper[data-user-id="${editingId}"]`);
-                    if (rowAvatarWrapper) {
-                        const avatarAvatar = rowAvatarWrapper.querySelector('.user-avatar-avatar');
-                        if (avatarAvatar) {
-                            avatarAvatar.innerHTML = `
-                                <span class="flex items-center justify-center w-14 h-14 rounded-full text-sm uppercase font-bold border ${initialsClass}">
-                                    ${initials}
-                                </span>
-                            `;
-                        }
-                        
-                        // Also update dataset on edit button in the row
-                        const row = rowAvatarWrapper.closest('tr');
-                        if (row) {
-                            const btnEdit = row.querySelector('.btn-edit-user');
-                            if (btnEdit) {
-                                btnEdit.dataset.photo_path = '';
-                                btnEdit.dataset.photo_url = '';
-                            }
+                    // Also update dataset on edit button in the row
+                    const row = rowAvatarWrapper.closest('tr');
+                    if (row) {
+                        const btnEdit = row.querySelector('.btn-edit-user');
+                        if (btnEdit) {
+                            btnEdit.dataset.photo_path = '';
+                            btnEdit.dataset.photo_url = '';
                         }
                     }
-                } else {
-                    alert(json.message || 'Erro ao remover a foto.');
                 }
-            } catch (err) {
-                alert('Erro de conexão ao remover a foto.');
+            } else {
+                drawerError.textContent = json.message || 'Erro ao remover a foto.';
+                drawerError.classList.remove('hidden');
             }
+        } catch (err) {
+            drawerError.textContent = 'Erro de conexão ao remover a foto.';
+            drawerError.classList.remove('hidden');
+        }
+    };
+
+    // Delete photo trigger
+    if (btnDeletePhoto) {
+        btnDeletePhoto.addEventListener('click', function () {
+            window.removeUserPhoto(editingId);
         });
     }
 
@@ -546,6 +571,9 @@
                 avatarPreview.innerHTML = `<img src="${data.photo_url}" class="w-full h-full object-cover rounded-full">`;
                 photoInputWrapper.classList.add('hidden');
                 photoActionsWrapper.classList.remove('hidden');
+
+                const btnRemovePhotoText = document.getElementById('btn-remove-photo-text');
+                if (btnRemovePhotoText) btnRemovePhotoText.classList.remove('hidden');
             } else {
                 const initials = (data.name ?? '').substring(0, 2).toUpperCase() || '?';
                 const isBlocked = (data.is_blocked ?? '0') === '1';
@@ -558,6 +586,9 @@
                 `;
                 photoInputWrapper.classList.remove('hidden');
                 photoActionsWrapper.classList.add('hidden');
+
+                const btnRemovePhotoText = document.getElementById('btn-remove-photo-text');
+                if (btnRemovePhotoText) btnRemovePhotoText.classList.add('hidden');
             }
         } else {
             drawerTitle.textContent    = 'Novo Usuário';
@@ -576,7 +607,12 @@
             `;
             photoInputWrapper.classList.remove('hidden');
             photoActionsWrapper.classList.add('hidden');
+
+            const btnRemovePhotoText = document.getElementById('btn-remove-photo-text');
+            if (btnRemovePhotoText) btnRemovePhotoText.classList.add('hidden');
         }
+
+        window.userId = editingId;
 
         // Reset password visibility
         fieldPassword.type = 'password';

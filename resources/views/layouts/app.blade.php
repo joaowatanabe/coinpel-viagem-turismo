@@ -167,10 +167,13 @@
                             </svg>
                         </button>
 
-                        <div id="notification-menu" class="hidden absolute right-0 mt-2 w-[360px] bg-white rounded-xl shadow-lg border border-gray-100 py-3.5 z-50 transform origin-top-right flex flex-col">
+                        <div id="notification-menu" class="hidden absolute right-0 sm:right-4 mt-2 w-[calc(100vw-2rem)] sm:w-[450px] sm:min-w-[420px] max-w-[480px] bg-white rounded-xl shadow-lg border border-gray-100 py-3.5 z-50 transform origin-top-right flex flex-col">
                             {{-- Header --}}
                             <div class="flex items-center justify-between px-4 pb-2.5 border-b border-gray-100 shrink-0">
-                                <span class="text-xs font-bold text-gray-800 uppercase tracking-wider">Notificações</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-gray-800 uppercase tracking-wider">🔔 Notificações</span>
+                                    <span id="notification-menu-count" class="px-1.5 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded-full">0</span>
+                                </div>
                                 <button id="notification-close" class="text-gray-400 hover:text-gray-600 transition cursor-pointer p-0.5 rounded-lg hover:bg-gray-50">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
@@ -179,8 +182,15 @@
                             </div>
                             
                             {{-- Content Scroll --}}
-                            <div id="notification-list" class="overflow-y-auto flex-1 max-h-[300px]">
+                            <div id="notification-list" class="overflow-y-auto max-h-[70vh] divide-y divide-gray-100">
                                 {{-- Carregado dinamicamente via JS --}}
+                            </div>
+
+                            {{-- Footer --}}
+                            <div id="notification-footer" class="pt-2 px-4 border-t border-gray-100 hidden shrink-0">
+                                <button id="notification-load-more" class="w-full py-2 flex items-center justify-center gap-2 text-xs font-semibold text-coinpel-primary bg-coinpel-primary/5 hover:bg-coinpel-primary/10 rounded-lg transition cursor-pointer">
+                                    Ver mais notificações
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -389,10 +399,17 @@
             const notificationBadge = document.getElementById('notification-badge');
             const notificationList = document.getElementById('notification-list');
             const notificationClose = document.getElementById('notification-close');
+            const notificationLoadMore = document.getElementById('notification-load-more');
+            const notificationFooter = document.getElementById('notification-footer');
+            const notificationMenuCount = document.getElementById('notification-menu-count');
+
+            let currentOffset = 0;
+            const limit = 5;
+            let isLoading = false;
 
             const notificationIcons = {
                 new_trip: `
-                    <span class="flex items-center justify-center w-8 h-8 bg-blue-50 text-blue-500 rounded-full shrink-0">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(89, 62, 117, 0.1); color: #593E75;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
@@ -400,28 +417,28 @@
                     </span>
                 `,
                 in_progress: `
-                    <span class="flex items-center justify-center w-8 h-8 bg-amber-50 text-amber-500 rounded-full shrink-0">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(242, 201, 76, 0.1); color: #F2C94C;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                         </svg>
                     </span>
                 `,
                 driver_available: `
-                    <span class="flex items-center justify-center w-8 h-8 bg-green-50 text-green-500 rounded-full shrink-0">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(111, 207, 151, 0.1); color: #6FCF97;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
                         </svg>
                     </span>
                 `,
                 password_pending: `
-                    <span class="flex items-center justify-center w-8 h-8 bg-purple-50 text-purple-500 rounded-full shrink-0">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(242, 153, 74, 0.1); color: #F2994A;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
                         </svg>
                     </span>
                 `,
                 contract_expiring: `
-                    <span class="flex items-center justify-center w-8 h-8 bg-red-50 text-red-500 rounded-full shrink-0">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(235, 87, 87, 0.1); color: #EB5757;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
                         </svg>
@@ -458,45 +475,83 @@
                 `;
             }
 
-            async function fetchNotificationsBadgeOnly() {
+            function updateBadge(count) {
                 if (!notificationBadge) return;
+                if (count > 0) {
+                    notificationBadge.textContent = count;
+                    notificationBadge.classList.remove('hidden');
+                } else {
+                    notificationBadge.classList.add('hidden');
+                }
+            }
+
+            async function fetchNotificationsCountOnly() {
                 try {
-                    const response = await fetch('/notifications', {
+                    const response = await fetch('/notifications?countOnly=true', {
                         headers: { 'Accept': 'application/json' }
                     });
                     if (!response.ok) return;
                     const data = await response.json();
-                    
-                    if (data.count > 0) {
-                        notificationBadge.textContent = data.count;
-                        notificationBadge.classList.remove('hidden');
-                    } else {
-                        notificationBadge.classList.add('hidden');
-                    }
+                    updateBadge(data.count);
                 } catch (err) {
                     // Silently ignore background polling errors
                 }
             }
 
-            async function fetchAndRenderNotifications() {
-                showLoadingSkeleton();
+            async function loadNotifications(append = false) {
+                if (isLoading) return;
+                isLoading = true;
+
+                if (!append) {
+                    currentOffset = 0;
+                    showLoadingSkeleton();
+                    if (notificationFooter) notificationFooter.classList.add('hidden');
+                } else {
+                    if (notificationLoadMore) {
+                        notificationLoadMore.disabled = true;
+                        notificationLoadMore.innerHTML = `
+                            <svg class="animate-spin h-4 w-4 text-coinpel-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Carregando...
+                        `;
+                    }
+                }
+
                 try {
-                    const response = await fetch('/notifications', {
+                    const response = await fetch(`/notifications?offset=${currentOffset}&limit=${limit}`, {
                         headers: { 'Accept': 'application/json' }
                     });
                     if (!response.ok) throw new Error();
                     const data = await response.json();
 
-                    if (notificationBadge) {
-                        if (data.count > 0) {
-                            notificationBadge.textContent = data.count;
-                            notificationBadge.classList.remove('hidden');
-                        } else {
-                            notificationBadge.classList.add('hidden');
-                        }
+                    updateBadge(data.count);
+                    if (notificationMenuCount) {
+                        notificationMenuCount.textContent = data.count;
                     }
 
-                    if (notificationList) {
+                    const htmlItems = data.items.map(item => {
+                        const icon = notificationIcons[item.type] || '';
+                        return `
+                            <a href="${item.link}" class="flex items-center justify-between gap-4 px-4 py-3 hover:bg-gray-50 transition duration-150 border-b border-gray-100 last:border-0">
+                                <div class="flex items-start gap-3 min-w-0">
+                                    ${icon}
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-800 leading-normal break-words">${item.message}</p>
+                                        <p class="text-xs text-gray-400 mt-1">${item.created_at}</p>
+                                    </div>
+                                </div>
+                                <div class="text-gray-400 hover:text-gray-600 shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                                    </svg>
+                                </div>
+                            </a>
+                        `;
+                    }).join('');
+
+                    if (!append) {
                         if (data.items.length === 0) {
                             notificationList.innerHTML = `
                                 <div class="px-4 py-8 text-center text-gray-400 text-xs font-medium">
@@ -504,27 +559,32 @@
                                 </div>
                             `;
                         } else {
-                            notificationList.innerHTML = data.items.map(item => {
-                                const icon = notificationIcons[item.type] || '';
-                                return `
-                                    <a href="${item.link}" class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition duration-150 border-b border-gray-50 last:border-0">
-                                        ${icon}
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-xs text-gray-700 font-semibold leading-normal break-words">${item.message}</p>
-                                            <p class="text-[10px] text-gray-400 mt-1 font-medium">${item.created_at}</p>
-                                        </div>
-                                    </a>
-                                `;
-                            }).join('');
+                            notificationList.innerHTML = htmlItems;
                         }
+                    } else {
+                        notificationList.insertAdjacentHTML('beforeend', htmlItems);
+                    }
+
+                    currentOffset = data.nextOffset;
+
+                    if (data.hasMore) {
+                        if (notificationFooter) notificationFooter.classList.remove('hidden');
+                    } else {
+                        if (notificationFooter) notificationFooter.classList.add('hidden');
                     }
                 } catch (err) {
-                    if (notificationList) {
+                    if (!append) {
                         notificationList.innerHTML = `
                             <div class="px-4 py-6 text-center text-red-500 text-xs font-semibold">
                                 Erro ao carregar notificações.
                             </div>
                         `;
+                    }
+                } finally {
+                    isLoading = false;
+                    if (notificationLoadMore) {
+                        notificationLoadMore.disabled = false;
+                        notificationLoadMore.textContent = 'Ver mais notificações';
                     }
                 }
             }
@@ -540,7 +600,7 @@
 
                     if (isHidden) {
                         notificationMenu.classList.remove('hidden');
-                        fetchAndRenderNotifications();
+                        loadNotifications(false);
                     } else {
                         notificationMenu.classList.add('hidden');
                     }
@@ -554,6 +614,13 @@
                 });
             }
 
+            if (notificationLoadMore) {
+                notificationLoadMore.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    loadNotifications(true);
+                });
+            }
+
             window.addEventListener('click', function(e) {
                 const dropdown = document.getElementById('notification-dropdown');
                 if (dropdown && !dropdown.contains(e.target) && notificationMenu) {
@@ -562,13 +629,13 @@
             });
 
             // Initial fetch
-            fetchNotificationsBadgeOnly();
+            fetchNotificationsCountOnly();
 
             // 60-second periodic refetch with interval cleanup
             if (window.notificationInterval) {
                 clearInterval(window.notificationInterval);
             }
-            window.notificationInterval = setInterval(fetchNotificationsBadgeOnly, 60000);
+            window.notificationInterval = setInterval(fetchNotificationsCountOnly, 60000);
         })();
     </script>
     @stack('scripts')

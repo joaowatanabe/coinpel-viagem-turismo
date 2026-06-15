@@ -110,7 +110,11 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Foto de perfil removida com sucesso.'
+            'message' => 'Foto removida com sucesso.',
+            'initials' => strtoupper(substr($user->name, 0, 1) . 
+                          (str_contains($user->name, ' ') 
+                            ? substr(strstr($user->name, ' '), 1, 1) 
+                            : '')),
         ]);
     }
 
