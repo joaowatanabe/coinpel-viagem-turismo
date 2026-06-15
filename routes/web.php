@@ -10,6 +10,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -48,7 +49,8 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
     Route::resource('contracts', ContractController::class)->except(['create', 'edit']);
     Route::resource('packages', PackageController::class)->except(['create', 'edit']);
-    Route::get('/settings', fn() => view('settings.index'))->name('settings.index');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');

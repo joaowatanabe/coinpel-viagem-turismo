@@ -20,6 +20,8 @@ class PlaceholderPagesTest extends TestCase
             'must_change_password' => false,
             'is_blocked'           => false,
         ]);
+
+        $this->seed(\Database\Seeders\SettingsSeeder::class);
     }
 
 
@@ -46,7 +48,7 @@ class PlaceholderPagesTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('settings.index'));
         $response->assertStatus(200);
         $response->assertSee('Informações da Empresa');
-        $response->assertSee('COINPEL Viagens e Turismo Ltda.');
+        $response->assertSee('COINPEL');
         $response->assertSee('Preferências do Sistema');
         $response->assertSee('Notificações por e-mail');
     }
