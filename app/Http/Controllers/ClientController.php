@@ -50,7 +50,22 @@ class ClientController extends Controller
     public function show(Client $customer): JsonResponse
     {
         return response()->json([
-            'client' => $customer,
+            'id'                => $customer->id,
+            'name'              => $customer->name,
+            'email'             => $customer->email,
+            'phone'             => $customer->phone,
+            'cpf'               => $customer->cpf,
+            'birth_date'        => $customer->birth_date?->format('d/m/Y'),
+            'zip_code'          => $customer->zip_code,
+            'street'            => $customer->street,
+            'number'            => $customer->number,
+            'city'              => $customer->city,
+            'state'             => $customer->state,
+            'profile_photo_url' => $customer->profile_photo_path
+                ? asset('storage/' . $customer->profile_photo_path)
+                : null,
+            'initials'          => strtoupper(mb_substr($customer->name, 0, 1)) .
+                                   strtoupper(mb_substr(strstr($customer->name.' ',' '), 1, 1)),
         ]);
     }
 

@@ -108,13 +108,17 @@ class UserController extends Controller
             $user->update(['profile_photo_path' => null]);
         }
 
+        $name     = $user->name;
+        $parts    = explode(' ', trim($name));
+        $initials = strtoupper(mb_substr($parts[0], 0, 1));
+        if (isset($parts[1])) {
+            $initials .= strtoupper(mb_substr($parts[1], 0, 1));
+        }
+
         return response()->json([
-            'success' => true,
-            'message' => 'Foto removida com sucesso.',
-            'initials' => strtoupper(substr($user->name, 0, 1) . 
-                          (str_contains($user->name, ' ') 
-                            ? substr(strstr($user->name, ' '), 1, 1) 
-                            : '')),
+            'success'  => true,
+            'message'  => 'Foto removida com sucesso.',
+            'initials' => $initials,
         ]);
     }
 
