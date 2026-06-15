@@ -50,19 +50,25 @@
                 @forelse ($users as $user)
                     <tr class="hover:bg-gray-50/60 transition {{ $user->is_blocked ? 'opacity-60' : '' }}">
 
-                        {{-- Avatar + Name --}}
+                         {{-- Avatar + Name --}}
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center gap-3">
-                                <div class="relative shrink-0">
-                                    <span class="flex items-center justify-center w-14 h-14 rounded-full text-sm uppercase font-bold border
-                                        {{ $user->is_blocked
-                                            ? 'bg-red-50 text-red-600 border-red-200'
-                                            : 'bg-coinpel-primary/10 text-coinpel-primary border-coinpel-primary/20'
-                                        }}">
-                                        {{ substr($user->name, 0, 2) }}
-                                    </span>
+                                <div class="relative shrink-0 user-avatar-wrapper" data-user-id="{{ $user->id }}">
+                                    <div class="user-avatar-avatar">
+                                        @if($user->profile_photo_path)
+                                            <img src="{{ Storage::url($user->profile_photo_path) }}" alt="{{ $user->name }}" class="w-14 h-14 rounded-full object-cover border border-gray-100 shadow-sm shrink-0">
+                                        @else
+                                            <span class="flex items-center justify-center w-14 h-14 rounded-full text-sm uppercase font-bold border
+                                                {{ $user->is_blocked
+                                                    ? 'bg-red-50 text-red-600 border-red-200'
+                                                    : 'bg-coinpel-primary/10 text-coinpel-primary border-coinpel-primary/20'
+                                                }}">
+                                                {{ substr($user->name, 0, 2) }}
+                                            </span>
+                                        @endif
+                                    </div>
                                     @if($user->is_blocked)
-                                        <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center" title="Bloqueado">
+                                        <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center user-blocked-indicator" title="Bloqueado">
                                             <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0 1 10 0v2a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Zm8-2v2H7V7a3 3 0 0 1 6 0Z" clip-rule="evenodd"/>
                                             </svg>
@@ -128,7 +134,9 @@
                                             data-id="{{ $user->id }}"
                                             data-name="{{ $user->name }}"
                                             data-email="{{ $user->email }}"
-                                            data-is_blocked="{{ $user->is_blocked ? '1' : '0' }}">
+                                            data-is_blocked="{{ $user->is_blocked ? '1' : '0' }}"
+                                            data-photo_path="{{ $user->profile_photo_path }}"
+                                            data-photo_url="{{ $user->profile_photo_path ? Storage::url($user->profile_photo_path) : '' }}">
                                         <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
                                         </svg>
@@ -239,6 +247,42 @@
         <div>
             <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Dados do administrador</h3>
 
+            {{-- Profile Photo Section --}}
+            <div class="mb-5 flex items-center gap-4">
+                {{-- Preview Container --}}
+                <div id="user-avatar-preview" class="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center text-coinpel-primary uppercase font-bold overflow-hidden border border-gray-200 shrink-0">
+                    <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"/>
+                    </svg>
+                </div>
+                
+                <div class="flex-1">
+                    {{-- Input container --}}
+                    <div id="user-photo-input-wrapper">
+                        <label for="field-photo" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold rounded-lg transition shadow-sm cursor-pointer">
+                            Escolher foto
+                        </label>
+                        <input id="field-photo" name="profile_photo" type="file" accept="image/jpeg,image/png,image/webp" class="hidden">
+                        <p class="text-[10px] text-gray-400 mt-1">PNG, JPG ou WEBP de até 2MB</p>
+                    </div>
+
+                    {{-- Actions for existing photo (Modo Edição) --}}
+                    <div id="user-photo-actions-wrapper" class="hidden flex items-center gap-2">
+                        <button type="button" id="btn-change-photo" class="px-3 py-1.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold rounded-lg transition shadow-sm cursor-pointer">
+                            Trocar foto
+                        </button>
+                        <button type="button" id="btn-delete-photo" class="p-1.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-lg transition cursor-pointer" title="Remover foto">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.34 9m-4.78 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <p id="err-profile-photo" class="hidden mt-1 text-xs text-red-600"></p>
+                </div>
+            </div>
+
             {{-- Name --}}
             <div class="mb-4">
                 <label for="field-name" class="block text-xs font-semibold text-gray-500 mb-1.5">Nome:</label>
@@ -337,6 +381,15 @@
     const iconEye        = document.getElementById('icon-eye');
     const iconEyeSlash   = document.getElementById('icon-eye-slash');
 
+    // Photo elements
+    const filePhoto          = document.getElementById('field-photo');
+    const avatarPreview      = document.getElementById('user-avatar-preview');
+    const photoInputWrapper  = document.getElementById('user-photo-input-wrapper');
+    const photoActionsWrapper = document.getElementById('user-photo-actions-wrapper');
+    const btnChangePhoto     = document.getElementById('btn-change-photo');
+    const btnDeletePhoto     = document.getElementById('btn-delete-photo');
+    const errProfilePhoto    = document.getElementById('err-profile-photo');
+
     const fields = {
         name:       document.getElementById('field-name'),
         email:      document.getElementById('field-email'),
@@ -352,12 +405,121 @@
         iconEyeSlash.classList.toggle('hidden', !isHidden);
     });
 
+    // ── Photo upload validations & preview ────────────────────────────────
+    filePhoto.addEventListener('change', function () {
+        errProfilePhoto.classList.add('hidden');
+        errProfilePhoto.textContent = '';
+
+        if (filePhoto.files.length === 0) return;
+
+        const file = filePhoto.files[0];
+
+        // Size check (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            filePhoto.value = '';
+            errProfilePhoto.textContent = 'A foto de perfil deve ter no máximo 2MB.';
+            errProfilePhoto.classList.remove('hidden');
+            return;
+        }
+
+        // MIME check
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            filePhoto.value = '';
+            errProfilePhoto.textContent = 'Formato inválido. Apenas JPEG, PNG ou WEBP.';
+            errProfilePhoto.classList.remove('hidden');
+            return;
+        }
+
+        // Preview with FileReader
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            avatarPreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-full">`;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Trigger file photo click when Change Photo is clicked
+    if (btnChangePhoto) {
+        btnChangePhoto.addEventListener('click', function () {
+            filePhoto.click();
+        });
+    }
+
+    // Delete photo trigger
+    if (btnDeletePhoto) {
+        btnDeletePhoto.addEventListener('click', async function () {
+            if (!editingId) return;
+            if (!confirm('Deseja realmente remover a foto de perfil deste usuário?')) return;
+
+            try {
+                const response = await fetch(`/users/${editingId}/photo`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-HTTP-Method-Override': 'DELETE',
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' }),
+                });
+
+                const json = await response.json();
+                if (response.ok) {
+                    showFlashNotification('Foto removida com sucesso.');
+                    
+                    // Reset drawer view
+                    const initials = (fields.name.value ?? '').substring(0, 2).toUpperCase() || '?';
+                    const isBlocked = fields.is_blocked.value === '1';
+                    const initialsClass = isBlocked ? 'bg-red-50 text-red-600 border-red-200' : 'bg-coinpel-primary/10 text-coinpel-primary border-coinpel-primary/20';
+
+                    avatarPreview.innerHTML = `
+                        <span class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase font-bold border ${initialsClass}">
+                            ${initials}
+                        </span>
+                    `;
+                    photoInputWrapper.classList.remove('hidden');
+                    photoActionsWrapper.classList.add('hidden');
+                    filePhoto.value = '';
+
+                    // Update table row avatar dynamically
+                    const rowAvatarWrapper = document.querySelector(`.user-avatar-wrapper[data-user-id="${editingId}"]`);
+                    if (rowAvatarWrapper) {
+                        const avatarAvatar = rowAvatarWrapper.querySelector('.user-avatar-avatar');
+                        if (avatarAvatar) {
+                            avatarAvatar.innerHTML = `
+                                <span class="flex items-center justify-center w-14 h-14 rounded-full text-sm uppercase font-bold border ${initialsClass}">
+                                    ${initials}
+                                </span>
+                            `;
+                        }
+                        
+                        // Also update dataset on edit button in the row
+                        const row = rowAvatarWrapper.closest('tr');
+                        if (row) {
+                            const btnEdit = row.querySelector('.btn-edit-user');
+                            if (btnEdit) {
+                                btnEdit.dataset.photo_path = '';
+                                btnEdit.dataset.photo_url = '';
+                            }
+                        }
+                    }
+                } else {
+                    alert(json.message || 'Erro ao remover a foto.');
+                }
+            } catch (err) {
+                alert('Erro de conexão ao remover a foto.');
+            }
+        });
+    }
+
     // ── Drawer open/close ────────────────────────────────────────────────
     function openDrawer(mode, data) {
         editingId = mode === 'edit' ? data.id : null;
 
         clearErrors();
         resetForm();
+
+        filePhoto.value = '';
 
         if (mode === 'edit') {
             drawerTitle.textContent = 'Editar Usuário';
@@ -378,6 +540,25 @@
             }
 
             btnSubmit.textContent = 'Salvar alterações';
+
+            // Check photo status
+            if (data.photo_path && data.photo_url) {
+                avatarPreview.innerHTML = `<img src="${data.photo_url}" class="w-full h-full object-cover rounded-full">`;
+                photoInputWrapper.classList.add('hidden');
+                photoActionsWrapper.classList.remove('hidden');
+            } else {
+                const initials = (data.name ?? '').substring(0, 2).toUpperCase() || '?';
+                const isBlocked = (data.is_blocked ?? '0') === '1';
+                const initialsClass = isBlocked ? 'bg-red-50 text-red-600 border-red-200' : 'bg-coinpel-primary/10 text-coinpel-primary border-coinpel-primary/20';
+
+                avatarPreview.innerHTML = `
+                    <span class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase font-bold border ${initialsClass}">
+                        ${initials}
+                    </span>
+                `;
+                photoInputWrapper.classList.remove('hidden');
+                photoActionsWrapper.classList.add('hidden');
+            }
         } else {
             drawerTitle.textContent    = 'Novo Usuário';
             labelPassword.textContent  = 'Senha provisória:';
@@ -385,6 +566,16 @@
             btnDelete.classList.add('hidden');
             statusContainer.classList.remove('opacity-50', 'pointer-events-none');
             btnSubmit.textContent = 'Finalizar cadastro';
+
+            // Default fallback icon
+            avatarPreview.innerHTML = `
+                <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"/>
+                </svg>
+            `;
+            photoInputWrapper.classList.remove('hidden');
+            photoActionsWrapper.classList.add('hidden');
         }
 
         // Reset password visibility
@@ -412,6 +603,8 @@
         fields.is_blocked.value = '0';
         drawerError.classList.add('hidden');
         drawerError.textContent = '';
+        errProfilePhoto.classList.add('hidden');
+        errProfilePhoto.textContent = '';
     }
 
     // ── Error display ────────────────────────────────────────────────────
@@ -423,18 +616,20 @@
         Object.values(fields).forEach(f => {
             if (f) f.classList.remove('border-red-400');
         });
+        filePhoto.classList.remove('border-red-400');
     }
 
     function showErrors(errors) {
         const map = {
-            name:       'err-name',
-            email:      'err-email',
-            password:   'err-password',
-            is_blocked: 'err-is-blocked',
+            name:          'err-name',
+            email:         'err-email',
+            password:      'err-password',
+            is_blocked:    'err-is-blocked',
+            profile_photo: 'err-profile-photo',
         };
         Object.entries(errors).forEach(([key, msgs]) => {
             const errEl  = document.getElementById(map[key]);
-            const fieldEl = fields[key];
+            const fieldEl = fields[key] || (key === 'profile_photo' ? filePhoto : null);
             if (errEl) {
                 errEl.textContent = Array.isArray(msgs) ? msgs[0] : msgs;
                 errEl.classList.remove('hidden');
@@ -454,14 +649,19 @@
         const url    = isEdit ? '/users/' + editingId : '/users';
         const method = isEdit ? 'PATCH' : 'POST';
 
-        const data = {
-            name:       fields.name.value,
-            email:      fields.email.value,
-            password:   fields.password.value,
-            is_blocked: fields.is_blocked.value,
-        };
+        const formData = new FormData();
+        formData.append('name', fields.name.value);
+        formData.append('email', fields.email.value);
+        formData.append('password', fields.password.value);
+        formData.append('is_blocked', fields.is_blocked.value);
+        
+        if (isEdit) {
+            formData.append('_method', 'PATCH');
+        }
 
-        if (isEdit) data['_method'] = 'PATCH';
+        if (filePhoto.files.length > 0) {
+            formData.append('profile_photo', filePhoto.files[0]);
+        }
 
         btnSubmit.disabled    = true;
         btnSubmit.textContent = 'Salvando...';
@@ -470,12 +670,11 @@
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken,
                     'X-HTTP-Method-Override': method,
                 },
-                body: JSON.stringify(data),
+                body: formData,
             });
 
             const json = await response.json();
@@ -490,8 +689,97 @@
                 return;
             }
 
-            sessionStorage.setItem('flash_status', json.message);
-            window.location.reload();
+            if (isEdit) {
+                // Update table row dynamically
+                const user = json.user;
+                const row = document.querySelector(`.user-avatar-wrapper[data-user-id="${user.id}"]`)?.closest('tr');
+                
+                if (row) {
+                    // Update Name
+                    const nameEl = row.querySelector('.text-sm.font-bold');
+                    if (nameEl) nameEl.textContent = user.name;
+                    
+                    // Update Email
+                    const emailCol = row.querySelector('td:nth-child(2)');
+                    if (emailCol) emailCol.textContent = user.email;
+
+                    // Update Status
+                    const statusCol = row.querySelector('td:nth-child(3)');
+                    if (statusCol) {
+                        if (user.is_blocked) {
+                            statusCol.innerHTML = `
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-red-700 bg-red-50 rounded-full border border-red-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>
+                                    Bloqueado
+                                </span>
+                            `;
+                            row.classList.add('opacity-60');
+                        } else {
+                            statusCol.innerHTML = `
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-green-700 bg-green-50 rounded-full border border-green-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0"></span>
+                                    Ativo
+                                </span>
+                            `;
+                            row.classList.remove('opacity-60');
+                        }
+                    }
+
+                    // Update Avatar
+                    const avatarWrapper = row.querySelector('.user-avatar-wrapper');
+                    if (avatarWrapper) {
+                        const avatarAvatar = avatarWrapper.querySelector('.user-avatar-avatar');
+                        if (user.profile_photo_path) {
+                            const photoUrl = user.profile_photo_path.startsWith('http') ? user.profile_photo_path : `/storage/${user.profile_photo_path}`;
+                            avatarAvatar.innerHTML = `<img src="${photoUrl}" alt="${user.name}" class="w-14 h-14 rounded-full object-cover border border-gray-100 shadow-sm shrink-0">`;
+                        } else {
+                            const initials = user.name.substring(0, 2).toUpperCase();
+                            const initialsClass = user.is_blocked ? 'bg-red-50 text-red-600 border-red-200' : 'bg-coinpel-primary/10 text-coinpel-primary border-coinpel-primary/20';
+                            avatarAvatar.innerHTML = `
+                                <span class="flex items-center justify-center w-14 h-14 rounded-full text-sm uppercase font-bold border ${initialsClass}">
+                                    ${initials}
+                                </span>
+                            `;
+                        }
+
+                        // Blocked indicator
+                        const blockedIndicator = avatarWrapper.querySelector('.user-blocked-indicator');
+                        if (user.is_blocked) {
+                            if (!blockedIndicator) {
+                                const ind = document.createElement('span');
+                                ind.className = 'absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center user-blocked-indicator';
+                                ind.title = 'Bloqueado';
+                                ind.innerHTML = `
+                                    <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0 1 10 0v2a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Zm8-2v2H7V7a3 3 0 0 1 6 0Z" clip-rule="evenodd"/>
+                                    </svg>
+                                `;
+                                avatarWrapper.appendChild(ind);
+                            }
+                        } else {
+                            if (blockedIndicator) {
+                                blockedIndicator.remove();
+                            }
+                        }
+                    }
+
+                    // Update dataset attributes on action button edit trigger
+                    const btnEdit = row.querySelector('.btn-edit-user');
+                    if (btnEdit) {
+                        btnEdit.dataset.name = user.name;
+                        btnEdit.dataset.email = user.email;
+                        btnEdit.dataset.is_blocked = user.is_blocked ? '1' : '0';
+                        btnEdit.dataset.photo_path = user.profile_photo_path || '';
+                        btnEdit.dataset.photo_url = user.profile_photo_path ? `/storage/${user.profile_photo_path}` : '';
+                    }
+                }
+
+                showFlashNotification(json.message);
+                closeDrawer();
+            } else {
+                sessionStorage.setItem('flash_status', json.message);
+                window.location.reload();
+            }
 
         } catch (err) {
             drawerError.textContent = 'Erro de conexão. Tente novamente.';
@@ -634,15 +922,20 @@
 
     document.addEventListener('click', closeAllActionMenus);
 
+    // Toast/Flash notification builder
+    function showFlashNotification(message) {
+        const flashEl = document.createElement('div');
+        flashEl.className = 'fixed bottom-6 right-6 z-[100] px-5 py-3.5 bg-green-600 text-white text-sm font-semibold rounded-xl shadow-lg flex items-center gap-3 animate-fade-in';
+        flashEl.innerHTML = `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>${message}`;
+        document.body.appendChild(flashEl);
+        setTimeout(() => flashEl.remove(), 4000);
+    }
+
     // ── Flash from sessionStorage ──────────────────────────────────────────
     const flash = sessionStorage.getItem('flash_status');
     if (flash) {
         sessionStorage.removeItem('flash_status');
-        const flashEl = document.createElement('div');
-        flashEl.className = 'fixed bottom-6 right-6 z-[100] px-5 py-3.5 bg-green-600 text-white text-sm font-semibold rounded-xl shadow-lg flex items-center gap-3 animate-fade-in';
-        flashEl.innerHTML = `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>${flash}`;
-        document.body.appendChild(flashEl);
-        setTimeout(() => flashEl.remove(), 4000);
+        showFlashNotification(flash);
     }
 
 })();

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -38,6 +39,10 @@ class UserController extends Controller
         $data['password'] = Hash::make($data['password']);
         $data['must_change_password'] = true;
 
+        if ($request->hasFile('profile_photo')) {
+            $data['profile_photo_path'] = $request->file('profile_photo')->store('users', 'public');
+        }
+
         $user = User::create($data);
 
         return response()->json([
@@ -63,6 +68,13 @@ class UserController extends Controller
             unset($data['password']);
         }
 
+        if ($request->hasFile('profile_photo')) {
+            if ($user->profile_photo_path) {
+                Storage::disk('public')->delete($user->profile_photo_path);
+            }
+            $data['profile_photo_path'] = $request->file('profile_photo')->store('users', 'public');
+        }
+
         $user->update($data);
 
         return response()->json([
@@ -86,6 +98,19 @@ class UserController extends Controller
         return response()->json([
             'message' => "Usuário {$label} com sucesso.",
             'user'    => $user->fresh(),
+        ]);
+    }
+
+    public function destroyPhoto(User $user): JsonResponse
+    {
+        if ($user->profile_photo_path) {
+            Storage::disk('public')->delete($user->profile_photo_path);
+            $user->update(['profile_photo_path' => null]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto de perfil removida com sucesso.'
         ]);
     }
 

@@ -11,6 +11,8 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -26,14 +28,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'must.change.password'])->group(function () {
     Route::get('/', fn() => redirect()->route('dashboard'));
 
-    Route::get('/dashboard', function () {
-        return view('dashboard', [
-            'tripsCount'    => \App\Models\Trip::count(),
-            'vehiclesCount' => \App\Models\Vehicle::count(),
-            'driversCount'  => \App\Models\Driver::count(),
-            'usersCount'    => \App\Models\User::count(),
-        ]);
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('trips', TripController::class)->except(['show']);
 
@@ -43,6 +38,8 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
 
     Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
     Route::patch('/users/{user}/toggle-block', [UserController::class, 'toggleBlock'])->name('users.toggle-block');
+    Route::delete('/users/{user}/photo', [UserController::class, 'destroyPhoto'])->name('users.photo.destroy');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
     // Placeholders for sidebar modules
     Route::resource('customers', ClientController::class)->except(['create', 'edit']);
