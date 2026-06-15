@@ -44,9 +44,9 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
     // Placeholders for sidebar modules
     Route::resource('customers', ClientController::class)->except(['create', 'edit']);
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
-    Route::get('/contracts', fn() => view('placeholders.contracts'))->name('contracts.index');
-    Route::get('/packages', fn() => view('placeholders.packages'))->name('packages.index');
-    Route::get('/settings', fn() => view('placeholders.settings'))->name('settings.index');
+    Route::get('/contracts', fn() => view('contracts.index'))->name('contracts.index');
+    Route::get('/packages', fn() => view('packages.index'))->name('packages.index');
+    Route::get('/settings', fn() => view('settings.index'))->name('settings.index');
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
