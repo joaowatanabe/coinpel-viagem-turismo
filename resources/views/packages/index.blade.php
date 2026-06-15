@@ -38,8 +38,8 @@
         @if($packages->isEmpty())
             <div class="flex flex-col items-center justify-center py-16 bg-white border border-gray-100 rounded-2xl shadow-sm">
                 <div class="flex items-center justify-center w-14 h-14 bg-purple-50 text-coinpel-primary rounded-full mb-3 animate-pulse">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 0 1 3.75 18.4V14.15m16.5 0a9 9 0 0 0-16.5 0m16.5 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 14.15M12 3.75V1.5m0 0a1.125 1.125 0 0 1 1.125 1.125V3.75m-1.125-2.25a1.125 1.125 0 0 0-1.125 1.125V3.75m1.125 0h.75A2.25 2.25 0 0 1 15 6v2.25H9V6a2.25 2.25 0 0 1 2.25-2.25h.75"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25A1.5 1.5 0 0 1 3 19.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                     </svg>
                 </div>
                 <h3 class="text-base font-bold text-gray-800">Nenhum pacote cadastrado ainda.</h3>
@@ -55,8 +55,8 @@
                         
                         <div class="flex items-center gap-6">
                             <div class="flex items-center justify-center w-[82px] h-[82px] rounded-full bg-coinpel-primary/10 text-coinpel-primary border border-coinpel-primary/20 shrink-0 shadow-sm">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 0 1 3.75 18.4V14.15m16.5 0a9 9 0 0 0-16.5 0m16.5 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 14.15M12 3.75V1.5m0 0a1.125 1.125 0 0 1 1.125 1.125V3.75m-1.125-2.25a1.125 1.125 0 0 0-1.125 1.125V3.75m1.125 0h.75A2.25 2.25 0 0 1 15 6v2.25H9V6a2.25 2.25 0 0 1 2.25-2.25h.75" stroke-linecap="round" stroke-linejoin="round"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25A1.5 1.5 0 0 1 3 19.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                                 </svg>
                             </div>
                             <div class="flex flex-col justify-center">
@@ -67,22 +67,52 @@
                                 <div class="flex flex-wrap gap-1.5 mt-2">
                                     {{-- Status Badge --}}
                                     @if($package->status === 'available')
-                                        <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 rounded-full border border-emerald-200">Disponível</span>
+                                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 rounded-full border border-emerald-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 shrink-0">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            Disponível
+                                        </span>
                                     @elseif($package->status === 'sold_out')
-                                        <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold text-amber-700 bg-amber-50 rounded-full border border-amber-200">Esgotado</span>
+                                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-bold text-amber-700 bg-amber-50 rounded-full border border-amber-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 shrink-0">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            Esgotado
+                                        </span>
                                     @elseif($package->status === 'inactive')
-                                        <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold text-gray-500 bg-gray-50 rounded-full border border-gray-200">Inativo</span>
+                                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-bold text-gray-500 bg-gray-50 rounded-full border border-gray-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 shrink-0">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            Inativo
+                                        </span>
                                     @endif
 
                                     {{-- Feature Badges --}}
                                     @if($package->includes_hotel)
-                                        <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold text-blue-700 bg-blue-50 rounded-full border border-blue-200">Hotel Incluso</span>
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-blue-700 bg-blue-50 rounded-full border border-blue-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 shrink-0">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m1.5-1.5-.5-.182m-10.985-.909 1.5-.545m-.364 2.25 1.5-.545M3 16.5l1.5-.545m0-4.818 1.5-.545M3 11.105l1.5-.545" />
+                                            </svg>
+                                            Hotel Incluso
+                                        </span>
                                     @endif
                                     @if($package->includes_meals)
-                                        <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold text-orange-700 bg-orange-50 rounded-full border border-orange-200">Refeições</span>
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-orange-700 bg-orange-50 rounded-full border border-orange-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 shrink-0">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697-.056-4.024-.166C6.845 7.996 6 7.014 6 5.869V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5v1.37c0 1.145-.845 2.126-1.976 2.215A42.22 42.22 0 0 1 12 8.25Zm0 0v1.5m0 0a42.11 42.11 0 0 1 8.976-.115C22.105 9.724 23 10.705 23 11.85v1.37c0 1.145-.845 2.126-1.976 2.215A42.164 42.164 0 0 1 12 15.75c-3.14 0-6.207-.174-9.024-.515C1.845 15.145 1 14.165 1 13.02v-1.37c0-1.145.845-2.126 1.976-2.215A42.21 42.21 0 0 1 12 9.75Zm0 9.75v1.5M4.5 21H19.5" />
+                                            </svg>
+                                            Refeições
+                                        </span>
                                     @endif
                                     @if($package->includes_guide)
-                                        <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold text-indigo-700 bg-indigo-50 rounded-full border border-indigo-200">Guia Incluso</span>
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-indigo-700 bg-indigo-50 rounded-full border border-indigo-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 shrink-0">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                                            </svg>
+                                            Guia Incluso
+                                        </span>
                                     @endif
                                 </div>
 
@@ -643,11 +673,11 @@
             container.innerHTML = `
                 <div class="flex flex-col items-center justify-center py-16 bg-white border border-gray-100 rounded-2xl shadow-sm">
                     <div class="flex items-center justify-center w-14 h-14 bg-purple-50 text-coinpel-primary rounded-full mb-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 0 1 3.75 18.4V14.15m16.5 0a9 9 0 0 0-16.5 0m16.5 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 14.15M12 3.75V1.5m0 0a1.125 1.125 0 0 1 1.125 1.125V3.75m-1.125-2.25a1.125 1.125 0 0 0-1.125 1.125V3.75m1.125 0h.75A2.25 2.25 0 0 1 15 6v2.25H9V6a2.25 2.25 0 0 1 2.25-2.25h.75"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25A1.5 1.5 0 0 1 3 19.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                         </svg>
                     </div>
-                    <h3 class="text-base font-bold text-gray-800">Nenhum pacote cadastrado ainda.</h3>
+                    <h3 class="text-base font-bold text-gray-850">Nenhum pacote cadastrado ainda.</h3>
                     <p class="text-sm text-gray-500 mt-1 max-w-xs text-center">Não encontramos pacotes que correspondam à sua pesquisa.</p>
                     ${!searchEl.value ? `
                     <button id="btn-add-package-empty" class="mt-4 px-4 py-2 bg-coinpel-primary hover:opacity-95 text-white text-sm font-semibold rounded-lg transition shadow-sm cursor-pointer">
@@ -678,22 +708,22 @@
 
             let statusBadge = '';
             if (pkg.status === 'available') {
-                statusBadge = `<span class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 rounded-full border border-emerald-200">Disponível</span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 rounded-full border border-emerald-200"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>Disponível</span>`;
             } else if (pkg.status === 'sold_out') {
-                statusBadge = `<span class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold text-amber-700 bg-amber-50 rounded-full border border-amber-200">Esgotado</span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-bold text-amber-700 bg-amber-50 rounded-full border border-amber-200"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>Esgotado</span>`;
             } else if (pkg.status === 'inactive') {
-                statusBadge = `<span class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold text-gray-500 bg-gray-50 rounded-full border border-gray-200">Inativo</span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-bold text-gray-500 bg-gray-50 rounded-full border border-gray-200"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>Inativo</span>`;
             }
 
-            let hotelBadge = pkg.includes_hotel ? `<span class="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold text-blue-700 bg-blue-50 rounded-full border border-blue-200">Hotel Incluso</span>` : '';
-            let mealsBadge = pkg.includes_meals ? `<span class="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold text-orange-700 bg-orange-50 rounded-full border border-orange-200">Refeições</span>` : '';
-            let guideBadge = pkg.includes_guide ? `<span class="inline-flex items-center px-2 py-0.5 text-[10px] font-semibold text-indigo-700 bg-indigo-50 rounded-full border border-indigo-200">Guia Incluso</span>` : '';
+            let hotelBadge = pkg.includes_hotel ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-blue-700 bg-blue-50 rounded-full border border-blue-200"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m1.5-1.5-.5-.182m-10.985-.909 1.5-.545m-.364 2.25 1.5-.545M3 16.5l1.5-.545m0-4.818 1.5-.545M3 11.105l1.5-.545" /></svg>Hotel Incluso</span>` : '';
+            let mealsBadge = pkg.includes_meals ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-orange-700 bg-orange-50 rounded-full border border-orange-200"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697-.056-4.024-.166C6.845 7.996 6 7.014 6 5.869V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5v1.37c0 1.145-.845 2.126-1.976 2.215A42.22 42.22 0 0 1 12 8.25Zm0 0v1.5m0 0a42.11 42.11 0 0 1 8.976-.115C22.105 9.724 23 10.705 23 11.85v1.37c0 1.145-.845 2.126-1.976 2.215A42.164 42.164 0 0 1 12 15.75c-3.14 0-6.207-.174-9.024-.515C1.845 15.145 1 14.165 1 13.02v-1.37c0-1.145.845-2.126 1.976-2.215A42.21 42.21 0 0 1 12 9.75Zm0 9.75v1.5M4.5 21H19.5" /></svg>Refeições</span>` : '';
+            let guideBadge = pkg.includes_guide ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-indigo-700 bg-indigo-50 rounded-full border border-indigo-200"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" /></svg>Guia Incluso</span>` : '';
 
             card.innerHTML = `
                 <div class="flex items-center gap-6">
                     <div class="flex items-center justify-center w-[82px] h-[82px] rounded-full bg-coinpel-primary/10 text-coinpel-primary border border-coinpel-primary/20 shrink-0 shadow-sm">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 0 1 3.75 18.4V14.15m16.5 0a9 9 0 0 0-16.5 0m16.5 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 14.15M12 3.75V1.5m0 0a1.125 1.125 0 0 1 1.125 1.125V3.75m-1.125-2.25a1.125 1.125 0 0 0-1.125 1.125V3.75m1.125 0h.75A2.25 2.25 0 0 1 15 6v2.25H9V6a2.25 2.25 0 0 1 2.25-2.25h.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25A1.5 1.5 0 0 1 3 19.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                         </svg>
                     </div>
                     <div class="flex flex-col justify-center">
