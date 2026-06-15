@@ -167,28 +167,33 @@
                             </svg>
                         </button>
 
-                        <div id="notification-menu" class="hidden absolute right-0 sm:right-4 mt-2 w-[calc(100vw-2rem)] sm:w-[450px] sm:min-w-[420px] max-w-[480px] bg-white rounded-xl shadow-lg border border-gray-100 py-3.5 z-50 transform origin-top-right flex flex-col">
+                        <div id="notification-menu" class="hidden absolute top-full right-0 mt-2 w-[460px] bg-white rounded-xl shadow-xl border border-gray-200 z-50 transform origin-top-right flex flex-col" onclick="event.stopPropagation()">
                             {{-- Header --}}
-                            <div class="flex items-center justify-between px-4 pb-2.5 border-b border-gray-100 shrink-0">
+                            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs font-bold text-gray-800 uppercase tracking-wider">🔔 Notificações</span>
-                                    <span id="notification-menu-count" class="px-1.5 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded-full">0</span>
+                                    {{-- ícone sino roxo --}}
+                                    <svg class="w-5 h-5 text-[#593E75]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"></path>
+                                    </svg>
+                                    <span class="font-semibold text-gray-800 text-base">Notificações</span>
+                                    <span class="bg-[#593E75] text-white text-xs font-bold px-2 py-0.5 rounded-full" id="notif-badge-count">0</span>
                                 </div>
-                                <button id="notification-close" class="text-gray-400 hover:text-gray-600 transition cursor-pointer p-0.5 rounded-lg hover:bg-gray-50">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <button onclick="closeNotifications()" class="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer p-0.5 rounded-lg hover:bg-gray-50">
+                                    {{-- ícone X 20px --}}
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
                                     </svg>
                                 </button>
                             </div>
                             
                             {{-- Content Scroll --}}
-                            <div id="notification-list" class="overflow-y-auto max-h-[70vh] divide-y divide-gray-100">
+                            <div id="notification-list" class="divide-y divide-gray-100">
                                 {{-- Carregado dinamicamente via JS --}}
                             </div>
 
                             {{-- Footer --}}
-                            <div id="notification-footer" class="pt-2 px-4 border-t border-gray-100 hidden shrink-0">
-                                <button id="notification-load-more" class="w-full py-2 flex items-center justify-center gap-2 text-xs font-semibold text-coinpel-primary bg-coinpel-primary/5 hover:bg-coinpel-primary/10 rounded-lg transition cursor-pointer">
+                            <div id="notif-load-more" class="px-5 py-3 border-t border-gray-100 hidden shrink-0">
+                                <button onclick="loadMoreNotifications()" class="w-full text-sm text-[#593E75] font-medium hover:text-[#381794] transition-colors py-1 cursor-pointer">
                                     Ver mais notificações
                                 </button>
                             </div>
@@ -398,90 +403,93 @@
             const notificationMenu = document.getElementById('notification-menu');
             const notificationBadge = document.getElementById('notification-badge');
             const notificationList = document.getElementById('notification-list');
-            const notificationClose = document.getElementById('notification-close');
-            const notificationLoadMore = document.getElementById('notification-load-more');
-            const notificationFooter = document.getElementById('notification-footer');
-            const notificationMenuCount = document.getElementById('notification-menu-count');
+            const notifBadgeCount = document.getElementById('notif-badge-count');
+            const notifLoadMore = document.getElementById('notif-load-more');
 
             let currentOffset = 0;
             const limit = 5;
             let isLoading = false;
 
             const notificationIcons = {
-                new_trip: `
-                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(89, 62, 117, 0.1); color: #593E75;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
-                        </svg>
-                    </span>
-                `,
-                in_progress: `
-                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(242, 201, 76, 0.1); color: #F2C94C;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                        </svg>
-                    </span>
-                `,
-                driver_available: `
-                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(111, 207, 151, 0.1); color: #6FCF97;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
-                        </svg>
-                    </span>
-                `,
-                password_pending: `
-                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(242, 153, 74, 0.1); color: #F2994A;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
-                        </svg>
-                    </span>
-                `,
-                contract_expiring: `
-                    <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background-color: rgba(235, 87, 87, 0.1); color: #EB5757;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
-                        </svg>
-                    </span>
-                `
+                driver_available: {
+                    bgColor: 'bg-green-100',
+                    color: '#6FCF97',
+                    svg: `<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+                          </svg>`
+                },
+                password_pending: {
+                    bgColor: 'bg-orange-100',
+                    color: '#F2994A',
+                    svg: `<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
+                          </svg>`
+                },
+                new_trip: {
+                    bgColor: 'bg-purple-100',
+                    color: '#593E75',
+                    svg: `<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+                          </svg>`
+                },
+                in_progress: {
+                    bgColor: 'bg-yellow-100',
+                    color: '#F2C94C',
+                    svg: `<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                          </svg>`
+                },
+                contract_expiring: {
+                    bgColor: 'bg-red-100',
+                    color: '#EB5757',
+                    svg: `<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+                          </svg>`
+                }
             };
 
             function showLoadingSkeleton() {
                 if (!notificationList) return;
                 notificationList.innerHTML = `
-                    <div class="p-4 space-y-4 animate-pulse">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gray-100"></div>
-                            <div class="flex-1 space-y-1.5">
-                                <div class="h-3 bg-gray-100 rounded w-3/4"></div>
-                                <div class="h-2 bg-gray-100 rounded w-1/4"></div>
-                            </div>
+                    <div class="flex items-start gap-3 px-5 py-4 border-b border-gray-100 animate-pulse">
+                        <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-3 bg-gray-200 rounded w-3/4"></div>
+                            <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                            <div class="h-2 bg-gray-200 rounded w-1/4 mt-1"></div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gray-100"></div>
-                            <div class="flex-1 space-y-1.5">
-                                <div class="h-3 bg-gray-100 rounded w-5/6"></div>
-                                <div class="h-2 bg-gray-100 rounded w-1/3"></div>
-                            </div>
+                    </div>
+                    <div class="flex items-start gap-3 px-5 py-4 border-b border-gray-100 animate-pulse">
+                        <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-3 bg-gray-200 rounded w-3/4"></div>
+                            <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                            <div class="h-2 bg-gray-200 rounded w-1/4 mt-1"></div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gray-100"></div>
-                            <div class="flex-1 space-y-1.5">
-                                <div class="h-3 bg-gray-100 rounded w-2/3"></div>
-                                <div class="h-2 bg-gray-100 rounded w-1/5"></div>
-                            </div>
+                    </div>
+                    <div class="flex items-start gap-3 px-5 py-4 border-b border-gray-100 animate-pulse">
+                        <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-3 bg-gray-200 rounded w-3/4"></div>
+                            <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                            <div class="h-2 bg-gray-200 rounded w-1/4 mt-1"></div>
                         </div>
                     </div>
                 `;
             }
 
             function updateBadge(count) {
-                if (!notificationBadge) return;
-                if (count > 0) {
-                    notificationBadge.textContent = count;
-                    notificationBadge.classList.remove('hidden');
-                } else {
-                    notificationBadge.classList.add('hidden');
+                if (notificationBadge) {
+                    if (count > 0) {
+                        notificationBadge.textContent = count;
+                        notificationBadge.classList.remove('hidden');
+                    } else {
+                        notificationBadge.classList.add('hidden');
+                    }
+                }
+                if (notifBadgeCount) {
+                    notifBadgeCount.textContent = count;
                 }
             }
 
@@ -505,17 +513,12 @@
                 if (!append) {
                     currentOffset = 0;
                     showLoadingSkeleton();
-                    if (notificationFooter) notificationFooter.classList.add('hidden');
+                    if (notifLoadMore) notifLoadMore.classList.add('hidden');
                 } else {
-                    if (notificationLoadMore) {
-                        notificationLoadMore.disabled = true;
-                        notificationLoadMore.innerHTML = `
-                            <svg class="animate-spin h-4 w-4 text-coinpel-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Carregando...
-                        `;
+                    const loadMoreBtn = notifLoadMore.querySelector('button');
+                    if (loadMoreBtn) {
+                        loadMoreBtn.disabled = true;
+                        loadMoreBtn.textContent = 'Carregando...';
                     }
                 }
 
@@ -527,26 +530,25 @@
                     const data = await response.json();
 
                     updateBadge(data.count);
-                    if (notificationMenuCount) {
-                        notificationMenuCount.textContent = data.count;
-                    }
 
                     const htmlItems = data.items.map(item => {
-                        const icon = notificationIcons[item.type] || '';
+                        const iconCfg = notificationIcons[item.type] || {
+                            bgColor: 'bg-gray-100',
+                            color: '#9CA3AF',
+                            svg: `<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>`
+                        };
                         return `
-                            <a href="${item.link}" class="flex items-center justify-between gap-4 px-4 py-3 hover:bg-gray-50 transition duration-150 border-b border-gray-100 last:border-0">
-                                <div class="flex items-start gap-3 min-w-0">
-                                    ${icon}
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-gray-800 leading-normal break-words">${item.message}</p>
-                                        <p class="text-xs text-gray-400 mt-1">${item.created_at}</p>
-                                    </div>
+                            <a href="${item.link}" class="flex items-start gap-3 px-5 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group">
+                                <div class="shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${iconCfg.bgColor}" style="color: ${iconCfg.color};">
+                                    ${iconCfg.svg}
                                 </div>
-                                <div class="text-gray-400 hover:text-gray-600 shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-                                    </svg>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm text-gray-800 font-medium leading-snug line-clamp-2">${item.message}</p>
+                                    <p class="text-xs text-gray-400 mt-1">${item.created_at}</p>
                                 </div>
+                                <svg class="shrink-0 w-4 h-4 text-gray-300 group-hover:text-gray-500 mt-0.5 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                                </svg>
                             </a>
                         `;
                     }).join('');
@@ -554,8 +556,11 @@
                     if (!append) {
                         if (data.items.length === 0) {
                             notificationList.innerHTML = `
-                                <div class="px-4 py-8 text-center text-gray-400 text-xs font-medium">
-                                    Nenhuma notificação no momento.
+                                <div class="px-5 py-10 text-center">
+                                    <svg class="w-10 h-10 text-gray-300 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/>
+                                    </svg>
+                                    <p class="text-sm text-gray-500 mt-3">Nenhuma notificação no momento.</p>
                                 </div>
                             `;
                         } else {
@@ -568,26 +573,38 @@
                     currentOffset = data.nextOffset;
 
                     if (data.hasMore) {
-                        if (notificationFooter) notificationFooter.classList.remove('hidden');
+                        if (notifLoadMore) notifLoadMore.classList.remove('hidden');
                     } else {
-                        if (notificationFooter) notificationFooter.classList.add('hidden');
+                        if (notifLoadMore) notifLoadMore.classList.add('hidden');
                     }
                 } catch (err) {
                     if (!append) {
                         notificationList.innerHTML = `
-                            <div class="px-4 py-6 text-center text-red-500 text-xs font-semibold">
+                            <div class="px-5 py-6 text-center text-red-500 text-sm font-semibold">
                                 Erro ao carregar notificações.
                             </div>
                         `;
                     }
                 } finally {
                     isLoading = false;
-                    if (notificationLoadMore) {
-                        notificationLoadMore.disabled = false;
-                        notificationLoadMore.textContent = 'Ver mais notificações';
+                    const loadMoreBtn = notifLoadMore.querySelector('button');
+                    if (loadMoreBtn) {
+                        loadMoreBtn.disabled = false;
+                        loadMoreBtn.textContent = 'Ver mais notificações';
                     }
                 }
             }
+
+            // Expose globally
+            window.closeNotifications = function() {
+                if (notificationMenu) {
+                    notificationMenu.classList.add('hidden');
+                }
+            };
+
+            window.loadMoreNotifications = function() {
+                loadNotifications(true);
+            };
 
             if (notificationBtn) {
                 notificationBtn.addEventListener('click', function(e) {
@@ -602,29 +619,15 @@
                         notificationMenu.classList.remove('hidden');
                         loadNotifications(false);
                     } else {
-                        notificationMenu.classList.add('hidden');
+                        window.closeNotifications();
                     }
-                });
-            }
-
-            if (notificationClose) {
-                notificationClose.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    if (notificationMenu) notificationMenu.classList.add('hidden');
-                });
-            }
-
-            if (notificationLoadMore) {
-                notificationLoadMore.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    loadNotifications(true);
                 });
             }
 
             window.addEventListener('click', function(e) {
                 const dropdown = document.getElementById('notification-dropdown');
-                if (dropdown && !dropdown.contains(e.target) && notificationMenu) {
-                    notificationMenu.classList.add('hidden');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    window.closeNotifications();
                 }
             });
 
