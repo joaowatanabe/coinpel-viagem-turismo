@@ -35,6 +35,7 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
     Route::resource('vehicles', VehicleController::class)->except(['show', 'create', 'edit']);
 
     Route::resource('drivers', DriverController::class)->except(['create', 'edit']);
+    Route::delete('/drivers/{driver}/photo', [DriverController::class, 'destroyPhoto'])->name('drivers.photo.destroy');
 
     Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
     Route::patch('/users/{user}/toggle-block', [UserController::class, 'toggleBlock'])->name('users.toggle-block');
@@ -43,6 +44,7 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
 
     // Placeholders for sidebar modules
     Route::resource('customers', ClientController::class)->except(['create', 'edit']);
+    Route::delete('/clients/{client}/photo', [ClientController::class, 'destroyPhoto'])->name('clients.photo.destroy');
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
     Route::resource('contracts', ContractController::class)->except(['create', 'edit']);
     Route::resource('packages', PackageController::class)->except(['create', 'edit']);

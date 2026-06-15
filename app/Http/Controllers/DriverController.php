@@ -78,6 +78,15 @@ class DriverController extends Controller
         ]);
     }
 
+    public function destroyPhoto(Driver $driver): JsonResponse
+    {
+        if ($driver->profile_photo_path) {
+            Storage::disk('public')->delete($driver->profile_photo_path);
+            $driver->update(['profile_photo_path' => null]);
+        }
+        return response()->json(['success' => true, 'message' => 'Foto removida.']);
+    }
+
     public function destroy(Driver $driver): JsonResponse
     {
         $driver->delete();

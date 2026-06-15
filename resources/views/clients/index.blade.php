@@ -320,12 +320,16 @@
             <div id="detail-avatar-container" class="w-[120px] h-[120px] rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-3xl uppercase border border-coinpel-primary/20 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
                 <!-- Imagem ou iniciais populadas dinamicamente -->
             </div>
-            <div>
-                <label for="detail-field-photo" class="text-sm font-semibold text-coinpel-primary hover:underline transition cursor-pointer">
+            <div class="text-center flex items-center justify-center gap-3">
+                <label id="detail-photo-label" for="detail-field-photo" class="text-sm font-semibold text-coinpel-primary hover:underline transition cursor-pointer">
                     Atualizar foto
                 </label>
                 <input id="detail-field-photo" name="profile_photo" type="file" accept="image/*" class="hidden">
+                <button type="button" id="btn-delete-detail-photo" class="hidden text-xs font-semibold text-[#EB5757] hover:underline transition cursor-pointer">
+                    Remover foto
+                </button>
             </div>
+            <p id="detail-photo-feedback" class="text-xs text-center mt-1 font-semibold hidden"></p>
         </div>
 
         {{-- Seção: Dados pessoais --}}
@@ -551,11 +555,44 @@
     const detailAvatarContainer = document.getElementById('detail-avatar-container');
 
     let currentClient = null;
+    let detailPhotoErrorTimeout = null;
+
+    let photoErrorTimeout = null;
 
     // ── Photo Preview ───────────────────────────────────────────────────
     filePhoto.addEventListener('change', function () {
         const file = this.files[0];
+        const errEl = document.getElementById('err-profile-photo');
+        
+        clearTimeout(photoErrorTimeout);
+        errEl.classList.add('hidden');
+        errEl.textContent = '';
+        
         if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                filePhoto.value = '';
+                errEl.textContent = "A foto deve ter no máximo 2MB.";
+                errEl.classList.remove('hidden');
+                
+                if (editingId) {
+                    const btn = document.querySelector(`.btn-edit-client[data-id="${editingId}"]`);
+                    if (btn && btn.dataset.photo_url) {
+                        previewContainer.innerHTML = `<img src="${btn.dataset.photo_url}" class="w-full h-full object-cover rounded-full">`;
+                    } else {
+                        const initials = btn ? btn.dataset.name.substring(0, 2) : 'CL';
+                        previewContainer.innerHTML = initials;
+                    }
+                } else {
+                    previewContainer.innerHTML = `<svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"/></svg>`;
+                }
+
+                photoErrorTimeout = setTimeout(() => {
+                    errEl.classList.add('hidden');
+                    errEl.textContent = '';
+                }, 4000);
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function (e) {
                 previewContainer.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-full">`;
@@ -888,14 +925,23 @@
         contactForm.querySelector('[name="email"]').value = currentClient.email || '';
         contactForm.querySelector('[name="phone"]').value = currentClient.phone || '';
 
+        const labelPhoto = document.getElementById('detail-photo-label');
+        const btnDeletePhoto = document.getElementById('btn-delete-detail-photo');
+
         if (currentClient.profile_photo_path) {
             const url = currentClient.profile_photo_path.startsWith('http') 
                 ? currentClient.profile_photo_path 
                 : `/storage/${currentClient.profile_photo_path}`;
             detailAvatarContainer.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-full">`;
+            
+            if (labelPhoto) labelPhoto.textContent = "Atualizar foto";
+            if (btnDeletePhoto) btnDeletePhoto.classList.remove('hidden');
         } else {
             const initials = currentClient.name ? currentClient.name.substring(0, 2) : 'CL';
             detailAvatarContainer.innerHTML = initials;
+            
+            if (labelPhoto) labelPhoto.textContent = "Adicionar foto";
+            if (btnDeletePhoto) btnDeletePhoto.classList.add('hidden');
         }
     }
 
@@ -1070,7 +1116,31 @@
 
     fileDetailPhoto.addEventListener('change', async function () {
         const file = this.files[0];
+        const feedbackEl = document.getElementById('detail-photo-feedback');
+        
+        clearTimeout(detailPhotoErrorTimeout);
+        feedbackEl.classList.add('hidden');
+        feedbackEl.textContent = '';
+        feedbackEl.className = 'text-xs text-center mt-1 font-semibold';
+
         if (!file) return;
+
+        // Size check (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            fileDetailPhoto.value = '';
+            feedbackEl.textContent = "A foto deve ter no máximo 2MB.";
+            feedbackEl.className = 'text-xs text-center mt-1 font-semibold text-red-600';
+            feedbackEl.classList.remove('hidden');
+            
+            // Revert preview to current original photo
+            populateDetailFields();
+
+            detailPhotoErrorTimeout = setTimeout(() => {
+                feedbackEl.classList.add('hidden');
+                feedbackEl.textContent = '';
+            }, 4000);
+            return;
+        }
 
         clearDetailErrors();
         detailError.classList.add('hidden');
@@ -1119,11 +1189,52 @@
             populateDetailFields();
             updateCardInList(currentClient);
 
+            // Success feedback for 3 seconds
+            feedbackEl.textContent = "Foto atualizada!";
+            feedbackEl.className = 'text-xs text-center mt-1 font-semibold text-green-600';
+            feedbackEl.classList.remove('hidden');
+            setTimeout(() => {
+                feedbackEl.classList.add('hidden');
+                feedbackEl.textContent = '';
+            }, 3000);
+
         } catch (err) {
             detailError.textContent = 'Erro ao enviar foto. Tente novamente.';
             detailError.classList.remove('hidden');
             populateDetailFields();
         }
+    });
+
+    // Delete photo trigger
+    const btnDeleteDetailPhoto = document.getElementById('btn-delete-detail-photo');
+    if (btnDeleteDetailPhoto) {
+        btnDeleteDetailPhoto.addEventListener('click', async function () {
+            if (!currentClient) return;
+            if (!confirm('Remover foto de perfil?')) return;
+
+            try {
+                const response = await fetch(`/clients/${currentClient.id}/photo`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-HTTP-Method-Override': 'DELETE',
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' }),
+                });
+
+                const json = await response.json();
+                if (response.ok) {
+                    currentClient.profile_photo_path = null;
+                    populateDetailFields();
+                    updateCardInList(currentClient);
+                } else {
+                    alert(json.message || 'Erro ao remover a foto.');
+                }
+            } catch (err) {
+                alert('Erro de conexão ao remover a foto.');
+            }
+        });
     });
 
     btnDetailDelete.addEventListener('click', async function () {

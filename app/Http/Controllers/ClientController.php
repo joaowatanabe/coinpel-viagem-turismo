@@ -73,6 +73,15 @@ class ClientController extends Controller
         ]);
     }
 
+    public function destroyPhoto(Client $client): JsonResponse
+    {
+        if ($client->profile_photo_path) {
+            Storage::disk('public')->delete($client->profile_photo_path);
+            $client->update(['profile_photo_path' => null]);
+        }
+        return response()->json(['success' => true, 'message' => 'Foto removida.']);
+    }
+
     public function destroy(Client $customer): JsonResponse
     {
         $customer->delete();

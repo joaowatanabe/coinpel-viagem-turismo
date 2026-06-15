@@ -377,13 +377,16 @@
             <div id="detail-avatar-container" class="w-[120px] h-[120px] rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-3xl uppercase border border-coinpel-primary/20 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
                 <!-- Image or initials populated dynamically -->
             </div>
-            <div class="text-center">
-                <label for="detail-field-photo" class="text-sm font-semibold text-coinpel-primary hover:underline transition cursor-pointer">
+            <div class="text-center flex items-center justify-center gap-3">
+                <label id="detail-photo-label" for="detail-field-photo" class="text-sm font-semibold text-coinpel-primary hover:underline transition cursor-pointer">
                     Atualizar foto
                 </label>
                 <input id="detail-field-photo" name="profile_photo" type="file" accept="image/*" class="hidden">
-                <p id="detail-photo-feedback" class="text-xs text-center mt-1 font-semibold hidden"></p>
+                <button type="button" id="btn-delete-detail-photo" class="hidden text-xs font-semibold text-[#EB5757] hover:underline transition cursor-pointer">
+                    Remover foto
+                </button>
             </div>
+            <p id="detail-photo-feedback" class="text-xs text-center mt-1 font-semibold hidden"></p>
         </div>
 
         {{-- Seção: Dados pessoais --}}
@@ -1015,14 +1018,23 @@
         contactForm.querySelector('[name="phone"]').value = currentDriver.phone || '';
 
         // Avatar
+        const labelPhoto = document.getElementById('detail-photo-label');
+        const btnDeletePhoto = document.getElementById('btn-delete-detail-photo');
+
         if (currentDriver.profile_photo_path) {
             const url = currentDriver.profile_photo_path.startsWith('http') 
                 ? currentDriver.profile_photo_path 
                 : `/storage/${currentDriver.profile_photo_path}`;
             detailAvatarContainer.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-full">`;
+            
+            if (labelPhoto) labelPhoto.textContent = "Atualizar foto";
+            if (btnDeletePhoto) btnDeletePhoto.classList.remove('hidden');
         } else {
             const initials = currentDriver.name ? currentDriver.name.substring(0, 2) : 'MO';
             detailAvatarContainer.innerHTML = initials;
+            
+            if (labelPhoto) labelPhoto.textContent = "Adicionar foto";
+            if (btnDeletePhoto) btnDeletePhoto.classList.add('hidden');
         }
     }
 
@@ -1297,6 +1309,38 @@
             populateDetailFields();
         }
     });
+
+    // Delete photo trigger
+    const btnDeleteDetailPhoto = document.getElementById('btn-delete-detail-photo');
+    if (btnDeleteDetailPhoto) {
+        btnDeleteDetailPhoto.addEventListener('click', async function () {
+            if (!currentDriver) return;
+            if (!confirm('Remover foto de perfil?')) return;
+
+            try {
+                const response = await fetch(`/drivers/${currentDriver.id}/photo`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-HTTP-Method-Override': 'DELETE',
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' }),
+                });
+
+                const json = await response.json();
+                if (response.ok) {
+                    currentDriver.profile_photo_path = null;
+                    populateDetailFields();
+                    updateCardInList(currentDriver);
+                } else {
+                    alert(json.message || 'Erro ao remover a foto.');
+                }
+            } catch (err) {
+                alert('Erro de conexão ao remover a foto.');
+            }
+        });
+    }
 
     // Delete from detail drawer
     btnDetailDelete.addEventListener('click', async function () {
