@@ -54,14 +54,10 @@
                     <div class="client-card bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow relative"
                          data-client-id="{{ $client->id }}">
                         
-                        {{-- Avatar --}}
-                        @if($client->profile_photo_path)
-                            <img src="{{ Storage::url($client->profile_photo_path) }}" alt="{{ $client->name }}" class="w-14 h-14 rounded-full object-cover border border-gray-100 shrink-0 shadow-sm">
-                        @else
-                            <div class="flex items-center justify-center w-14 h-14 rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-lg uppercase border border-coinpel-primary/20 shrink-0 shadow-sm">
-                                {{ strtoupper(mb_substr($client->name, 0, 1)) . strtoupper(mb_substr(strstr($client->name.' ',' '), 1, 1)) }}
-                            </div>
-                        @endif
+                        {{-- Avatar (Initials Only) --}}
+                        <div class="flex items-center justify-center w-14 h-14 rounded-full bg-[#593E75] text-white font-bold text-lg uppercase shrink-0 shadow-sm">
+                            {{ strtoupper(mb_substr($client->name, 0, 1)) }}{{ str_contains(trim($client->name), ' ') ? strtoupper(mb_substr(explode(' ', trim($client->name))[1], 0, 1)) : '' }}
+                        </div>
 
                         {{-- Details --}}
                         <div class="flex flex-col justify-center min-w-0 flex-1 pr-8">
@@ -138,23 +134,7 @@
     {{-- Drawer Scrollable Content --}}
     <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
         
-        {{-- Profile Photo Upload --}}
-        <div class="flex items-center gap-4">
-            <div id="avatar-preview-container" class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-lg uppercase font-bold overflow-hidden border border-gray-200 shrink-0">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"/>
-                </svg>
-            </div>
-            <div>
-                <label for="field-photo" class="block text-xs font-semibold text-gray-700 hover:text-coinpel-primary transition cursor-pointer bg-white border border-gray-300 rounded-lg px-3 py-1.5 shadow-sm text-center">
-                    Escolher foto
-                </label>
-                <input id="field-photo" name="profile_photo" type="file" accept="image/*" class="hidden">
-                <p class="text-[10px] text-gray-400 mt-1">PNG, JPG de até 2MB</p>
-                <p id="err-profile-photo" class="hidden mt-1 text-xs text-red-600"></p>
-            </div>
-        </div>
+
 
         {{-- Name --}}
         <div>
@@ -202,72 +182,17 @@
 
     </div>
 
-    {{-- Section 2: Address --}}
-    <div class="pt-6 border-t border-gray-100">
-        <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Endereço</h3>
-        <div class="grid grid-cols-1 gap-4">
-            
-            {{-- CEP & Cidade --}}
-            <div class="grid grid-cols-3 gap-4">
-                <div class="col-span-1">
-                    <label for="client_zip_code" class="block text-xs font-semibold text-gray-500 mb-1.5">CEP:</label>
-                    <input id="client_zip_code" name="zip_code" type="text" required
-                           class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                           placeholder="Ex: 96010-000"
-                           oninput="formatCepInput(this)"
-                           onblur="fetchAddressByCep(this.value, 'client')">
-                    <p id="err-client-zip-code" class="hidden mt-1 text-xs text-red-600"></p>
-                </div>
-                <div class="col-span-2">
-                    <label for="client_city" class="block text-xs font-semibold text-gray-500 mb-1.5">Cidade:</label>
-                    <input id="client_city" name="city" type="text" required
-                           class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                           placeholder="Ex: Pelotas">
-                    <p id="err-client-city" class="hidden mt-1 text-xs text-red-600"></p>
-                </div>
-            </div>
-
-            {{-- Rua & Número & Estado --}}
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-7">
-                    <label for="client_street" class="block text-xs font-semibold text-gray-500 mb-1.5">Rua:</label>
-                    <input id="client_street" name="street" type="text" required
-                           class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                           placeholder="Ex: Rua Gonçalves Chaves">
-                    <p id="err-client-street" class="hidden mt-1 text-xs text-red-600"></p>
-                </div>
-                <div class="col-span-3">
-                    <label for="client_number" class="block text-xs font-semibold text-gray-500 mb-1.5">Número:</label>
-                    <input id="client_number" name="number" type="text" required
-                           class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                           placeholder="Ex: 456">
-                    <p id="err-client-number" class="hidden mt-1 text-xs text-red-600"></p>
-                </div>
-                <div class="col-span-2">
-                    <label for="client_state" class="block text-xs font-semibold text-gray-500 mb-1.5">UF:</label>
-                    <input id="client_state" name="state" type="text" required maxlength="2"
-                           class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition uppercase"
-                           placeholder="RS">
-                    <p id="err-client-state" class="hidden mt-1 text-xs text-red-600"></p>
-                </div>
-            </div>
-
-        </div>
+    {{-- Drawer Footer --}}
+    <div class="shrink-0 px-6 py-4 border-t border-gray-100 space-y-2">
+        <button id="drawer-submit"
+                class="w-full py-2.5 bg-coinpel-primary hover:bg-coinpel-primary-dark text-white text-sm font-semibold rounded-lg transition cursor-pointer">
+            Finalizar cadastro
+        </button>
+        <button id="drawer-cancel"
+                class="w-full py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition cursor-pointer">
+            Cancelar
+        </button>
     </div>
-
-</div>
-
-{{-- Drawer Footer --}}
-<div class="shrink-0 px-6 py-4 border-t border-gray-100 space-y-2">
-    <button id="drawer-submit"
-            class="w-full py-2.5 bg-coinpel-primary hover:bg-coinpel-primary-dark text-white text-sm font-semibold rounded-lg transition cursor-pointer">
-        Finalizar cadastro
-    </button>
-    <button id="drawer-cancel"
-            class="w-full py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition cursor-pointer">
-        Cancelar
-    </button>
-</div>
 
 </div>
 
@@ -304,62 +229,7 @@
     const btnDelete   = document.getElementById('drawer-delete');
     const drawerError = document.getElementById('drawer-error');
 
-    const filePhoto    = document.getElementById('field-photo');
-    const previewContainer = document.getElementById('avatar-preview-container');
 
-    const fields = {
-        name:         document.getElementById('field-name'),
-        email:        document.getElementById('field-email'),
-        phone:        document.getElementById('field-phone'),
-        birth_date:   document.getElementById('field-birth-date'),
-        cpf:          document.getElementById('field-cpf'),
-        zip_code:     document.getElementById('client_zip_code'),
-        city:         document.getElementById('client_city'),
-        street:       document.getElementById('client_street'),
-        number:       document.getElementById('client_number'),
-        state:        document.getElementById('client_state'),
-    };
-
-    // ── Photo Preview ───────────────────────────────────────────────────
-    filePhoto.addEventListener('change', function () {
-        const file = this.files[0];
-        const errEl = document.getElementById('err-profile-photo');
-        
-        clearTimeout(photoErrorTimeout);
-        errEl.classList.add('hidden');
-        errEl.textContent = '';
-        
-        if (file) {
-            if (file.size > 2 * 1024 * 1024) {
-                filePhoto.value = '';
-                errEl.textContent = "A foto deve ter no máximo 2MB.";
-                errEl.classList.remove('hidden');
-                
-                if (editingId) {
-                    if (currentClient && currentClient.profile_photo_url) {
-                        previewContainer.innerHTML = `<img src="${currentClient.profile_photo_url}" class="w-full h-full object-cover rounded-full">`;
-                    } else {
-                        const initials = currentClient ? currentClient.initials : 'CL';
-                        previewContainer.innerHTML = initials;
-                    }
-                } else {
-                    previewContainer.innerHTML = `<svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"/></svg>`;
-                }
-
-                photoErrorTimeout = setTimeout(() => {
-                    errEl.classList.add('hidden');
-                    errEl.textContent = '';
-                }, 4000);
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                previewContainer.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-full">`;
-            }
-            reader.readAsDataURL(file);
-        }
-    });
 
     // ── Drawer open/close ───────────────────────────────────────────────
     function openDrawer(mode, data) {
@@ -385,19 +255,11 @@
                 }
             }
 
-            if (data.profile_photo_url || data.photo_url) {
-                previewContainer.innerHTML = `<img src="${data.profile_photo_url || data.photo_url}" class="w-full h-full object-cover rounded-full">`;
-            } else {
-                const initials = data.initials || (data.name ? data.name.substring(0, 2) : 'CL');
-                previewContainer.innerHTML = initials;
-            }
-
             btnDelete.classList.remove('hidden');
             btnSubmit.textContent = 'Salvar alterações';
         } else {
             btnDelete.classList.add('hidden');
             btnSubmit.textContent = 'Finalizar cadastro';
-            previewContainer.innerHTML = `<svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"/></svg>`;
         }
 
         overlay.classList.remove('hidden');
@@ -749,10 +611,7 @@
             }
         }
 
-        const photoUrl = client.profile_photo_url;
-        const avatarContent = photoUrl 
-            ? `<img src="${photoUrl}" class="w-full h-full object-cover rounded-full">` 
-            : (client.initials || 'CL');
+        const initials = client.initials || (client.name ? client.name.substring(0, 2).toUpperCase() : 'CL');
 
         const html = `
         <!-- Drawer Header -->
@@ -778,19 +637,9 @@
             
             <!-- Profile Photo -->
             <div class="flex flex-col items-center gap-3">
-                <div id="detail-avatar-container" class="w-[120px] h-[120px] rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-3xl uppercase border border-coinpel-primary/20 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
-                    ${avatarContent}
+                <div id="detail-avatar-container" class="w-[120px] h-[120px] rounded-full bg-[#593E75] text-white font-bold text-4xl uppercase border border-coinpel-primary/20 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
+                    ${initials}
                 </div>
-                <div class="text-center flex items-center justify-center gap-3">
-                    <label id="detail-photo-label" for="detail-field-photo" class="text-sm font-semibold text-coinpel-primary hover:underline transition cursor-pointer">
-                        ${photoUrl ? 'Atualizar foto' : 'Adicionar foto'}
-                    </label>
-                    <input id="detail-field-photo" name="profile_photo" type="file" accept="image/*" class="hidden">
-                    <button type="button" id="btn-delete-detail-photo" class="${photoUrl ? '' : 'hidden'} text-xs font-semibold text-[#EB5757] hover:underline transition cursor-pointer">
-                        Remover foto
-                    </button>
-                </div>
-                <p id="detail-photo-feedback" class="text-xs text-center mt-1 font-semibold hidden"></p>
             </div>
 
             <!-- Seção: Dados pessoais -->
@@ -1017,27 +866,10 @@
             detailsEl.innerHTML = `CPF: ${client.cpf} &nbsp;•&nbsp; Tel: ${client.phone}`;
         }
 
-        const imgContainer = card;
-        if (imgContainer) {
-            const img = imgContainer.querySelector('img');
-            const initialsDiv = imgContainer.querySelector('.bg-coinpel-primary\\/10');
-            
-            const photoUrl = client.profile_photo_url;
-                
-            if (photoUrl) {
-                if (img) {
-                    img.src = photoUrl;
-                } else if (initialsDiv) {
-                    initialsDiv.outerHTML = `<img src="${photoUrl}" alt="${client.name}" class="w-14 h-14 rounded-full object-cover border border-gray-100 shrink-0 shadow-sm">`;
-                }
-            } else {
-                const initials = client.initials || 'CL';
-                if (initialsDiv) {
-                    initialsDiv.textContent = initials;
-                } else if (img) {
-                    img.outerHTML = `<div class="flex items-center justify-center w-14 h-14 rounded-full bg-coinpel-primary/10 text-coinpel-primary font-bold text-lg uppercase border border-coinpel-primary/20 shrink-0 shadow-sm">${initials}</div>`;
-                }
-            }
+        const initialsDiv = card.querySelector('.bg-\\[\\#593E75\\]');
+        if (initialsDiv) {
+            const initials = client.initials || (client.name ? client.name.substring(0, 2).toUpperCase() : 'CL');
+            initialsDiv.textContent = initials;
         }
     }
 
@@ -1116,156 +948,7 @@
         }
     }
 
-    async function uploadDetailPhoto(input) {
-        const file = input.files[0];
-        const feedbackEl = document.getElementById('detail-photo-feedback');
-        const detailError = document.getElementById('detail-drawer-error');
-        
-        clearTimeout(detailPhotoErrorTimeout);
-        if (feedbackEl) {
-            feedbackEl.classList.add('hidden');
-            feedbackEl.textContent = '';
-            feedbackEl.className = 'text-xs text-center mt-1 font-semibold';
-        }
 
-        if (!file) return;
-
-        // Size check
-        if (file.size > 2 * 1024 * 1024) {
-            input.value = '';
-            if (feedbackEl) {
-                feedbackEl.textContent = "A foto deve ter no máximo 2MB.";
-                feedbackEl.className = 'text-xs text-center mt-1 font-semibold text-red-600';
-                feedbackEl.classList.remove('hidden');
-            }
-            populateClientDetail(currentClient);
-
-            detailPhotoErrorTimeout = setTimeout(() => {
-                if (feedbackEl) {
-                    feedbackEl.classList.add('hidden');
-                    feedbackEl.textContent = '';
-                }
-            }, 4000);
-            return;
-        }
-
-        clearDetailErrors();
-        if (detailError) {
-            detailError.classList.add('hidden');
-            detailError.textContent = '';
-        }
-
-        const detailAvatarContainer = document.getElementById('detail-avatar-container');
-        if (detailAvatarContainer) {
-            detailAvatarContainer.innerHTML = '<span class="text-xs font-semibold text-gray-500">Enviando...</span>';
-        }
-
-        const formData = new FormData();
-        formData.append('profile_photo', file);
-        formData.append('name', currentClient.name || '');
-        formData.append('birth_date', currentClient.birth_date ? currentClient.birth_date.split('/').reverse().join('-') : '');
-        formData.append('cpf', currentClient.cpf || '');
-        formData.append('zip_code', currentClient.zip_code || '');
-        formData.append('city', currentClient.city || '');
-        formData.append('street', currentClient.street || '');
-        formData.append('number', currentClient.number || '');
-        formData.append('state', currentClient.state || '');
-        formData.append('email', currentClient.email || '');
-        formData.append('phone', currentClient.phone || '');
-        formData.append('_method', 'PATCH');
-
-        try {
-            const response = await fetch(`/customers/${currentClient.id}`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: formData
-            });
-
-            const json = await response.json();
-
-            if (!response.ok) {
-                if (response.status === 422 && json.errors) {
-                    showDetailErrors(json.errors);
-                } else {
-                    if (detailError) {
-                        detailError.textContent = json.message || 'Ocorreu um erro ao atualizar a foto.';
-                        detailError.classList.remove('hidden');
-                    }
-                }
-                populateClientDetail(currentClient);
-                return;
-            }
-
-            const clientRes = await fetch(`/customers/${currentClient.id}`, {
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                }
-            });
-            const freshClient = await clientRes.json();
-
-            currentClient = freshClient;
-            populateClientDetail(freshClient);
-            updateCardInList(currentClient);
-
-            if (feedbackEl) {
-                feedbackEl.textContent = "Foto atualizada!";
-                feedbackEl.className = 'text-xs text-center mt-1 font-semibold text-green-600';
-                feedbackEl.classList.remove('hidden');
-                setTimeout(() => {
-                    feedbackEl.classList.add('hidden');
-                    feedbackEl.textContent = '';
-                }, 3000);
-            }
-
-        } catch (err) {
-            if (detailError) {
-                detailError.textContent = 'Erro ao enviar foto. Tente novamente.';
-                detailError.classList.remove('hidden');
-            }
-            populateClientDetail(currentClient);
-        }
-    }
-
-    async function deleteDetailPhoto() {
-        if (!currentClient) return;
-        if (!confirm('Remover foto de perfil?')) return;
-
-        try {
-            const response = await fetch(`/clients/${currentClient.id}/photo`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'X-HTTP-Method-Override': 'DELETE',
-                },
-                body: JSON.stringify({ _method: 'DELETE' }),
-            });
-
-            const json = await response.json();
-            if (response.ok) {
-                const clientRes = await fetch(`/customers/${currentClient.id}`, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    }
-                });
-                const freshClient = await clientRes.json();
-                
-                currentClient = freshClient;
-                populateClientDetail(currentClient);
-                updateCardInList(currentClient);
-            } else {
-                alert(json.message || 'Erro ao remover a foto.');
-            }
-        } catch (err) {
-            alert('Erro de conexão ao remover a foto.');
-        }
-    }
 
     // ── Flash from sessionStorage ──────────────────────────────────────────
     const flash = sessionStorage.getItem('flash_status');

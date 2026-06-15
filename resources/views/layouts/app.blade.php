@@ -161,15 +161,15 @@
 
                     <div class="relative" id="notification-dropdown">
                         <button id="notification-btn" class="text-gray-400 hover:text-gray-600 focus:outline-none transition relative cursor-pointer p-1">
-                            <span id="notification-badge" class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-coinpel-notification-red text-white text-[10px] font-bold rounded-full border border-white flex items-center justify-center hidden"></span>
+                            <span id="notification-badge" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white hidden pointer-events-none"></span>
                             <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"></path>
                             </svg>
                         </button>
 
-                        <div id="notification-menu" class="hidden absolute top-full right-0 mt-2 w-[460px] bg-white rounded-xl shadow-xl border border-gray-200 z-50 transform origin-top-right flex flex-col" onclick="event.stopPropagation()">
+                        <div id="notification-menu" class="hidden absolute top-full right-0 mt-2 w-[460px] bg-white rounded-xl shadow-xl border border-gray-200 z-50 transform origin-top-right flex flex-col overflow-hidden" onclick="event.stopPropagation()">
                             {{-- Header --}}
-                            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white shrink-0 relative z-10">
                                 <div class="flex items-center gap-2">
                                     {{-- ícone sino roxo --}}
                                     <svg class="w-5 h-5 text-[#593E75]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -187,15 +187,8 @@
                             </div>
                             
                             {{-- Content Scroll --}}
-                            <div id="notification-list" class="divide-y divide-gray-100">
+                            <div id="notification-list" class="divide-y divide-gray-100 max-h-[360px] overflow-y-auto overscroll-contain flex-1 relative z-0">
                                 {{-- Carregado dinamicamente via JS --}}
-                            </div>
-
-                            {{-- Footer --}}
-                            <div id="notif-load-more" class="px-5 py-3 border-t border-gray-100 hidden shrink-0">
-                                <button onclick="loadMoreNotifications()" class="w-full text-sm text-[#593E75] font-medium hover:text-[#381794] transition-colors py-1 cursor-pointer">
-                                    Ver mais notificações
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -219,6 +212,13 @@
                         </button>
 
                         <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 transform origin-top-right">
+                            <button onclick="openGlobalProfileDrawer()" class="flex items-center gap-2 w-full px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition cursor-pointer text-left">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
+                                </svg>
+                                <span>Editar perfil</span>
+                            </button>
+                            <div class="h-px bg-gray-100 my-1"></div>
                             <a href="{{ route('users.index') }}" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0 1 10.089 21c-2.913 0-5.552-.843-7.76-2.3a4.125 4.125 0 0 1 7.533-2.493M15 9.75a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4.5 9.75a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"></path>
@@ -404,10 +404,9 @@
             const notificationBadge = document.getElementById('notification-badge');
             const notificationList = document.getElementById('notification-list');
             const notifBadgeCount = document.getElementById('notif-badge-count');
-            const notifLoadMore = document.getElementById('notif-load-more');
 
             let currentOffset = 0;
-            const limit = 5;
+            const limit = 20;
             let isLoading = false;
 
             const notificationIcons = {
@@ -480,9 +479,9 @@
             }
 
             function updateBadge(count) {
+                const isMenuOpen = notificationMenu && !notificationMenu.classList.contains('hidden');
                 if (notificationBadge) {
-                    if (count > 0) {
-                        notificationBadge.textContent = count;
+                    if (count > 0 && !isMenuOpen) {
                         notificationBadge.classList.remove('hidden');
                     } else {
                         notificationBadge.classList.add('hidden');
@@ -513,13 +512,6 @@
                 if (!append) {
                     currentOffset = 0;
                     showLoadingSkeleton();
-                    if (notifLoadMore) notifLoadMore.classList.add('hidden');
-                } else {
-                    const loadMoreBtn = notifLoadMore.querySelector('button');
-                    if (loadMoreBtn) {
-                        loadMoreBtn.disabled = true;
-                        loadMoreBtn.textContent = 'Carregando...';
-                    }
                 }
 
                 try {
@@ -571,12 +563,6 @@
                     }
 
                     currentOffset = data.nextOffset;
-
-                    if (data.hasMore) {
-                        if (notifLoadMore) notifLoadMore.classList.remove('hidden');
-                    } else {
-                        if (notifLoadMore) notifLoadMore.classList.add('hidden');
-                    }
                 } catch (err) {
                     if (!append) {
                         notificationList.innerHTML = `
@@ -587,11 +573,6 @@
                     }
                 } finally {
                     isLoading = false;
-                    const loadMoreBtn = notifLoadMore.querySelector('button');
-                    if (loadMoreBtn) {
-                        loadMoreBtn.disabled = false;
-                        loadMoreBtn.textContent = 'Ver mais notificações';
-                    }
                 }
             }
 
@@ -617,6 +598,7 @@
 
                     if (isHidden) {
                         notificationMenu.classList.remove('hidden');
+                        if (notificationBadge) notificationBadge.classList.add('hidden');
                         loadNotifications(false);
                     } else {
                         window.closeNotifications();
@@ -640,6 +622,170 @@
             }
             window.notificationInterval = setInterval(fetchNotificationsCountOnly, 60000);
         })();
+    </script>
+
+    {{-- Global Profile Drawer --}}
+    <div id="global-profile-drawer-overlay" class="fixed inset-0 bg-black/40 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="global-profile-drawer" class="fixed inset-y-0 right-0 w-[440px] bg-white z-[70] shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+            <h2 class="text-lg font-bold text-gray-800">Editar Perfil</h2>
+            <button onclick="closeGlobalProfileDrawer()" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div id="global-profile-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
+        <div class="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+            <div class="flex flex-col items-center gap-2 mb-4">
+                <div id="global-profile-avatar-wrap" class="relative">
+                    @if(auth()->user()->profile_photo_path)
+                        <img id="global-profile-photo-preview" src="{{ Storage::url(auth()->user()->profile_photo_path) }}" class="w-24 h-24 rounded-full object-cover border-2 border-gray-200">
+                    @else
+                        <div id="global-profile-photo-preview" class="w-24 h-24 rounded-full bg-[#593E75] flex items-center justify-center text-white font-bold text-2xl">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}{{ str_contains(auth()->user()->name, ' ') ? strtoupper(substr(explode(' ', auth()->user()->name)[1], 0, 1)) : '' }}
+                        </div>
+                    @endif
+                </div>
+                <div class="flex items-center gap-3 mt-2">
+                    <label class="text-xs text-[#593E75] font-medium cursor-pointer hover:text-[#381794] transition-colors">
+                        Trocar foto
+                        <input type="file" id="global-profile-photo-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewGlobalProfilePhoto(this)">
+                    </label>
+                    <button type="button" id="global-profile-remove-photo-btn" class="{{ auth()->user()->profile_photo_path ? '' : 'hidden' }} text-xs text-red-500 hover:text-red-700 font-medium transition-colors flex items-center gap-1 cursor-pointer" onclick="removeGlobalProfilePhoto()">
+                        Remover foto
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-xs font-semibold text-gray-500 mb-1.5">Nome:</label>
+                <input id="global-profile-name" type="text" value="{{ auth()->user()->name }}" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary transition">
+            </div>
+            <div class="mb-4">
+                <label class="block text-xs font-semibold text-gray-500 mb-1.5">E-mail:</label>
+                <input id="global-profile-email" type="email" value="{{ auth()->user()->email }}" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary transition">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-1.5">Nova senha (opcional):</label>
+                <input id="global-profile-password" type="password" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary transition" placeholder="Deixe em branco para não alterar">
+            </div>
+        </div>
+        <div class="shrink-0 px-6 py-4 border-t border-gray-100 space-y-2">
+            <button id="global-profile-submit" onclick="submitGlobalProfile()" class="w-full py-2.5 bg-coinpel-primary hover:opacity-95 text-white text-sm font-semibold rounded-lg transition cursor-pointer">Salvar alterações</button>
+            <button onclick="closeGlobalProfileDrawer()" class="w-full py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition cursor-pointer">Cancelar</button>
+        </div>
+    </div>
+    
+    <script>
+        const globalProfileDrawer = document.getElementById('global-profile-drawer');
+        const globalProfileOverlay = document.getElementById('global-profile-drawer-overlay');
+        const authUserId = {{ auth()->id() }};
+
+        function openGlobalProfileDrawer() {
+            const menu = document.getElementById('dropdown-menu');
+            if (menu) menu.classList.add('hidden');
+            
+            globalProfileOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                globalProfileOverlay.classList.remove('opacity-0');
+                globalProfileDrawer.classList.remove('translate-x-full');
+            }, 10);
+        }
+
+        function closeGlobalProfileDrawer() {
+            globalProfileOverlay.classList.add('opacity-0');
+            globalProfileDrawer.classList.add('translate-x-full');
+            setTimeout(() => {
+                globalProfileOverlay.classList.add('hidden');
+            }, 300);
+        }
+
+        function previewGlobalProfilePhoto(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            if (file.size > 2 * 1024 * 1024) {
+                input.value = ''; alert('A foto deve ter no máximo 2MB.'); return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const wrap = document.getElementById('global-profile-avatar-wrap');
+                if (wrap) {
+                    wrap.innerHTML = `<img id="global-profile-photo-preview" src="${e.target.result}" class="w-24 h-24 rounded-full object-cover border-2 border-gray-200">`;
+                }
+                document.getElementById('global-profile-remove-photo-btn').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeGlobalProfilePhoto() {
+            if (!confirm('Remover sua foto de perfil?')) return;
+            const btn = document.getElementById('global-profile-remove-photo-btn');
+            btn.textContent = 'Removendo...'; btn.disabled = true;
+            
+            fetch(`/users/${authUserId}/photo`, {
+                method: 'DELETE',
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}', 'Accept': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.success) throw new Error(data.message);
+                const wrap = document.getElementById('global-profile-avatar-wrap');
+                if (wrap) wrap.innerHTML = `<div id="global-profile-photo-preview" class="w-24 h-24 rounded-full bg-[#593E75] flex items-center justify-center text-white font-bold text-2xl">${data.initials}</div>`;
+                btn.classList.add('hidden'); btn.textContent = 'Remover foto'; btn.disabled = false;
+                
+                // Update top right avatar immediately
+                const topBtn = document.querySelector('#profile-dropdown button');
+                if (topBtn) {
+                    const img = topBtn.querySelector('img');
+                    if (img) {
+                        img.outerHTML = `<span class="flex items-center justify-center w-10 h-10 text-sm font-semibold text-white rounded-full bg-coinpel-primary shadow-sm transition uppercase">${data.initials}</span>`;
+                    }
+                }
+            })
+            .catch(err => {
+                btn.textContent = 'Remover foto'; btn.disabled = false;
+                alert(err.message || 'Erro ao remover foto.');
+            });
+        }
+
+        function submitGlobalProfile() {
+            const btn = document.getElementById('global-profile-submit');
+            btn.textContent = 'Salvando...'; btn.disabled = true;
+            
+            const formData = new FormData();
+            formData.append('_method', 'PATCH');
+            formData.append('name', document.getElementById('global-profile-name').value);
+            formData.append('email', document.getElementById('global-profile-email').value);
+            
+            const pass = document.getElementById('global-profile-password').value;
+            if (pass) formData.append('password', pass);
+            
+            const photoInput = document.getElementById('global-profile-photo-input');
+            if (photoInput && photoInput.files[0]) {
+                formData.append('profile_photo', photoInput.files[0]);
+            }
+            
+            fetch(`/users/${authUserId}`, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}', 'Accept': 'application/json' },
+                body: formData
+            })
+            .then(async r => {
+                const data = await r.json();
+                if (!r.ok) throw data;
+                return data;
+            })
+            .then(data => {
+                window.location.reload();
+            })
+            .catch(err => {
+                btn.textContent = 'Salvar alterações'; btn.disabled = false;
+                if (err.errors) {
+                    alert('Erro na validação dos campos. Verifique o email.');
+                } else {
+                    alert(err.message || 'Erro ao atualizar perfil.');
+                }
+            });
+        }
     </script>
     @stack('scripts')
 </body>

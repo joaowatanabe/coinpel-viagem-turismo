@@ -50,40 +50,12 @@
                 @forelse ($users as $user)
                     <tr data-user-id="{{ $user->id }}" class="hover:bg-gray-50/60 transition {{ $user->is_blocked ? 'opacity-60' : '' }}">
 
-                         {{-- Avatar + Name --}}
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center gap-3">
-                                <div class="relative shrink-0 user-avatar-wrapper" data-user-id="{{ $user->id }}">
-                                    <div class="user-avatar-cell">
-                                        @if($user->profile_photo_path)
-                                            <img src="{{ asset('storage/'.$user->profile_photo_path) }}" alt="{{ $user->name }}" class="w-14 h-14 rounded-full object-cover border border-gray-100 shadow-sm shrink-0">
-                                        @else
-                                            @php
-                                                $parts = explode(' ', trim($user->name));
-                                                $initials = strtoupper(mb_substr($parts[0], 0, 1));
-                                                if (isset($parts[1])) {
-                                                    $initials .= strtoupper(mb_substr($parts[1], 0, 1));
-                                                }
-                                            @endphp
-                                            <div class="w-14 h-14 rounded-full bg-[#593E75] flex items-center justify-center text-white font-bold text-sm">
-                                                {{ $initials }}
-                                            </div>
-                                        @endif
-                                    </div>
-                                    @if($user->is_blocked)
-                                        <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center user-blocked-indicator" title="Bloqueado">
-                                            <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0 1 10 0v2a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Zm8-2v2H7V7a3 3 0 0 1 6 0Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </span>
-                                    @endif
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-sm font-bold text-gray-800 leading-tight">{{ $user->name }}</span>
-                                    @if(auth()->id() === $user->id)
-                                        <span class="text-[10px] font-semibold text-coinpel-primary mt-0.5 leading-none">Você</span>
-                                    @endif
-                                </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-gray-800 leading-tight">{{ $user->name }}</span>
+                                @if(auth()->id() === $user->id)
+                                    <span class="text-[10px] font-semibold text-coinpel-primary mt-0.5 leading-none">Você</span>
+                                @endif
                             </div>
                         </td>
 
@@ -250,50 +222,6 @@
         <div>
             <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Dados do administrador</h3>
 
-            <!-- Bloco de foto no drawer de edição -->
-            <div class="flex flex-col items-center gap-2 mb-4">
-                <!-- Avatar atual (foto ou iniciais) -->
-                <div id="user-edit-avatar-wrap" class="relative">
-                    @if($user->profile_photo_path ?? false)
-                    <img id="user-edit-photo-preview"
-                         src="{{ asset('storage/' . $user->profile_photo_path) }}"
-                         class="w-20 h-20 rounded-full object-cover border-2 
-                                border-gray-200">
-                    @else
-                    <div id="user-edit-photo-preview"
-                         class="w-20 h-20 rounded-full bg-[#593E75] flex items-center 
-                                justify-center text-white font-bold text-xl">
-                        {{ strtoupper(substr($editingUser->name ?? 'U', 0, 1)) }}
-                    </div>
-                    @endif
-                </div>
-
-                <!-- Ações de foto -->
-                <div class="flex items-center gap-3">
-                    <label class="text-xs text-[#593E75] font-medium cursor-pointer 
-                                  hover:text-[#381794] transition-colors">
-                        Trocar foto
-                        <input type="file" name="profile_photo" 
-                               id="user-edit-photo-input"
-                               accept="image/jpeg,image/png,image/webp"
-                               class="hidden"
-                               onchange="previewUserPhoto(this)">
-                    </label>
-
-                    <!-- Botão remover: só aparece se tiver foto -->
-                    <button type="button"
-                            id="user-remove-photo-btn"
-                            class="{{ ($editingUser->profile_photo_path ?? false) ? '' : 'hidden' }}
-                                   text-xs text-red-500 hover:text-red-700 
-                                   font-medium transition-colors flex items-center gap-1"
-                            onclick="removeUserPhoto({{ $editingUser->id ?? 0 }})">
-                        Remover foto
-                    </button>
-                </div>
-                
-                <p id="err-profile-photo" class="hidden mt-1 text-xs text-red-600 text-center"></p>
-            </div>
-
             {{-- Name --}}
             <div class="mb-4">
                 <label for="field-name" class="block text-xs font-semibold text-gray-500 mb-1.5">Nome:</label>
@@ -407,118 +335,7 @@
         iconEyeSlash.classList.toggle('hidden', !isHidden);
     });
 
-    // ── Photo upload preview & deletion functions ─────────────────────────
-    window.previewUserPhoto = function (input) {
-        if (!input.files || !input.files[0]) return;
-        
-        const file = input.files[0];
-        const errPhoto = document.getElementById('err-profile-photo');
-        if (errPhoto) {
-            errPhoto.classList.add('hidden');
-            errPhoto.textContent = '';
-        }
-        
-        // Validar tamanho: máx 2MB
-        if (file.size > 2 * 1024 * 1024) {
-            input.value = '';
-            showToast('A foto deve ter no máximo 2MB.', 'error');
-            return;
-        }
-        
-        // MIME check
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-        if (!allowedTypes.includes(file.type)) {
-            input.value = '';
-            showToast('Formato inválido. Apenas JPEG, PNG ou WEBP.', 'error');
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const wrap = document.getElementById('user-edit-avatar-wrap');
-            if (wrap) {
-                wrap.innerHTML = `<img id="user-edit-photo-preview" 
-                                       src="${e.target.result}"
-                                       class="w-20 h-20 rounded-full object-cover 
-                                              border-2 border-gray-200">`;
-            }
-            // Mostrar botão remover ao selecionar nova foto
-            const removeBtn = document.getElementById('user-remove-photo-btn');
-            if (removeBtn) removeBtn.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-    };
-
-    window.removeUserPhoto = function (userId) {
-        if (!userId || userId === 0) userId = editingId;
-        if (!userId) return;
-        if (!confirm('Remover a foto de perfil deste usuário?')) return;
-        
-        const btn = document.getElementById('user-remove-photo-btn');
-        if (btn) {
-            btn.textContent = 'Removendo...';
-            btn.disabled = true;
-        }
-        
-        fetch(`/users/${userId}/photo`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json',
-            }
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (!data.success) throw new Error(data.message);
-            
-            // Atualizar preview no drawer: voltar para iniciais
-            const wrap = document.getElementById('user-edit-avatar-wrap');
-            if (wrap) {
-                wrap.innerHTML = `
-                    <div id="user-edit-photo-preview"
-                         class="w-20 h-20 rounded-full bg-[#593E75] flex items-center 
-                                justify-center text-white font-bold text-xl">
-                        ${data.initials}
-                    </div>`;
-            }
-            
-            // Ocultar botão remover
-            if (btn) {
-                btn.classList.add('hidden');
-                btn.textContent = 'Remover foto';
-                btn.disabled = false;
-            }
-            
-            // Atualizar avatar na linha da tabela
-            const row = document.querySelector(`tr[data-user-id="${userId}"]`);
-            if (row) {
-                const avatarCell = row.querySelector('.user-avatar-cell');
-                if (avatarCell) {
-                    avatarCell.innerHTML = `
-                        <div class="w-14 h-14 rounded-full bg-[#593E75] flex items-center 
-                                    justify-center text-white font-bold text-sm">
-                            ${data.initials}
-                        </div>`;
-                }
-
-                // Also update dataset on edit button in the row
-                const btnEdit = row.querySelector('.btn-edit-user');
-                if (btnEdit) {
-                    btnEdit.dataset.photo_path = '';
-                    btnEdit.dataset.photo_url = '';
-                }
-            }
-            
-            showToast('Foto removida com sucesso.', 'success');
-        })
-        .catch(err => {
-            if (btn) {
-                btn.textContent = 'Remover foto';
-                btn.disabled = false;
-            }
-            showToast(err.message || 'Erro ao remover foto.', 'error');
-        });
-    };
+    // ── Photo functionality moved to global profile drawer ─────────────────────────
 
     // ── Drawer open/close ────────────────────────────────────────────────
     function openDrawer(mode, data) {
@@ -552,36 +369,6 @@
             }
 
             btnSubmit.textContent = 'Salvar alterações';
-
-            // Check photo status
-            if (data.photo_path && data.photo_url) {
-                if (wrap) {
-                    wrap.innerHTML = `<img id="user-edit-photo-preview" src="${data.photo_url}" class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">`;
-                }
-                if (removeBtn) {
-                    removeBtn.classList.remove('hidden');
-                    removeBtn.setAttribute('onclick', `removeUserPhoto(${data.id})`);
-                }
-            } else {
-                const parts = (data.name ?? '').trim().split(' ');
-                let initials = 'U';
-                if (parts[0]) {
-                    initials = parts[0].substring(0, 1).toUpperCase();
-                    if (parts[1]) {
-                        initials += parts[1].substring(0, 1).toUpperCase();
-                    }
-                }
-                if (wrap) {
-                    wrap.innerHTML = `
-                        <div id="user-edit-photo-preview" class="w-20 h-20 rounded-full bg-[#593E75] flex items-center justify-center text-white font-bold text-xl">
-                            ${initials}
-                        </div>
-                    `;
-                }
-                if (removeBtn) {
-                    removeBtn.classList.add('hidden');
-                }
-            }
         } else {
             drawerTitle.textContent    = 'Novo Usuário';
             labelPassword.textContent  = 'Senha provisória:';
@@ -589,17 +376,6 @@
             btnDelete.classList.add('hidden');
             statusContainer.classList.remove('opacity-50', 'pointer-events-none');
             btnSubmit.textContent = 'Finalizar cadastro';
-
-            if (wrap) {
-                wrap.innerHTML = `
-                    <div id="user-edit-photo-preview" class="w-20 h-20 rounded-full bg-[#593E75] flex items-center justify-center text-white font-bold text-xl">
-                        U
-                    </div>
-                `;
-            }
-            if (removeBtn) {
-                removeBtn.classList.add('hidden');
-            }
         }
 
         window.userId = editingId;
@@ -688,11 +464,6 @@
         
         if (isEdit) {
             formData.append('_method', 'PATCH');
-        }
-
-        const filePhotoInput = document.getElementById('user-edit-photo-input');
-        if (filePhotoInput && filePhotoInput.files.length > 0) {
-            formData.append('profile_photo', filePhotoInput.files[0]);
         }
 
         btnSubmit.disabled    = true;

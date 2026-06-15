@@ -170,8 +170,8 @@
                     id="toggle-notify_on_new_trip"
                     aria-checked="{{ ($settings['notify_on_new_trip'] ?? 'false') === 'true' ? 'true' : 'false' }}"
                     onclick="toggleSetting('notify_on_new_trip', this)"
-                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer {{ ($settings['notify_on_new_trip'] ?? 'false') === 'true' ? 'bg-[#593E75]' : 'bg-gray-200' }}">
-                <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform {{ ($settings['notify_on_new_trip'] ?? 'false') === 'true' ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none {{ ($settings['notify_on_new_trip'] ?? 'false') === 'true' ? 'bg-coinpel-primary' : 'bg-gray-200' }}">
+                <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out {{ ($settings['notify_on_new_trip'] ?? 'false') === 'true' ? 'translate-x-5' : 'translate-x-0' }}"></span>
             </button>
         </div>
 
@@ -190,8 +190,8 @@
                     id="toggle-allow_booking"
                     aria-checked="{{ ($settings['allow_booking'] ?? 'false') === 'true' ? 'true' : 'false' }}"
                     onclick="toggleSetting('allow_booking', this)"
-                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer {{ ($settings['allow_booking'] ?? 'false') === 'true' ? 'bg-[#593E75]' : 'bg-gray-200' }}">
-                <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform {{ ($settings['allow_booking'] ?? 'false') === 'true' ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none {{ ($settings['allow_booking'] ?? 'false') === 'true' ? 'bg-coinpel-primary' : 'bg-gray-200' }}">
+                <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out {{ ($settings['allow_booking'] ?? 'false') === 'true' ? 'translate-x-5' : 'translate-x-0' }}"></span>
             </button>
         </div>
 
@@ -210,8 +210,8 @@
                     id="toggle-maintenance_mode"
                     aria-checked="{{ ($settings['maintenance_mode'] ?? 'false') === 'true' ? 'true' : 'false' }}"
                     onclick="toggleSetting('maintenance_mode', this)"
-                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer {{ ($settings['maintenance_mode'] ?? 'false') === 'true' ? 'bg-[#593E75]' : 'bg-gray-200' }}">
-                <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform {{ ($settings['maintenance_mode'] ?? 'false') === 'true' ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none {{ ($settings['maintenance_mode'] ?? 'false') === 'true' ? 'bg-coinpel-primary' : 'bg-gray-200' }}">
+                <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out {{ ($settings['maintenance_mode'] ?? 'false') === 'true' ? 'translate-x-5' : 'translate-x-0' }}"></span>
             </button>
         </div>
 
@@ -230,8 +230,8 @@
                     id="toggle-require_driver_assignment"
                     aria-checked="{{ ($settings['require_driver_assignment'] ?? 'false') === 'true' ? 'true' : 'false' }}"
                     onclick="toggleSetting('require_driver_assignment', this)"
-                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer {{ ($settings['require_driver_assignment'] ?? 'false') === 'true' ? 'bg-[#593E75]' : 'bg-gray-200' }}">
-                <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform {{ ($settings['require_driver_assignment'] ?? 'false') === 'true' ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none {{ ($settings['require_driver_assignment'] ?? 'false') === 'true' ? 'bg-coinpel-primary' : 'bg-gray-200' }}">
+                <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out {{ ($settings['require_driver_assignment'] ?? 'false') === 'true' ? 'translate-x-5' : 'translate-x-0' }}"></span>
             </button>
         </div>
     </div>
@@ -293,12 +293,12 @@
         const newValue = !isActive;
         
         btn.setAttribute('aria-checked', newValue);
-        btn.classList.toggle('bg-[#593E75]', newValue);
+        btn.classList.toggle('bg-coinpel-primary', newValue);
         btn.classList.toggle('bg-gray-200', !newValue);
         
         const span = btn.querySelector('span');
-        span.classList.toggle('translate-x-6', newValue);
-        span.classList.toggle('translate-x-1', !newValue);
+        span.classList.toggle('translate-x-5', newValue);
+        span.classList.toggle('translate-x-0', !newValue);
         
         try {
             const response = await fetch('{{ route("settings.update") }}', {
@@ -322,10 +322,10 @@
         } catch (err) {
             // Reverter em caso de erro
             btn.setAttribute('aria-checked', isActive);
-            btn.classList.toggle('bg-[#593E75]', isActive);
+            btn.classList.toggle('bg-coinpel-primary', isActive);
             btn.classList.toggle('bg-gray-200', !isActive);
-            span.classList.toggle('translate-x-6', isActive);
-            span.classList.toggle('translate-x-1', !isActive);
+            span.classList.toggle('translate-x-5', isActive);
+            span.classList.toggle('translate-x-0', !isActive);
             alert('Erro de conexão ao salvar preferência.');
         }
     };
