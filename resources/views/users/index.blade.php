@@ -528,26 +528,6 @@
                         }
                     }
 
-                    // Update Avatar
-                    const avatarCell = row.querySelector('.user-avatar-cell');
-                    if (avatarCell) {
-                        if (user.profile_photo_path) {
-                            const photoUrl = user.profile_photo_path.startsWith('http') ? user.profile_photo_path : `/storage/${user.profile_photo_path}`;
-                            avatarCell.innerHTML = `<img src="${photoUrl}" alt="${user.name}" class="w-14 h-14 rounded-full object-cover border border-gray-100 shadow-sm shrink-0">`;
-                        } else {
-                            const parts = user.name.trim().split(' ');
-                            let initials = parts[0].substring(0, 1).toUpperCase();
-                            if (parts.length > 1) {
-                                initials += parts[1].substring(0, 1).toUpperCase();
-                            }
-                            avatarCell.innerHTML = `
-                                <div class="w-14 h-14 rounded-full bg-[#593E75] flex items-center justify-center text-white font-bold text-sm">
-                                    ${initials}
-                                </div>
-                            `;
-                        }
-                    }
-
                     // Update dataset attributes on action button edit trigger
                     const btnEdit = row.querySelector('.btn-edit-user');
                     if (btnEdit) {

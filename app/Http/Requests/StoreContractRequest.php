@@ -16,8 +16,13 @@ class StoreContractRequest extends FormRequest
         $contract = $this->route('contract');
         $contractId = $contract instanceof \App\Models\Contract ? $contract->id : $contract;
 
+        $uniqueRule = \Illuminate\Validation\Rule::unique('contracts', 'number');
+        if ($contractId) {
+            $uniqueRule->ignore($contractId);
+        }
+
         return [
-            'number'      => ['required', 'string', 'max:255', \Illuminate\Validation\Rule::unique('contracts', 'number')->ignore($contractId)],
+            'number'      => ['required', 'string', 'max:255', $uniqueRule],
             'client_id'   => ['nullable', 'integer', 'exists:clients,id'],
             'trip_id'     => ['nullable', 'integer', 'exists:trips,id'],
             'description' => ['nullable', 'string'],

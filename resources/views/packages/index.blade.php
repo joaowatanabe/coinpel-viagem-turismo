@@ -813,7 +813,7 @@
     if (btnAddEmpty) btnAddEmpty.addEventListener('click', () => openDrawer('create'));
 
     btnClose.addEventListener('click', closeDrawer);
-    btnCancel.addEventListener('click', closeDrawer);
+    if (btnCancel) btnCancel.addEventListener('click', closeDrawer);
     overlay.addEventListener('click', closeDrawer);
     document.addEventListener('click', closeAllActionMenus);
 
