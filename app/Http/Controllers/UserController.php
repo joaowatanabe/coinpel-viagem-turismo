@@ -54,8 +54,9 @@ class UserController extends Controller
     public function update(StoreUserRequest $request, User $user): JsonResponse
     {
         $data = $request->validated();
+        $isBlocked = $data['is_blocked'] ?? false;
 
-        if (Auth::id() === $user->id && (bool) $data['is_blocked']) {
+        if (Auth::id() === $user->id && (bool) $isBlocked) {
             return response()->json([
                 'errors' => ['is_blocked' => ['Você não pode bloquear o seu próprio usuário.']]
             ], 422);
@@ -108,17 +109,30 @@ class UserController extends Controller
             $user->update(['profile_photo_path' => null]);
         }
 
-        $name     = $user->name;
-        $parts    = explode(' ', trim($name));
-        $initials = strtoupper(mb_substr($parts[0], 0, 1));
-        if (isset($parts[1])) {
-            $initials .= strtoupper(mb_substr($parts[1], 0, 1));
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto removida com sucesso.',
+            'initials' => mb_strtoupper(mb_substr($user->name, 0, 1)) . (str_contains($user->name, ' ') ? mb_strtoupper(mb_substr(explode(' ', $user->name)[1], 0, 1)) : '')
+        ]);
+    }
+
+    public function updatePhoto(Request $request, User $user): JsonResponse
+    {
+        $request->validate([
+            'profile_photo' => ['required', 'image', 'max:2048', 'mimes:jpeg,png,jpg,webp'],
+        ]);
+
+        if ($user->profile_photo_path) {
+            Storage::disk('public')->delete($user->profile_photo_path);
         }
 
+        $path = $request->file('profile_photo')->store('users', 'public');
+        $user->update(['profile_photo_path' => $path]);
+
         return response()->json([
-            'success'  => true,
-            'message'  => 'Foto removida com sucesso.',
-            'initials' => $initials,
+            'success' => true,
+            'message' => 'Foto atualizada com sucesso.',
+            'photo_url' => Storage::url($path),
         ]);
     }
 

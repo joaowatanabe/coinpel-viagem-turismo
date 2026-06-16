@@ -39,6 +39,7 @@ Route::middleware(['auth', 'must.change.password'])->group(function () {
 
     Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
     Route::patch('/users/{user}/toggle-block', [UserController::class, 'toggleBlock'])->name('users.toggle-block');
+    Route::post('/users/{user}/photo', [UserController::class, 'updatePhoto'])->name('users.photo.update');
     Route::delete('/users/{user}/photo', [UserController::class, 'destroyPhoto'])->name('users.photo.destroy');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 

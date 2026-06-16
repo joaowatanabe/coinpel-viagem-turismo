@@ -388,6 +388,19 @@
                 await deletePackage(id);
             });
         });
+
+        // Package Card Click (Detail/Edit)
+        document.querySelectorAll('.package-card').forEach(card => {
+            card.addEventListener('click', async function (e) {
+                // Ignore click if it was inside the action menu wrapper
+                if (e.target.closest('.package-actions-wrapper')) {
+                    return;
+                }
+                const id = card.dataset.id;
+                closeAllActionMenus();
+                await openDrawer('edit', id);
+            });
+        });
     }
 
     // Drawer triggers

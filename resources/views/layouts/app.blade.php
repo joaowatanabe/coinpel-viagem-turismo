@@ -197,13 +197,15 @@
 
                     <div class="relative" id="profile-dropdown">
                         <button onclick="toggleDropdown(event)" class="flex items-center gap-3 focus:outline-none cursor-pointer text-left">
-                            @if(auth()->user()->profile_photo_path)
-                                <img src="{{ Storage::url(auth()->user()->profile_photo_path) }}" alt="{{ auth()->user()->name }}" class="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-sm transition">
-                            @else
-                                <span class="flex items-center justify-center w-10 h-10 text-sm font-semibold text-white rounded-full bg-coinpel-primary shadow-sm transition uppercase">
-                                    {{ substr(auth()->user()->name, 0, 2) }}
-                                </span>
-                            @endif
+                            <div class="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-gray-100 shadow-sm">
+                                @if(auth()->user()->profile_photo_path)
+                                    <img src="{{ Storage::url(auth()->user()->profile_photo_path) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover transition">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center bg-coinpel-primary text-white text-sm font-semibold uppercase">
+                                        {{ mb_substr(auth()->user()->name, 0, 1) }}{{ str_contains(auth()->user()->name, ' ') ? mb_substr(explode(' ', auth()->user()->name)[1], 0, 1) : '' }}
+                                    </div>
+                                @endif
+                            </div>
                             
                             <div class="hidden md:flex flex-col">
                                 <span class="text-sm font-bold text-gray-800 leading-none">{{ auth()->user()->name }}</span>
@@ -626,29 +628,31 @@
 
     {{-- Global Profile Drawer --}}
     <div id="global-profile-drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
-    <div id="global-profile-drawer" class="fixed inset-y-0 right-0 w-[440px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+    <div id="global-profile-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
-            <h2 class="text-lg font-bold text-gray-800">Editar Perfil</h2>
+            <div class="flex items-center gap-2">
+                <h2 class="text-lg font-bold text-gray-800">Editar Perfil</h2>
+            </div>
             <button onclick="closeGlobalProfileDrawer()" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition cursor-pointer">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
             </button>
         </div>
         <div id="global-profile-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
-        <div class="flex-1 overflow-y-auto px-6 py-6 space-y-5">
-            <div class="flex flex-col items-center gap-2 mb-4">
+        <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+            <div class="flex flex-col items-center gap-2 mb-2">
                 <div id="global-profile-avatar-wrap" class="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
                     @if(auth()->user()->profile_photo_path)
                         <img id="global-profile-photo-preview" src="{{ Storage::url(auth()->user()->profile_photo_path) }}" class="w-full h-full object-cover">
                     @else
-                        <div id="global-profile-photo-preview" class="w-full h-full flex items-center justify-center bg-[#593E75] text-white font-bold text-2xl">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}{{ str_contains(auth()->user()->name, ' ') ? strtoupper(substr(explode(' ', auth()->user()->name)[1], 0, 1)) : '' }}
+                        <div id="global-profile-photo-preview" class="w-full h-full flex items-center justify-center bg-coinpel-primary text-white font-bold text-2xl uppercase">
+                            {{ mb_substr(auth()->user()->name, 0, 1) }}{{ str_contains(auth()->user()->name, ' ') ? mb_substr(explode(' ', auth()->user()->name)[1], 0, 1) : '' }}
                         </div>
                     @endif
                 </div>
                 <div class="flex items-center gap-3 mt-2">
                     <label class="text-xs text-[#593E75] font-medium cursor-pointer hover:text-[#381794] transition-colors">
                         Trocar foto
-                        <input type="file" id="global-profile-photo-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewGlobalProfilePhoto(this)">
+                        <input type="file" id="global-profile-photo-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="uploadGlobalProfilePhoto(this)">
                     </label>
                     <button type="button" id="global-profile-remove-photo-btn" class="{{ auth()->user()->profile_photo_path ? '' : 'hidden' }} text-xs text-red-500 hover:text-red-700 font-medium transition-colors flex items-center gap-1 cursor-pointer" onclick="removeGlobalProfilePhoto()">
                         Remover foto
@@ -701,21 +705,49 @@
 
         globalProfileOverlay.addEventListener('click', closeGlobalProfileDrawer);
 
-        function previewGlobalProfilePhoto(input) {
+        function uploadGlobalProfilePhoto(input) {
             if (!input.files || !input.files[0]) return;
             const file = input.files[0];
             if (file.size > 2 * 1024 * 1024) {
                 input.value = ''; alert('A foto deve ter no máximo 2MB.'); return;
             }
-            const reader = new FileReader();
-            reader.onload = function(e) {
+
+            const formData = new FormData();
+            formData.append('profile_photo', file);
+
+            fetch(`/users/${authUserId}/photo`, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}', 'Accept': 'application/json' },
+                body: formData
+            })
+            .then(async r => {
+                const data = await r.json();
+                if (!r.ok || !data.success) throw data;
+                return data;
+            })
+            .then(data => {
                 const wrap = document.getElementById('global-profile-avatar-wrap');
                 if (wrap) {
-                    wrap.innerHTML = `<img id="global-profile-photo-preview" src="${e.target.result}" class="w-full h-full object-cover">`;
+                    wrap.innerHTML = `<img id="global-profile-photo-preview" src="${data.photo_url}" class="w-full h-full object-cover">`;
                 }
                 document.getElementById('global-profile-remove-photo-btn').classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
+
+                const topBtn = document.querySelector('#profile-dropdown button');
+                if (topBtn) {
+                    const avatarWrap = topBtn.querySelector('.relative.w-10.h-10');
+                    if (avatarWrap) {
+                        avatarWrap.innerHTML = `<img src="${data.photo_url}" class="w-full h-full object-cover">`;
+                    }
+                }
+            })
+            .catch(err => {
+                input.value = '';
+                if (err.errors && err.errors.profile_photo) {
+                    alert(err.errors.profile_photo[0]);
+                } else {
+                    alert(err.message || 'Erro ao enviar foto.');
+                }
+            });
         }
 
         function removeGlobalProfilePhoto() {
@@ -734,12 +766,11 @@
                 if (wrap) wrap.innerHTML = `<div id="global-profile-photo-preview" class="w-full h-full flex items-center justify-center bg-[#593E75] text-white font-bold text-2xl">${data.initials}</div>`;
                 btn.classList.add('hidden'); btn.textContent = 'Remover foto'; btn.disabled = false;
                 
-                // Update top right avatar immediately
                 const topBtn = document.querySelector('#profile-dropdown button');
                 if (topBtn) {
-                    const img = topBtn.querySelector('img');
-                    if (img) {
-                        img.outerHTML = `<span class="flex items-center justify-center w-10 h-10 text-sm font-semibold text-white rounded-full bg-coinpel-primary shadow-sm transition uppercase">${data.initials}</span>`;
+                    const avatarWrap = topBtn.querySelector('.relative.w-10.h-10');
+                    if (avatarWrap) {
+                        avatarWrap.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-coinpel-primary text-white text-sm font-semibold uppercase">${data.initials}</div>`;
                     }
                 }
             })
@@ -761,11 +792,6 @@
             const pass = document.getElementById('global-profile-password').value;
             if (pass) formData.append('password', pass);
             
-            const photoInput = document.getElementById('global-profile-photo-input');
-            if (photoInput && photoInput.files[0]) {
-                formData.append('profile_photo', photoInput.files[0]);
-            }
-            
             fetch(`/users/${authUserId}`, {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}', 'Accept': 'application/json' },
@@ -777,7 +803,15 @@
                 return data;
             })
             .then(data => {
-                window.location.reload();
+                const topBtn = document.querySelector('#profile-dropdown button');
+                if (topBtn) {
+                    const nameWrap = topBtn.querySelector('.md\\:flex.flex-col span.font-bold');
+                    if (nameWrap) nameWrap.textContent = document.getElementById('global-profile-name').value;
+                }
+                document.getElementById('global-profile-password').value = '';
+                closeGlobalProfileDrawer();
+                alert('Perfil atualizado com sucesso.');
+                btn.textContent = 'Salvar alterações'; btn.disabled = false;
             })
             .catch(err => {
                 btn.textContent = 'Salvar alterações'; btn.disabled = false;

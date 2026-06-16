@@ -34,7 +34,7 @@
 <div class="flex flex-col flex-1 gap-0 -m-6">
 
     {{-- Card Grid / Main Body --}}
-    <div class="flex-1 p-6 bg-coinpel-bg">
+    <div id="client-list-container" class="flex-1 p-6 bg-coinpel-bg">
         @if($clients->isEmpty())
             <div class="flex flex-col items-center justify-center py-16 bg-white border border-gray-100 rounded-2xl">
                 <div class="flex items-center justify-center w-14 h-14 bg-purple-50 text-coinpel-primary rounded-full mb-3">
@@ -351,10 +351,16 @@
                 return;
             }
 
-            sessionStorage.setItem('flash_status', json.message);
-            window.location.reload();
+            if (typeof showFlashNotification === 'function') {
+                showFlashNotification(json.message);
+            } else {
+                sessionStorage.setItem('flash_status', json.message);
+            }
+            
+            closeDrawer();
+            await reloadClientList();
 
-        } catch {
+        } catch (err) {
             drawerError.textContent = 'Erro de rede. Verifique sua conexão.';
             drawerError.classList.remove('hidden');
         } finally {
@@ -362,6 +368,21 @@
             btnSubmit.textContent = originalText;
         }
     });
+
+    async function reloadClientList() {
+        try {
+            const res = await fetch(window.location.href);
+            const html = await res.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newContainer = doc.getElementById('client-list-container');
+            if (newContainer) {
+                document.getElementById('client-list-container').innerHTML = newContainer.innerHTML;
+            }
+        } catch (e) {
+            window.location.reload();
+        }
+    }
 
     btnDelete.addEventListener('click', async function () {
         if (!editingId) return;
@@ -380,8 +401,11 @@
             });
             const json = await response.json();
             if (response.ok) {
-                sessionStorage.setItem('flash_status', json.message);
-                window.location.reload();
+                if (typeof showFlashNotification === 'function') {
+                    showFlashNotification(json.message);
+                }
+                closeDrawer();
+                await reloadClientList();
             } else {
                 alert(json.message || 'Erro ao excluir. Tente novamente.');
             }
@@ -426,8 +450,10 @@
             });
             const json = await response.json();
             if (response.ok) {
-                sessionStorage.setItem('flash_status', json.message);
-                window.location.reload();
+                if (typeof showFlashNotification === 'function') {
+                    showFlashNotification(json.message);
+                }
+                await reloadClientList();
             } else {
                 alert(json.message || 'Erro ao excluir. Tente novamente.');
             }

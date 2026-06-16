@@ -327,16 +327,11 @@
     };
 
     // Helper functions
-    function formatDate(dateString) {
-        if (!dateString) return '—';
-        const parts = dateString.split('-');
-        if (parts.length !== 3) {
-            // Se já vier com data/hora
-            const d = new Date(dateString);
-            if (isNaN(d.getTime())) return dateString;
-            return d.toLocaleDateString('pt-BR');
-        }
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    function formatDate(isoString) {
+        if (!isoString) return '—';
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) return isoString;
+        return d.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
     }
 
     function formatCurrency(val) {
