@@ -18,7 +18,6 @@ class NotificationController extends Controller
         $today = now()->startOfDay();
         $sevenDaysLater = now()->addDays(7)->endOfDay();
 
-        // 1. New trips created in the last 24 hours
         $newTrips = Trip::where('created_at', '>=', now()->subDay())
             ->get()
             ->map(function (Trip $trip) {
@@ -30,7 +29,6 @@ class NotificationController extends Controller
                 ];
             });
 
-        // 2. In progress trips
         $inProgressTrips = Trip::where('status', Trip::STATUS_IN_PROGRESS)
             ->get()
             ->map(function (Trip $trip) {
@@ -42,7 +40,6 @@ class NotificationController extends Controller
                 ];
             });
 
-        // 3. Drivers available (no trips in the next 7 days)
         $driversAvailable = Driver::whereDoesntHave('trips', function ($query) use ($today, $sevenDaysLater) {
                 $query->whereBetween('date', [$today, $sevenDaysLater]);
             })
@@ -56,7 +53,6 @@ class NotificationController extends Controller
                 ];
             });
 
-        // 4. Users with pending password change
         $pendingPasswordUsers = User::where('must_change_password', true)
             ->get()
             ->map(function (User $user) {
@@ -68,7 +64,6 @@ class NotificationController extends Controller
                 ];
             });
 
-        // 5. Contracts expiring in the next 7 days
         $expiringContracts = Contract::whereBetween('end_date', [$today->format('Y-m-d'), $sevenDaysLater->format('Y-m-d')])
             ->get()
             ->map(function (Contract $contract) {
@@ -80,7 +75,6 @@ class NotificationController extends Controller
                 ];
             });
 
-        // Merge and sort descending by date
         $allNotifications = collect()
             ->concat($newTrips)
             ->concat($inProgressTrips)

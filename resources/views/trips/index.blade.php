@@ -102,7 +102,6 @@
                 @forelse ($trips as $trip)
                     <tr class="hover:bg-gray-50/60 transition">
 
-                        {{-- Status --}}
                         <td class="px-6 py-4 whitespace-nowrap">
                             @php
                                 $statusClasses = match($trip->status_color) {
@@ -229,7 +228,6 @@
         </div>{{-- /overflow-visible --}}
     </div>
 
-    {{-- Pagination --}}
     @if ($trips->hasPages())
         <div class="px-6 py-4 bg-white border-t border-gray-100">
             {{ $trips->links() }}

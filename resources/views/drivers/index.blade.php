@@ -41,7 +41,6 @@
 @section('content')
 <div class="flex flex-col flex-1 gap-0 -m-6">
 
-    {{-- Filter Panel --}}
     <div id="filter-panel" class="{{ request()->hasAny(['name', 'registration']) ? '' : 'hidden' }} px-6 py-4 bg-gray-50 border-b border-gray-100">
         <form method="GET" action="{{ route('drivers.index') }}" class="flex flex-wrap items-end gap-4">
             @if(request('search'))
@@ -70,7 +69,6 @@
         </form>
     </div>
 
-    {{-- Card Grid / Main Body --}}
     <div class="flex-1 p-6 bg-coinpel-bg">
         @if($drivers->isEmpty())
             <div class="flex flex-col items-center justify-center py-16 bg-white border border-gray-100 rounded-2xl">
@@ -150,7 +148,6 @@
                 @endforeach
             </div>
             
-            {{-- Paginação --}}
             <div class="mt-8 px-2">
                 {{ $drivers->links() }}
             </div>
@@ -159,13 +156,10 @@
 
 </div>
 
-{{-- Sliding Drawer Overlay --}}
 <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
-{{-- Sliding Drawer --}}
 <div id="driver-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
     
-    {{-- Drawer Header --}}
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <div class="flex items-center gap-2">
             <h2 class="text-lg font-bold text-gray-800">Motorista</h2>
@@ -182,13 +176,10 @@
         </button>
     </div>
 
-    {{-- Error Display --}}
     <div id="drawer-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
 
-    {{-- Drawer Scrollable Content --}}
     <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
         
-        {{-- Section 1: Personal Info --}}
         <div>
             <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Informações Pessoais</h3>
             <div class="grid grid-cols-1 gap-4">
@@ -211,7 +202,6 @@
                     </div>
                 </div>
 
-                {{-- Name --}}
                 <div>
                     <label for="field-name" class="block text-xs font-semibold text-gray-500 mb-1.5">Nome:</label>
                     <input id="field-name" name="name" type="text" required
@@ -220,7 +210,6 @@
                     <p id="err-name" class="hidden mt-1 text-xs text-red-600"></p>
                 </div>
 
-                {{-- Email & Phone --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label for="field-email" class="block text-xs font-semibold text-gray-500 mb-1.5">E-mail:</label>
@@ -238,7 +227,6 @@
                     </div>
                 </div>
 
-                {{-- Matrícula & Birth Date --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label for="field-registration" class="block text-xs font-semibold text-gray-500 mb-1.5">Matrícula:</label>
@@ -255,7 +243,6 @@
                     </div>
                 </div>
 
-                {{-- CPF & RG --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label for="field-cpf" class="block text-xs font-semibold text-gray-500 mb-1.5">CPF:</label>
@@ -276,12 +263,10 @@
             </div>
         </div>
 
-        {{-- Section 2: Address --}}
         <div class="pt-6 border-t border-gray-100">
             <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Endereço</h3>
             <div class="grid grid-cols-1 gap-4">
                 
-                {{-- CEP & Cidade --}}
                 <div class="grid grid-cols-3 gap-4">
                     <div class="col-span-1">
                         <label for="driver_zip_code" class="block text-xs font-semibold text-gray-500 mb-1.5">CEP:</label>
@@ -351,7 +336,6 @@
 {{-- Sliding Detail Drawer --}}
 <div id="driver-detail-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
     
-    {{-- Drawer Header --}}
     <div class="relative flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <button id="detail-drawer-close" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition cursor-pointer">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -366,10 +350,8 @@
         </button>
     </div>
 
-    {{-- Error Display --}}
     <div id="detail-drawer-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
 
-    {{-- Drawer Scrollable Content --}}
     <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
         
         {{-- Profile Photo --}}
@@ -592,14 +574,12 @@
 @push('scripts')
 <script>
 (function () {
-    // ── State ───────────────────────────────────────────────────────────
     let editingId = null;
     let photoErrorTimeout = null;
     let detailPhotoErrorTimeout = null;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
                     || '{{ csrf_token() }}';
 
-    // ── Element refs ────────────────────────────────────────────────────
     const overlay     = document.getElementById('drawer-overlay');
     const drawer      = document.getElementById('driver-drawer');
     const btnAdd      = document.getElementById('btn-add-driver');
@@ -628,7 +608,6 @@
         state:        document.getElementById('driver_state'),
     };
 
-    // ── Detail Drawer Element refs ───────────────────────────────────────
     const detailOverlay = document.getElementById('detail-drawer-overlay');
     const detailDrawer  = document.getElementById('driver-detail-drawer');
     const btnDetailClose = document.getElementById('detail-drawer-close');
@@ -639,7 +618,6 @@
 
     let currentDriver = null;
 
-    // ── Photo Preview ───────────────────────────────────────────────────
     filePhoto.addEventListener('change', function () {
         const file = this.files[0];
         const errEl = document.getElementById('err-profile-photo');
@@ -682,7 +660,6 @@
         }
     });
 
-    // ── Drawer open/close ───────────────────────────────────────────────
     function openDrawer(mode, data) {
         editingId = mode === 'edit' ? data.id : null;
 
@@ -724,7 +701,6 @@
         editingId = null;
     }
 
-    // ── Reset form ──────────────────────────────────────────────────────
     function resetForm() {
         Object.values(fields).forEach(f => { if (f) f.value = ''; });
         filePhoto.value = '';
@@ -732,7 +708,6 @@
         drawerError.textContent = '';
     }
 
-    // ── Error display ────────────────────────────────────────────────────
     function clearErrors() {
         document.querySelectorAll('[id^="err-"]').forEach(el => {
             el.classList.add('hidden');
@@ -772,7 +747,6 @@
         });
     }
 
-    // ── Submit ───────────────────────────────────────────────────────────
     btnSubmit.addEventListener('click', async function () {
         clearErrors();
         drawerError.classList.add('hidden');
@@ -834,7 +808,6 @@
         }
     });
 
-    // ── Delete from drawer ───────────────────────────────────────────────
     btnDelete.addEventListener('click', async function () {
         if (!editingId) return;
         if (!confirm('Confirma a exclusão deste motorista?')) return;
@@ -864,7 +837,6 @@
         }
     });
 
-    // ── Delete from card actions ──────────────────────────────────────────
     document.querySelectorAll('.btn-delete-driver').forEach(btn => {
         btn.addEventListener('click', async function () {
             const id   = btn.dataset.id;
@@ -894,7 +866,6 @@
         });
     });
 
-    // ── Edit from card actions ────────────────────────────────────────────
     document.querySelectorAll('.btn-edit-driver').forEach(btn => {
         btn.addEventListener('click', function () {
             closeAllActionMenus();
@@ -902,16 +873,13 @@
         });
     });
 
-    // ── Open events ───────────────────────────────────────────────────────
     if (btnAdd) btnAdd.addEventListener('click', () => openDrawer('create'));
     if (btnAddEmpty) btnAddEmpty.addEventListener('click', () => openDrawer('create'));
 
-    // ── Close events ──────────────────────────────────────────────────────
     btnClose.addEventListener('click', closeDrawer);
     btnCancel.addEventListener('click', closeDrawer);
     overlay.addEventListener('click', closeDrawer);
 
-    // ── Action menus ──────────────────────────────────────────────────────
     function closeAllActionMenus() {
         document.querySelectorAll('.driver-actions-menu').forEach(m => m.classList.add('hidden'));
     }
@@ -925,7 +893,6 @@
         });
     });
 
-    // ── Detail Drawer Functions ──────────────────────────────────────────
     async function openDetailDrawer(driverId) {
         detailError.classList.add('hidden');
         detailError.textContent = '';
@@ -1110,7 +1077,6 @@
         }
     }
 
-    // ── Detail Drawer Event Listeners ────────────────────────────────────
     document.querySelectorAll('.driver-card').forEach(card => {
         card.addEventListener('click', function (e) {
             if (e.target.closest('.driver-actions-wrapper')) {
@@ -1374,7 +1340,6 @@
 
     document.addEventListener('click', closeAllActionMenus);
 
-    // ── Flash from sessionStorage ──────────────────────────────────────────
     const flash = sessionStorage.getItem('flash_status');
     if (flash) {
         sessionStorage.removeItem('flash_status');
@@ -1385,7 +1350,6 @@
         setTimeout(() => flashEl.remove(), 4000);
     }
 
-    // ── Filter toggle ─────────────────────────────────────────────────────
     document.getElementById('filter-toggle')?.addEventListener('click', function () {
         document.getElementById('filter-panel')?.classList.toggle('hidden');
     });

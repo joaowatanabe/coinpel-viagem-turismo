@@ -33,7 +33,6 @@
 @section('content')
 <div class="flex flex-col flex-1 gap-0 -m-6">
 
-    {{-- Card Grid / Main Body --}}
     <div id="client-list-container" class="flex-1 p-6 bg-coinpel-bg">
         @if($clients->isEmpty())
             <div class="flex flex-col items-center justify-center py-16 bg-white border border-gray-100 rounded-2xl">
@@ -91,7 +90,6 @@
                 @endforeach
             </div>
             
-            {{-- Paginação --}}
             <div class="mt-8 px-2">
                 {{ $clients->links() }}
             </div>
@@ -100,13 +98,10 @@
 
 </div>
 
-{{-- Sliding Drawer Overlay --}}
 <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
-{{-- Sliding Drawer --}}
 <div id="client-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
     
-    {{-- Drawer Header --}}
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <div class="flex items-center gap-2">
             <h2 class="text-lg font-bold text-gray-800">Cliente</h2>
@@ -123,15 +118,12 @@
         </button>
     </div>
 
-    {{-- Error Display --}}
     <div id="drawer-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
 
-    {{-- Drawer Scrollable Content --}}
     <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
         
 
 
-        {{-- Name --}}
         <div>
             <label for="field-name" class="block text-xs font-semibold text-gray-500 mb-1.5">Nome:</label>
             <input id="field-name" name="name" type="text" required
@@ -140,7 +132,6 @@
             <p id="err-name" class="hidden mt-1 text-xs text-red-600"></p>
         </div>
 
-        {{-- Email & Phone --}}
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label for="field-email" class="block text-xs font-semibold text-gray-500 mb-1.5">E-mail:</label>
@@ -197,7 +188,6 @@
 {{-- Sliding Detail Drawer --}}
 <div id="client-detail-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
     
-    {{-- Drawer Header --}}
     <div class="relative flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <button id="detail-drawer-close" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition cursor-pointer">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -212,10 +202,8 @@
         </button>
     </div>
 
-    {{-- Error Display --}}
     <div id="detail-drawer-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
 
-    {{-- Drawer Scrollable Content --}}
     <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
         
         {{-- Seção: Dados pessoais --}}
@@ -399,7 +387,6 @@
 @push('scripts')
 <script>
 (function () {
-    // ── State ───────────────────────────────────────────────────────────
     let editingId = null;
     let currentClient = null;
     let detailPhotoErrorTimeout = null;
@@ -407,7 +394,6 @@
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
                     || '{{ csrf_token() }}';
 
-    // ── Element refs ────────────────────────────────────────────────────
     const overlay     = document.getElementById('drawer-overlay');
     const drawer      = document.getElementById('client-drawer');
     const btnAdd      = document.getElementById('btn-add-client');
@@ -672,7 +658,6 @@
         document.querySelectorAll('.client-dropdown-menu').forEach(m => m.classList.add('hidden'));
     }
 
-    // ── Document Event Delegation ─────────────────────────────────────────
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.client-dropdown-btn') && 
             !e.target.closest('.client-dropdown-menu')) {
@@ -702,7 +687,6 @@
         }
     });
 
-    // ── Detail Drawer Element refs ───────────────────────────────────────
     const detailOverlay = document.getElementById('detail-drawer-overlay');
     const detailDrawer  = document.getElementById('client-detail-drawer');
     const btnDetailClose = document.getElementById('detail-drawer-close');
@@ -843,7 +827,6 @@
         }
     });
 
-    // ── Detail Drawer Functions ──────────────────────────────────────────
     function clearDetailErrors() {
         document.querySelectorAll('#client-detail-drawer .error-field').forEach(el => {
             el.classList.add('hidden');
@@ -982,7 +965,6 @@
         contactForm.querySelector('[name="phone"]').value = currentClient.phone || '';
     }
 
-    // ── Flash from sessionStorage ──────────────────────────────────────────
     const flash = sessionStorage.getItem('flash_status');
     if (flash) {
         sessionStorage.removeItem('flash_status');

@@ -40,7 +40,6 @@
                     <span class="text-sm font-medium tracking-wide whitespace-nowrap">Clientes</span>
                 </a>
 
-                {{-- Motoristas --}}
                 <a href="{{ route('drivers.index') }}" 
                    class="flex flex-row items-center gap-2.5 px-3 py-2.5 rounded-xl transition duration-150 ease-in-out {{ request()->routeIs('drivers.*') ? 'bg-white/12 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                     <svg class="w-5.5 h-5.5 shrink-0" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +49,6 @@
                     <span class="text-sm font-medium tracking-wide whitespace-nowrap">Motoristas</span>
                 </a>
 
-                {{-- Estatísticas --}}
                 <a href="{{ route('statistics.index') }}" 
                    class="flex flex-row items-center gap-2.5 px-3 py-2.5 rounded-xl transition duration-150 ease-in-out {{ request()->routeIs('statistics.*') ? 'bg-white/12 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                     <svg class="w-5.5 h-5.5 shrink-0" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +60,6 @@
                     <span class="text-sm font-medium tracking-wide whitespace-nowrap">Estatísticas</span>
                 </a>
 
-                {{-- Veículos --}}
                 <a href="{{ route('vehicles.index') }}" 
                    class="flex flex-row items-center gap-2.5 px-3 py-2.5 rounded-xl transition duration-150 ease-in-out {{ request()->routeIs('vehicles.*') ? 'bg-white/12 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                     <svg class="w-5.5 h-5.5 shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -75,7 +72,6 @@
                     <span class="text-sm font-medium tracking-wide whitespace-nowrap">Veículos</span>
                 </a>
 
-                {{-- Viagens --}}
                 <a href="{{ route('trips.index') }}" 
                    class="flex flex-row items-center gap-2.5 px-3 py-2.5 rounded-xl transition duration-150 ease-in-out {{ request()->routeIs('trips.*') ? 'bg-white/12 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                     <svg class="w-5.5 h-5.5 shrink-0" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -93,7 +89,6 @@
                     <span class="text-sm font-medium tracking-wide whitespace-nowrap">Viagens</span>
                 </a>
 
-                {{-- Contratos --}}
                 <a href="{{ route('contracts.index') }}" 
                    class="flex flex-row items-center gap-2.5 px-3 py-2.5 rounded-xl transition duration-150 ease-in-out {{ request()->routeIs('contracts.*') ? 'bg-white/12 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                     <svg class="w-5.5 h-5.5 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -399,7 +394,6 @@
             input.value = val;
         }
 
-        // ── Notifications Dropdown Logic ────────────────────────────────────
         (function() {
             const notificationBtn = document.getElementById('notification-btn');
             const notificationMenu = document.getElementById('notification-menu');

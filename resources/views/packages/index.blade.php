@@ -65,7 +65,6 @@
                                 
                                 {{-- Badges --}}
                                 <div class="flex flex-wrap gap-1.5 mt-2">
-                                    {{-- Status Badge --}}
                                     @if($package->status === 'available')
                                         <span class="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 rounded-full border border-emerald-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 shrink-0">
@@ -164,7 +163,6 @@
                 @endforeach
             </div>
 
-            {{-- Pagination --}}
             <div id="packages-pagination" class="mt-8 px-2">
                 {{ $packages->links() }}
             </div>
@@ -176,10 +174,8 @@
 {{-- Drawer Overlay --}}
 <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
-{{-- Drawer Panel --}}
 <div id="package-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
     
-    {{-- Drawer Header --}}
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <div class="flex items-center gap-2">
             <h2 id="drawer-title" class="text-lg font-bold text-gray-800">Novo pacote</h2>
@@ -196,13 +192,10 @@
         </button>
     </div>
 
-    {{-- Global Error Display --}}
     <div id="drawer-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
 
-    {{-- Drawer Scrollable Body --}}
     <div class="flex-1 overflow-y-auto px-6 py-4 space-y-5">
         
-        {{-- Name --}}
         <div>
             <label for="field-name" class="block text-xs font-semibold text-gray-500 mb-1.5">Nome do pacote:</label>
             <input id="field-name" name="name" type="text" required
@@ -211,7 +204,6 @@
             <p id="err-name" class="hidden mt-1 text-xs text-red-600"></p>
         </div>
 
-        {{-- Description --}}
         <div>
             <label for="field-description" class="block text-xs font-semibold text-gray-500 mb-1.5">Descrição:</label>
             <textarea id="field-description" name="description" rows="3"
@@ -220,7 +212,6 @@
             <p id="err-description" class="hidden mt-1 text-xs text-red-600"></p>
         </div>
 
-        {{-- Trip selection --}}
         <div>
             <label for="field-trip_id" class="block text-xs font-semibold text-gray-500 mb-1.5">Viagem incluída:</label>
             <select id="field-trip_id" name="trip_id"
@@ -233,7 +224,6 @@
             <p id="err-trip_id" class="hidden mt-1 text-xs text-red-600"></p>
         </div>
 
-        {{-- Price & Max People --}}
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label for="field-price" class="block text-xs font-semibold text-gray-500 mb-1.5">Preço (R$):</label>
@@ -274,7 +264,6 @@
             </label>
         </div>
 
-        {{-- Status --}}
         <div>
             <label for="field-status" class="block text-xs font-semibold text-gray-500 mb-1.5">Status:</label>
             <select id="field-status" name="status"
@@ -310,7 +299,6 @@
     let editingId = null;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
 
-    // Element Refs
     const overlay      = document.getElementById('drawer-overlay');
     const drawer       = document.getElementById('package-drawer');
     const drawerTitle  = document.getElementById('drawer-title');
@@ -359,7 +347,6 @@
             });
         });
 
-        // Edit Package Click
         document.querySelectorAll('.btn-edit-package').forEach(btn => {
             btn.addEventListener('click', async function () {
                 const id = btn.dataset.id;
@@ -368,7 +355,6 @@
             });
         });
 
-        // Inactivate Package Click
         document.querySelectorAll('.btn-inactivate-package').forEach(btn => {
             btn.addEventListener('click', async function () {
                 const id = btn.dataset.id;
@@ -378,7 +364,6 @@
             });
         });
 
-        // Delete Package Click
         document.querySelectorAll('.btn-delete-package').forEach(btn => {
             btn.addEventListener('click', async function () {
                 const id = btn.dataset.id;
@@ -389,7 +374,6 @@
             });
         });
 
-        // Package Card Click (Detail/Edit)
         document.querySelectorAll('.package-card').forEach(card => {
             card.addEventListener('click', async function (e) {
                 // Ignore click if it was inside the action menu wrapper
@@ -403,7 +387,6 @@
         });
     }
 
-    // Drawer triggers
     async function openDrawer(mode, id = null) {
         editingId = id;
         clearErrors();
@@ -790,7 +773,6 @@
         bindRowEvents();
     }
 
-    // Debounced Search Input
     let searchTimeout = null;
     searchEl.addEventListener('input', function (e) {
         clearTimeout(searchTimeout);
@@ -799,7 +781,6 @@
         }, 300);
     });
 
-    // Success notification
     function showFlashNotification(message) {
         const flashEl = document.createElement('div');
         flashEl.className = 'fixed bottom-6 right-6 z-[100] px-5 py-3.5 bg-green-600 text-white text-sm font-semibold rounded-xl shadow-lg flex items-center gap-3 animate-fade-in';
@@ -808,7 +789,6 @@
         setTimeout(() => flashEl.remove(), 4000);
     }
 
-    // Open/Close bindings
     if (btnAdd) btnAdd.addEventListener('click', () => openDrawer('create'));
     if (btnAddEmpty) btnAddEmpty.addEventListener('click', () => openDrawer('create'));
 
@@ -817,7 +797,6 @@
     overlay.addEventListener('click', closeDrawer);
     document.addEventListener('click', closeAllActionMenus);
 
-    // Initial binding
     bindRowEvents();
 
 })();

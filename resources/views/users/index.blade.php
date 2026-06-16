@@ -64,7 +64,6 @@
                             {{ $user->email }}
                         </td>
 
-                        {{-- Status Badge --}}
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($user->is_blocked)
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-red-700 bg-red-50 rounded-full border border-red-200">
@@ -93,7 +92,6 @@
                             @endif
                         </td>
 
-                        {{-- Actions --}}
                         <td class="px-4 py-4 whitespace-nowrap text-right">
                             <div class="relative user-actions-wrapper inline-block">
                                 <button class="user-actions-btn p-1.5 hover:bg-gray-100 text-gray-400 hover:text-gray-600 rounded-lg transition focus:outline-none cursor-pointer">
@@ -180,7 +178,6 @@
         </div>{{-- /overflow-x-auto --}}
     </div>
 
-    {{-- Paginação --}}
     @if($users->hasPages())
         <div class="px-6 py-4 bg-white border-t border-gray-100">
             {{ $users->links() }}
@@ -189,13 +186,10 @@
 
 </div>
 
-{{-- Sliding Drawer Overlay --}}
 <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
-{{-- Sliding Drawer --}}
 <div id="user-drawer" class="fixed inset-y-0 right-0 w-[440px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
 
-    {{-- Drawer Header --}}
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <div class="flex items-center gap-2">
             <h2 id="drawer-title" class="text-lg font-bold text-gray-800">Novo Usuário</h2>
@@ -212,17 +206,14 @@
         </button>
     </div>
 
-    {{-- Error Display --}}
     <div id="drawer-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
 
-    {{-- Drawer Scrollable Content --}}
     <div class="flex-1 overflow-y-auto px-6 py-6 space-y-5">
 
         {{-- Section: Dados --}}
         <div>
             <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Dados do administrador</h3>
 
-            {{-- Name --}}
             <div class="mb-4">
                 <label for="field-name" class="block text-xs font-semibold text-gray-500 mb-1.5">Nome:</label>
                 <input id="field-name" name="name" type="text" required
@@ -296,13 +287,11 @@
 @push('scripts')
 <script>
 (function () {
-    // ── State ───────────────────────────────────────────────────────────
     let editingId = null;
     const currentUserId = {{ auth()->id() }};
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
                     || '{{ csrf_token() }}';
 
-    // ── Element refs ────────────────────────────────────────────────────
     const overlay        = document.getElementById('drawer-overlay');
     const drawer         = document.getElementById('user-drawer');
     const drawerTitle    = document.getElementById('drawer-title');
@@ -327,7 +316,6 @@
         is_blocked: document.getElementById('field-is-blocked'),
     };
 
-    // ── Password visibility toggle ───────────────────────────────────────
     btnTogglePass.addEventListener('click', function () {
         const isHidden = fieldPassword.type === 'password';
         fieldPassword.type = isHidden ? 'text' : 'password';
@@ -335,9 +323,7 @@
         iconEyeSlash.classList.toggle('hidden', !isHidden);
     });
 
-    // ── Photo functionality moved to global profile drawer ─────────────────────────
 
-    // ── Drawer open/close ────────────────────────────────────────────────
     function openDrawer(mode, data) {
         editingId = mode === 'edit' ? data.id : null;
 
@@ -399,7 +385,6 @@
         editingId = null;
     }
 
-    // ── Reset form ───────────────────────────────────────────────────────
     function resetForm() {
         Object.values(fields).forEach(f => { if (f) f.value = ''; });
         fields.is_blocked.value = '0';
@@ -412,7 +397,6 @@
         }
     }
 
-    // ── Error display ────────────────────────────────────────────────────
     function clearErrors() {
         document.querySelectorAll('[id^="err-"]').forEach(el => {
             el.classList.add('hidden');
@@ -447,7 +431,6 @@
         });
     }
 
-    // ── Submit ───────────────────────────────────────────────────────────
     btnSubmit.addEventListener('click', async function () {
         clearErrors();
         drawerError.classList.add('hidden');
@@ -555,7 +538,6 @@
         }
     });
 
-    // ── Delete from drawer ───────────────────────────────────────────────
     btnDelete.addEventListener('click', async function () {
         if (!editingId || parseInt(editingId) === currentUserId) return;
         if (!confirm('Confirma a exclusão deste usuário?')) return;
@@ -587,7 +569,6 @@
         }
     });
 
-    // ── Delete from row actions ──────────────────────────────────────────
     document.querySelectorAll('.btn-delete-user').forEach(btn => {
         btn.addEventListener('click', async function () {
             const id   = btn.dataset.id;
@@ -618,7 +599,6 @@
         });
     });
 
-    // ── Block / Unblock from row actions ─────────────────────────────────
     document.querySelectorAll('.btn-toggle-block').forEach(btn => {
         btn.addEventListener('click', async function () {
             const id     = btn.dataset.id;
@@ -655,7 +635,6 @@
         });
     });
 
-    // ── Edit from row actions ────────────────────────────────────────────
     document.querySelectorAll('.btn-edit-user').forEach(btn => {
         btn.addEventListener('click', function () {
             closeAllActionMenus();
@@ -663,15 +642,12 @@
         });
     });
 
-    // ── Open events ───────────────────────────────────────────────────────
     if (btnAdd) btnAdd.addEventListener('click', () => openDrawer('create'));
 
-    // ── Close events ──────────────────────────────────────────────────────
     btnClose.addEventListener('click', closeDrawer);
     btnCancel.addEventListener('click', closeDrawer);
     overlay.addEventListener('click', closeDrawer);
 
-    // ── Action menus ──────────────────────────────────────────────────────
     function closeAllActionMenus() {
         document.querySelectorAll('.user-actions-menu').forEach(m => m.classList.add('hidden'));
     }
@@ -700,7 +676,6 @@
         showFlashNotification(message);
     };
 
-    // ── Flash from sessionStorage ──────────────────────────────────────────
     const flash = sessionStorage.getItem('flash_status');
     if (flash) {
         sessionStorage.removeItem('flash_status');

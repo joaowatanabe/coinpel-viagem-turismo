@@ -16,7 +16,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Contagens principais
         $tripsCount        = \App\Models\Trip::count();
         $tripsThisMonth    = \App\Models\Trip::whereMonth('created_at', now()->month)
                                 ->whereYear('created_at', now()->year)
@@ -33,7 +32,6 @@ class DashboardController extends Controller
         $adminsTotal       = \App\Models\User::count();
         $adminsPending     = \App\Models\User::where('must_change_password', true)->count();
 
-        // Próximas viagens (a partir de hoje, máx 5)
         $upcomingTrips     = \App\Models\Trip::with(['driver', 'vehicle'])
                                 ->where('date', '>=', today())
                                 ->orderBy('date')
@@ -41,17 +39,14 @@ class DashboardController extends Controller
                                 ->take(5)
                                 ->get();
 
-        // Viagens por status
         $tripsCompleted    = \App\Models\Trip::where('status', 'completed')->count();
         $tripsInProgress   = \App\Models\Trip::where('status', 'in_progress')->count();
         $tripsCancelled    = \App\Models\Trip::where('status', 'cancelled')->count();
 
-        // Receita estimada (excluindo canceladas)
         $estimatedRevenue  = \App\Models\Trip::where('status', '!=', 'cancelled')
                                 ->selectRaw('SUM(ticket_price * passenger_count) as total')
                                 ->value('total') ?? 0;
 
-        // Atividade recente (últimas 5 viagens criadas)
         $recentTrips       = \App\Models\Trip::with('driver')
                                 ->latest()
                                 ->take(5)

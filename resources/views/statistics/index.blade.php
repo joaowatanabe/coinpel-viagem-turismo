@@ -163,7 +163,6 @@
                                 @endif
                             </td>
 
-                            {{-- Status --}}
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @php
                                     $statusClasses = match($trip->status_color) {

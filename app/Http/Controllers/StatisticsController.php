@@ -21,27 +21,21 @@ class StatisticsController extends Controller
      */
     public function index(): View
     {
-        // Total de viagens (todas / últimos 30 dias)
         $totalTrips = Trip::count();
         $tripsLast30Days = Trip::where('date', '>=', now()->subDays(30))->count();
 
-        // Total de motoristas ativos (não deletados logicamente)
         $activeDriversCount = Driver::count();
 
-        // Total de veículos
         $vehiclesCount = Vehicle::count();
 
-        // Receita estimada (soma de ticket_price * passenger_count)
         $estimatedRevenue = Trip::selectRaw('SUM(ticket_price * passenger_count) as revenue')->value('revenue') ?? 0.00;
 
-        // Tabela de "Viagens recentes" (últimas 10)
         $recentTrips = Trip::with(['driver', 'vehicle'])
             ->orderByDesc('date')
             ->orderByDesc('departure_time')
             ->limit(10)
             ->get();
 
-        // Contadores por status das viagens
         $statusCounts = Trip::select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
             ->pluck('count', 'status')

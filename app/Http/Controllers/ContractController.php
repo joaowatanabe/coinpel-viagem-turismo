@@ -39,7 +39,6 @@ class ContractController extends Controller
 
         $contracts = $contractsQuery->paginate(15)->withQueryString();
 
-        // Gerar sugestão automática de número de contrato
         $year = date('Y');
         $count = Contract::withTrashed()->whereYear('created_at', $year)->count() + 1;
         $nextNumber = "CONT-{$year}-" . str_pad($count, 3, '0', STR_PAD_LEFT);

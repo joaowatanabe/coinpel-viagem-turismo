@@ -155,7 +155,6 @@
             </table>
         </div>
 
-        {{-- Pagination --}}
         @if ($contracts->hasPages())
             <div id="contracts-pagination" class="px-6 py-4 bg-white border-t border-gray-100">
                 {{ $contracts->links() }}
@@ -169,11 +168,9 @@
 <div id="drawer-overlay"
      class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity duration-300 opacity-0"></div>
 
-{{-- Drawer Panel --}}
 <div id="contract-drawer"
      class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
 
-    {{-- Drawer Header --}}
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <button id="drawer-close"
                 class="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition cursor-pointer">
@@ -205,7 +202,6 @@
             <p id="err-number" class="hidden mt-1 text-xs text-red-600"></p>
         </div>
 
-        {{-- Client --}}
         <div>
             <label for="field-client_id" class="block text-xs font-semibold text-gray-500 mb-1.5">Cliente:</label>
             <select id="field-client_id" name="client_id"
@@ -218,7 +214,6 @@
             <p id="err-client_id" class="hidden mt-1 text-xs text-red-600"></p>
         </div>
 
-        {{-- Trip --}}
         <div>
             <label for="field-trip_id" class="block text-xs font-semibold text-gray-500 mb-1.5">Viagem:</label>
             <select id="field-trip_id" name="trip_id"
@@ -256,7 +251,6 @@
             <p id="err-value" class="hidden mt-1 text-xs text-red-600"></p>
         </div>
 
-        {{-- Description --}}
         <div>
             <label for="field-description" class="block text-xs font-semibold text-gray-500 mb-1.5">Descrição / Observações:</label>
             <textarea id="field-description" name="description" rows="3"
@@ -265,7 +259,6 @@
             <p id="err-description" class="hidden mt-1 text-xs text-red-600"></p>
         </div>
 
-        {{-- Status --}}
         <div id="status-group" class="hidden">
             <label for="field-status" class="block text-xs font-semibold text-gray-500 mb-1.5">Status:</label>
             <select id="field-status" name="status"
@@ -302,7 +295,6 @@
     const nextSuggestedNumber = document.querySelector('[data-next-number]').dataset.nextNumber;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
 
-    // Element Refs
     const overlay      = document.getElementById('drawer-overlay');
     const drawer       = document.getElementById('contract-drawer');
     const drawerTitle  = document.getElementById('drawer-title');
@@ -326,7 +318,6 @@
         status:      document.getElementById('field-status'),
     };
 
-    // Helper functions
     function formatDate(isoString) {
         if (!isoString) return '—';
         const d = new Date(isoString);
@@ -340,12 +331,10 @@
         return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    // Toggle actions menus globally
     function closeAllActionMenus() {
         document.querySelectorAll('.contract-actions-menu').forEach(m => m.classList.add('hidden'));
     }
 
-    // Bind events to table rows
     function bindRowEvents() {
         document.querySelectorAll('.contract-actions-btn').forEach(btn => {
             btn.addEventListener('click', function (e) {
@@ -797,7 +786,6 @@
     overlay.addEventListener('click', closeDrawer);
     document.addEventListener('click', closeAllActionMenus);
 
-    // Initial binding
     bindRowEvents();
 
 })();

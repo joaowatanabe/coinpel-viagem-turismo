@@ -41,7 +41,6 @@
 @section('content')
 <div class="flex flex-col flex-1 gap-0 -m-6">
 
-    {{-- Filter Panel --}}
     <div id="filter-panel" class="{{ request()->hasAny(['vehicle_type', 'seat_type']) ? '' : 'hidden' }} px-6 py-4 bg-gray-50 border-b border-gray-100">
         <form method="GET" action="{{ route('vehicles.index') }}" class="flex flex-wrap items-end gap-4">
             @if(request('search'))
@@ -196,7 +195,6 @@
         </table>
         </div>{{-- /overflow-visible --}}
     </div>
-    {{-- Pagination --}}
     @if ($vehicles->hasPages())
         <div class="px-6 py-4 bg-white border-t border-gray-100">
             {{ $vehicles->links() }}
@@ -212,12 +210,10 @@
      class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity duration-300 opacity-0"></div>
 
 {{-- ============================================================ --}}
-{{-- Drawer Panel                                                 --}}
 {{-- ============================================================ --}}
 <div id="vehicle-drawer"
      class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
 
-    {{-- Drawer Header --}}
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <button id="drawer-close"
                 class="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition cursor-pointer">
@@ -395,12 +391,10 @@
 @push('scripts')
 <script>
 (function () {
-    // ── State ───────────────────────────────────────────────────────────
     let editingId = null;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
                     || '{{ csrf_token() }}';
 
-    // ── Element refs ────────────────────────────────────────────────────
     const overlay     = document.getElementById('drawer-overlay');
     const drawer      = document.getElementById('vehicle-drawer');
     const btnAdd      = document.getElementById('btn-add-vehicle');
@@ -424,7 +418,6 @@
 
     const amenityBtns = document.querySelectorAll('.amenity-btn');
 
-    // ── Drawer open/close ───────────────────────────────────────────────
     function openDrawer(mode, data) {
         editingId = mode === 'edit' ? data.id : null;
 
@@ -463,7 +456,6 @@
         editingId = null;
     }
 
-    // ── Amenity toggle ──────────────────────────────────────────────────
     function setAmenityState(btn, active) {
         if (active) {
             btn.classList.add('border-coinpel-primary', 'text-coinpel-primary', 'bg-coinpel-primary/5');
@@ -483,7 +475,6 @@
         });
     });
 
-    // ── Reset form ──────────────────────────────────────────────────────
     function resetForm() {
         Object.values(fields).forEach(f => { if (f) f.value = ''; });
         amenityBtns.forEach(btn => setAmenityState(btn, false));
@@ -491,7 +482,6 @@
         drawerError.textContent = '';
     }
 
-    // ── Error display ────────────────────────────────────────────────────
     function clearErrors() {
         document.querySelectorAll('[id^="err-"]').forEach(el => {
             el.classList.add('hidden');
@@ -526,7 +516,6 @@
         });
     }
 
-    // ── Collect form data ────────────────────────────────────────────────
     function collectData() {
         const data = {};
         Object.keys(fields).forEach(key => {
@@ -538,7 +527,6 @@
         return data;
     }
 
-    // ── Submit ───────────────────────────────────────────────────────────
     btnSubmit.addEventListener('click', async function () {
         clearErrors();
         drawerError.classList.add('hidden');
@@ -589,7 +577,6 @@
         }
     });
 
-    // ── Delete from drawer ───────────────────────────────────────────────
     btnDelete.addEventListener('click', async function () {
         if (!editingId) return;
         if (!confirm('Confirma a exclusão deste veículo?')) return;
@@ -619,7 +606,6 @@
         }
     });
 
-    // ── Delete from table row ─────────────────────────────────────────────
     document.querySelectorAll('.btn-delete-vehicle').forEach(btn => {
         btn.addEventListener('click', async function () {
             const id     = btn.dataset.id;
@@ -650,7 +636,6 @@
         });
     });
 
-    // ── Edit from table row ───────────────────────────────────────────────
     document.querySelectorAll('.btn-edit-vehicle').forEach(btn => {
         btn.addEventListener('click', function () {
             closeAllActionMenus();
@@ -658,16 +643,13 @@
         });
     });
 
-    // ── Open events ───────────────────────────────────────────────────────
     if (btnAdd) btnAdd.addEventListener('click', () => openDrawer('create'));
     if (btnAddEmpty) btnAddEmpty.addEventListener('click', () => openDrawer('create'));
 
-    // ── Close events ──────────────────────────────────────────────────────
     btnClose.addEventListener('click', closeDrawer);
     btnCancel.addEventListener('click', closeDrawer);
     overlay.addEventListener('click', closeDrawer);
 
-    // ── Action menus ──────────────────────────────────────────────────────
     function closeAllActionMenus() {
         document.querySelectorAll('.vehicle-actions-menu').forEach(m => m.classList.add('hidden'));
     }
@@ -683,7 +665,6 @@
 
     document.addEventListener('click', closeAllActionMenus);
 
-    // ── Flash from sessionStorage ──────────────────────────────────────────
     const flash = sessionStorage.getItem('flash_status');
     if (flash) {
         sessionStorage.removeItem('flash_status');
@@ -694,7 +675,6 @@
         setTimeout(() => flashEl.remove(), 4000);
     }
 
-    // ── Filter toggle ─────────────────────────────────────────────────────
     document.getElementById('filter-toggle')?.addEventListener('click', function () {
         document.getElementById('filter-panel')?.classList.toggle('hidden');
     });
