@@ -39,15 +39,17 @@ class StoreClientRequest extends FormRequest
         $customer = $this->route('customer') ?? $this->route('client');
         $clientId = $customer instanceof \App\Models\Client ? $customer->id : $customer;
 
+        $isUpdate = $this->isMethod('PATCH') || $this->isMethod('PUT');
+
         return [
             'name'          => ['required', 'string', 'max:255'],
             'birth_date'    => ['required', 'date', 'before:today'],
             'cpf'           => ['required', 'string', 'max:14', \Illuminate\Validation\Rule::unique('clients', 'cpf')->ignore($clientId)],
-            'zip_code'      => ['required', 'string', 'max:9'],
-            'street'        => ['required', 'string', 'max:255'],
-            'number'        => ['required', 'string', 'max:10'],
-            'city'          => ['required', 'string', 'max:255'],
-            'state'         => ['required', 'string', 'max:2'],
+            'zip_code'      => [$isUpdate ? 'required' : 'nullable', 'string', 'max:9'],
+            'street'        => [$isUpdate ? 'required' : 'nullable', 'string', 'max:255'],
+            'number'        => [$isUpdate ? 'required' : 'nullable', 'string', 'max:10'],
+            'city'          => [$isUpdate ? 'required' : 'nullable', 'string', 'max:255'],
+            'state'         => [$isUpdate ? 'required' : 'nullable', 'string', 'max:2'],
             'email'         => ['required', 'email', \Illuminate\Validation\Rule::unique('clients', 'email')->ignore($clientId)],
             'phone'         => ['required', 'string', 'max:20'],
             'profile_photo' => ['nullable', 'image', 'max:2048'],

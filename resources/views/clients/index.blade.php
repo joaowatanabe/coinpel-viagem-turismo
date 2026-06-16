@@ -289,7 +289,7 @@
         drawerError.textContent = '';
         Object.keys(fields).forEach(key => {
             if (fields[key]) fields[key].classList.remove('border-red-400');
-            const errEl = document.getElementById(`err-${key}`);
+            const errEl = document.getElementById(`err-${key.replace('_', '-')}`);
             if (errEl) {
                 errEl.classList.add('hidden');
                 errEl.textContent = '';
@@ -298,14 +298,22 @@
     }
 
     function showErrors(errors) {
+        const orphanMessages = [];
         Object.entries(errors).forEach(([key, msgs]) => {
+            const msg = Array.isArray(msgs) ? msgs[0] : msgs;
             if (fields[key]) fields[key].classList.add('border-red-400');
-            const errEl = document.getElementById(`err-${key}`);
+            const errEl = document.getElementById(`err-${key.replace('_', '-')}`);
             if (errEl) {
-                errEl.textContent = Array.isArray(msgs) ? msgs[0] : msgs;
+                errEl.textContent = msg;
                 errEl.classList.remove('hidden');
+            } else {
+                orphanMessages.push(msg);
             }
         });
+        if (orphanMessages.length > 0) {
+            drawerError.textContent = orphanMessages.join(' | ');
+            drawerError.classList.remove('hidden');
+        }
     }
 
     btnSubmit.addEventListener('click', async function () {
