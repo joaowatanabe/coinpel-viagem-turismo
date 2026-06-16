@@ -192,11 +192,11 @@
 
                     <div class="relative" id="profile-dropdown">
                         <button onclick="toggleDropdown(event)" class="flex items-center gap-3 focus:outline-none cursor-pointer text-left">
-                            <div class="relative w-10 h-10 rounded-full overflow-hidden shrink-0 flex items-center justify-center border border-gray-100 shadow-sm">
+                            <div class="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-gray-100 shadow-sm">
                                 @if(auth()->user()->profile_photo_path)
-                                    <img src="{{ Storage::url(auth()->user()->profile_photo_path) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover rounded-full transition">
+                                    <img src="{{ Storage::url(auth()->user()->profile_photo_path) }}" alt="{{ auth()->user()->name }}" class="absolute inset-0 w-full h-full object-cover transition">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center bg-coinpel-primary text-white text-sm font-semibold uppercase rounded-full">
+                                    <div class="absolute inset-0 flex items-center justify-center bg-coinpel-primary text-white text-sm font-semibold uppercase">
                                         {{ mb_substr(auth()->user()->name, 0, 1) }}{{ str_contains(auth()->user()->name, ' ') ? mb_substr(explode(' ', auth()->user()->name)[1], 0, 1) : '' }}
                                     </div>
                                 @endif
@@ -634,11 +634,11 @@
         <div id="global-profile-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
         <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
             <div class="flex flex-col items-center gap-2 mb-2">
-                <div id="global-profile-avatar-wrap" class="relative w-24 h-24 rounded-full overflow-hidden shrink-0 flex items-center justify-center border-2 border-gray-200 shadow-sm">
+                <div id="global-profile-avatar-wrap" class="relative w-24 h-24 rounded-full overflow-hidden shrink-0 border-2 border-gray-200 shadow-sm bg-coinpel-primary" style="width: 96px; height: 96px;">
                     @if(auth()->user()->profile_photo_path)
-                        <img id="global-profile-photo-preview" src="{{ Storage::url(auth()->user()->profile_photo_path) }}" class="w-full h-full object-cover rounded-full">
+                        <img id="global-profile-photo-preview" src="{{ Storage::url(auth()->user()->profile_photo_path) }}" class="absolute inset-0 w-full h-full object-cover">
                     @else
-                        <div id="global-profile-photo-preview" class="w-full h-full flex items-center justify-center bg-coinpel-primary text-white font-bold text-2xl uppercase rounded-full">
+                        <div id="global-profile-photo-preview" class="absolute inset-0 flex items-center justify-center bg-coinpel-primary text-white font-bold text-2xl uppercase">
                             {{ mb_substr(auth()->user()->name, 0, 1) }}{{ str_contains(auth()->user()->name, ' ') ? mb_substr(explode(' ', auth()->user()->name)[1], 0, 1) : '' }}
                         </div>
                     @endif
@@ -706,6 +706,15 @@
                 input.value = ''; alert('A foto deve ter no máximo 2MB.'); return;
             }
 
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const wrap = document.getElementById('global-profile-avatar-wrap');
+                if (wrap) {
+                    wrap.innerHTML = `<img id="global-profile-photo-preview" src="${e.target.result}" class="absolute inset-0 w-full h-full object-cover">`;
+                }
+            };
+            reader.readAsDataURL(file);
+
             const formData = new FormData();
             formData.append('profile_photo', file);
 
@@ -722,7 +731,7 @@
             .then(data => {
                 const wrap = document.getElementById('global-profile-avatar-wrap');
                 if (wrap) {
-                    wrap.innerHTML = `<img id="global-profile-photo-preview" src="${data.photo_url}" class="w-full h-full object-cover rounded-full">`;
+                    wrap.innerHTML = `<img id="global-profile-photo-preview" src="${data.photo_url}" class="absolute inset-0 w-full h-full object-cover">`;
                 }
                 document.getElementById('global-profile-remove-photo-btn').classList.remove('hidden');
 
@@ -730,7 +739,7 @@
                 if (topBtn) {
                     const avatarWrap = topBtn.querySelector('.relative.w-10.h-10');
                     if (avatarWrap) {
-                        avatarWrap.innerHTML = `<img src="${data.photo_url}" class="w-full h-full object-cover rounded-full">`;
+                        avatarWrap.innerHTML = `<img src="${data.photo_url}" class="absolute inset-0 w-full h-full object-cover">`;
                     }
                 }
             })
@@ -757,14 +766,14 @@
             .then(data => {
                 if (!data.success) throw new Error(data.message);
                 const wrap = document.getElementById('global-profile-avatar-wrap');
-                if (wrap) wrap.innerHTML = `<div id="global-profile-photo-preview" class="w-full h-full flex items-center justify-center bg-[#593E75] text-white font-bold text-2xl uppercase rounded-full">${data.initials}</div>`;
+                if (wrap) wrap.innerHTML = `<div id="global-profile-photo-preview" class="absolute inset-0 flex items-center justify-center bg-coinpel-primary text-white font-bold text-2xl uppercase">${data.initials}</div>`;
                 btn.classList.add('hidden'); btn.textContent = 'Remover foto'; btn.disabled = false;
                 
                 const topBtn = document.querySelector('#profile-dropdown button');
                 if (topBtn) {
                     const avatarWrap = topBtn.querySelector('.relative.w-10.h-10');
                     if (avatarWrap) {
-                        avatarWrap.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-coinpel-primary text-white text-sm font-semibold uppercase rounded-full">${data.initials}</div>`;
+                        avatarWrap.innerHTML = `<div class="absolute inset-0 flex items-center justify-center bg-coinpel-primary text-white text-sm font-semibold uppercase">${data.initials}</div>`;
                     }
                 }
             })
