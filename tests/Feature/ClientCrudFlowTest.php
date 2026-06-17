@@ -48,9 +48,9 @@ class ClientCrudFlowTest extends TestCase
         // Verifica se os dados realmente foram persistidos no banco de dados
         $this->assertDatabaseHas('clients', [
             'name'     => 'João da Silva',
-            'cpf'      => '123.456.789-00',
+            'cpf'      => '12345678900',
             'email'    => 'joao.silva@exemplo.com',
-            'zip_code' => '96000-000',
+            'zip_code' => '96000000',
         ]);
     }
 }

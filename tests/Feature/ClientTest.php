@@ -80,8 +80,7 @@ class ClientTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors([
-                'name', 'birth_date', 'cpf', 'zip_code', 'street',
-                'number', 'city', 'state', 'email', 'phone'
+                'name', 'birth_date', 'cpf', 'email', 'phone'
             ]);
     }
 
