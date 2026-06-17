@@ -15,6 +15,9 @@ class TripController extends Controller
     public function index(): View
     {
         $search = request('search');
+        $status = request('status');
+        $dataInicial = request('data_inicial');
+        $dataFinal = request('data_final');
 
         $trips = Trip::with(['vehicle', 'driver'])
             ->when($search, function ($query, $search) {
@@ -23,6 +26,15 @@ class TripController extends Controller
                       ->orWhere('origin', 'ilike', "%{$search}%")
                       ->orWhere('destination', 'ilike', "%{$search}%");
                 });
+            })
+            ->when($status, function ($query, $status) {
+                $query->where('status', $status);
+            })
+            ->when($dataInicial, function ($query, $dataInicial) {
+                $query->whereDate('date', '>=', $dataInicial);
+            })
+            ->when($dataFinal, function ($query, $dataFinal) {
+                $query->whereDate('date', '<=', $dataFinal);
             })
             ->orderByDesc('date')
             ->orderByDesc('departure_time')

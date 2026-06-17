@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Linha central do "Power" -->
+  <path d="M50 15 v30" stroke="#593E75" stroke-width="12" stroke-linecap="round" />
+  <!-- Círculo aberto -->
+  <path d="M30 25 A 35 35 0 1 0 70 25" fill="none" stroke="#593E75" stroke-width="12" stroke-linecap="round" />
+</svg>

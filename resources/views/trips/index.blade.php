@@ -45,7 +45,7 @@
 <div class="flex flex-col flex-1 gap-0 -m-6">
 
     {{-- Filter Panel (hidden by default) --}}
-    <div id="filter-panel" class="{{ request()->hasAny(['status', 'date_from', 'date_to']) ? '' : 'hidden' }} px-6 py-4 bg-gray-50 border-b border-gray-100">
+    <div id="filter-panel" class="{{ request()->hasAny(['status', 'data_inicial', 'data_final']) ? '' : 'hidden' }} px-6 py-4 bg-gray-50 border-b border-gray-100">
         <form method="GET" action="{{ route('trips.index') }}" class="flex flex-wrap items-end gap-4">
             @if(request('search'))
                 <input type="hidden" name="search" value="{{ request('search') }}">
@@ -62,12 +62,12 @@
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Data inicial</label>
-                <input type="date" name="date_from" value="{{ request('date_from') }}"
+                <input type="date" name="data_inicial" value="{{ request('data_inicial') }}"
                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coinpel-primary bg-white">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Data final</label>
-                <input type="date" name="date_to" value="{{ request('date_to') }}"
+                <input type="date" name="data_final" value="{{ request('data_final') }}"
                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coinpel-primary bg-white">
             </div>
             <button type="submit"
