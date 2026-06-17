@@ -120,49 +120,102 @@
 
     <div id="drawer-error" class="hidden mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium shrink-0"></div>
 
-    <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+    <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
         
-
-
+        {{-- Seção: Dados pessoais --}}
         <div>
-            <label for="field-name" class="block text-xs font-semibold text-gray-500 mb-1.5">Nome:</label>
-            <input id="field-name" name="name" type="text" required
-                   class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                   placeholder="Ex: Ana Souza">
-            <p id="err-name" class="hidden mt-1 text-xs text-red-600"></p>
+            <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Dados pessoais</h3>
+            <div class="space-y-4">
+                <div>
+                    <label for="field-name" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">Nome:</label>
+                    <input id="field-name" name="name" type="text" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
+                           placeholder="Ex: Ana Souza">
+                    <p id="err-name" class="hidden mt-1 text-xs text-red-600"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="field-cpf" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">CPF:</label>
+                        <input id="field-cpf" name="cpf" type="text" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
+                               placeholder="Ex: 987.654.321-00">
+                        <p id="err-cpf" class="hidden mt-1 text-xs text-red-600"></p>
+                    </div>
+                    <div>
+                        <label for="field-birth-date" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">Nascimento:</label>
+                        <input id="field-birth-date" name="birth_date" type="date" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+                        <p id="err-birth-date" class="hidden mt-1 text-xs text-red-600"></p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label for="field-email" class="block text-xs font-semibold text-gray-500 mb-1.5">E-mail:</label>
-                <input id="field-email" name="email" type="email" required
-                       class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                       placeholder="Ex: ana@exemplo.com">
-                <p id="err-email" class="hidden mt-1 text-xs text-red-600"></p>
-            </div>
-            <div>
-                <label for="field-phone" class="block text-xs font-semibold text-gray-500 mb-1.5">Telefone:</label>
-                <input id="field-phone" name="phone" type="text" required
-                       class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                       placeholder="Ex: (53) 98765-4321">
-                <p id="err-phone" class="hidden mt-1 text-xs text-red-600"></p>
+        {{-- Seção: Endereço --}}
+        <div class="border-t border-gray-100 pt-5" id="client_drawer_address_section">
+            <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Endereço</h3>
+            <div class="space-y-4">
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label for="client_drawer_zip_code" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">CEP</label>
+                        <input id="client_drawer_zip_code" name="zip_code" type="text"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
+                               placeholder="Ex: 96000-000"
+                               oninput="if(typeof formatCepInput === 'function') formatCepInput(this)"
+                               onblur="if(typeof fetchAddressByCep === 'function') fetchAddressByCep(this.value, 'client_drawer')">
+                        <p id="err-zip-code" class="hidden mt-1 text-xs text-red-600"></p>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="client_drawer_city" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">Cidade</label>
+                        <input id="client_drawer_city" name="city" type="text"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+                        <p id="err-city" class="hidden mt-1 text-xs text-red-600"></p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-7">
+                        <label for="client_drawer_street" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">Rua</label>
+                        <input id="client_drawer_street" name="street" type="text"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+                        <p id="err-street" class="hidden mt-1 text-xs text-red-600"></p>
+                    </div>
+                    <div class="col-span-3">
+                        <label for="client_drawer_number" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">Número</label>
+                        <input id="client_drawer_number" name="number" type="text"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
+                        <p id="err-number" class="hidden mt-1 text-xs text-red-600"></p>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="client_drawer_state" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">UF</label>
+                        <input id="client_drawer_state" name="state" type="text" maxlength="2"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition uppercase">
+                        <p id="err-state" class="hidden mt-1 text-xs text-red-600"></p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        {{-- CPF & Birth Date --}}
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label for="field-cpf" class="block text-xs font-semibold text-gray-500 mb-1.5">CPF:</label>
-                <input id="field-cpf" name="cpf" type="text" required
-                       class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
-                       placeholder="Ex: 987.654.321-00">
-                <p id="err-cpf" class="hidden mt-1 text-xs text-red-600"></p>
-            </div>
-            <div>
-                <label for="field-birth-date" class="block text-xs font-semibold text-gray-500 mb-1.5">Nascimento:</label>
-                <input id="field-birth-date" name="birth_date" type="date" required
-                       class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition">
-                <p id="err-birth-date" class="hidden mt-1 text-xs text-red-600"></p>
+        {{-- Seção: Contato --}}
+        <div class="border-t border-gray-100 pt-5">
+            <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Contato</h3>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="field-email" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">E-mail:</label>
+                        <input id="field-email" name="email" type="email" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
+                               placeholder="Ex: ana@exemplo.com">
+                        <p id="err-email" class="hidden mt-1 text-xs text-red-600"></p>
+                    </div>
+                    <div>
+                        <label for="field-phone" class="block text-[10px] font-semibold text-gray-400 uppercase mb-1">Telefone:</label>
+                        <input id="field-phone" name="phone" type="text" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-coinpel-primary focus:border-coinpel-primary transition"
+                               placeholder="Ex: (53) 98765-4321">
+                        <p id="err-phone" class="hidden mt-1 text-xs text-red-600"></p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -409,7 +462,12 @@
         email: document.getElementById('field-email'),
         phone: document.getElementById('field-phone'),
         cpf: document.getElementById('field-cpf'),
-        birth_date: document.getElementById('field-birth-date')
+        birth_date: document.getElementById('field-birth-date'),
+        zip_code: document.getElementById('client_drawer_zip_code'),
+        city: document.getElementById('client_drawer_city'),
+        street: document.getElementById('client_drawer_street'),
+        number: document.getElementById('client_drawer_number'),
+        state: document.getElementById('client_drawer_state')
     };    // ── Drawer open/close ───────────────────────────────────────────────
     function openDrawer(mode, data) {
         editingId = mode === 'edit' ? data.id : null;
