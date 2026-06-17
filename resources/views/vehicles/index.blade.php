@@ -95,7 +95,7 @@
             </thead>
             <tbody class="divide-y divide-gray-50">
                 @forelse ($vehicles as $vehicle)
-                    <tr class="hover:bg-gray-50/60 transition">
+                    <tr class="hover:bg-gray-50/60 transition cursor-pointer">
                         <td class="px-6 py-4 text-sm font-bold text-coinpel-primary whitespace-nowrap">
                             {{ $vehicle->prefix }}
                         </td>
@@ -388,6 +388,83 @@
 
 </div>
 
+{{-- ============================================================ --}}
+{{-- Drawer de Visualização (Detail)                              --}}
+{{-- ============================================================ --}}
+<div id="detail-drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
+
+<div id="vehicle-detail-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+    
+    <div class="relative flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+        <button id="detail-drawer-close" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        <h2 class="text-base font-bold text-gray-800 absolute left-1/2 -translate-x-1/2">Veículo</h2>
+        <div class="w-8"></div> {{-- Espaçador para centralizar o título --}}
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+        
+        {{-- Informações do Veículo --}}
+        <div>
+            <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Informações do Veículo</h3>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">Prefixo</span>
+                        <span id="lbl-vehicle-prefix" class="text-sm font-semibold text-gray-800">—</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">Placa</span>
+                        <span id="lbl-vehicle-plate" class="text-sm font-semibold text-gray-800">—</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">Modelo</span>
+                        <span id="lbl-vehicle-model" class="text-sm font-semibold text-gray-800">—</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">Chassi</span>
+                        <span id="lbl-vehicle-chassis" class="text-sm font-semibold text-gray-800">—</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">Capacidade</span>
+                        <span id="lbl-vehicle-capacity" class="text-sm font-semibold text-gray-800">—</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">Ano</span>
+                        <span id="lbl-vehicle-year" class="text-sm font-semibold text-gray-800">—</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">Tipo de Ônibus</span>
+                        <span id="lbl-vehicle-type" class="text-sm font-semibold text-gray-800">—</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-semibold text-gray-400 uppercase">Bancada</span>
+                        <span id="lbl-seat-type" class="text-sm font-semibold text-gray-800">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Comodidades --}}
+        <div class="border-t border-gray-100 pt-5">
+            <h3 class="text-xs font-bold text-coinpel-primary uppercase tracking-wider mb-4">Comodidades</h3>
+            <div id="lbl-vehicle-amenities" class="flex flex-wrap gap-2">
+                {{-- Inserido via JS --}}
+            </div>
+        </div>
+
+    </div>
+</div>
+
 @push('scripts')
 <script>
 (function () {
@@ -674,6 +751,88 @@
         document.body.appendChild(flashEl);
         setTimeout(() => flashEl.remove(), 4000);
     }
+
+    document.querySelectorAll('tbody tr').forEach(row => {
+        row.addEventListener('click', function (e) {
+            // Ignora se o clique for nos botões de ação ou no menu
+            if (e.target.closest('.vehicle-actions-btn') || e.target.closest('.vehicle-actions-menu') || e.target.closest('.btn-delete-vehicle') || e.target.closest('.btn-edit-vehicle')) {
+                return;
+            }
+            
+            const btn = row.querySelector('.btn-edit-vehicle');
+            if (btn && btn.dataset) {
+                openDetailDrawer(btn.dataset);
+            }
+        });
+    });
+
+    const detailOverlay = document.getElementById('detail-drawer-overlay');
+    const detailDrawer  = document.getElementById('vehicle-detail-drawer');
+    const btnDetailClose = document.getElementById('detail-drawer-close');
+
+    function openDetailDrawer(data) {
+        document.getElementById('lbl-vehicle-prefix').textContent = data.prefix || '—';
+        document.getElementById('lbl-vehicle-plate').textContent = data.plate || '—';
+        document.getElementById('lbl-vehicle-model').textContent = data.model || '—';
+        document.getElementById('lbl-vehicle-chassis').textContent = data.chassis || '—';
+        document.getElementById('lbl-vehicle-capacity').textContent = data.capacity || '—';
+        document.getElementById('lbl-vehicle-year').textContent = data.year || '—';
+
+        const vehicleTypeSelect = document.getElementById('field-vehicle-type');
+        const seatTypeSelect = document.getElementById('field-seat-type');
+        
+        const getLabel = (selectEl, val) => {
+            if (!val) return '—';
+            const opt = selectEl.querySelector(`option[value="${val}"]`);
+            return opt ? opt.textContent : val;
+        };
+
+        document.getElementById('lbl-vehicle-type').textContent = getLabel(vehicleTypeSelect, data.vehicleType);
+        document.getElementById('lbl-seat-type').textContent = getLabel(seatTypeSelect, data.seatType);
+
+        // Comodidades
+        const amenitiesContainer = document.getElementById('lbl-vehicle-amenities');
+        amenitiesContainer.innerHTML = '';
+        const amenitiesList = [
+            { key: 'hasWifi', label: 'Internet' },
+            { key: 'hasWc', label: 'WC' },
+            { key: 'hasOutlet', label: 'Tomada' },
+            { key: 'hasAc', label: 'Ar Condicionado' },
+            { key: 'hasFridge', label: 'Geladeira' },
+            { key: 'hasHeating', label: 'Calefação' },
+            { key: 'hasVideo', label: 'Vídeo' }
+        ];
+        
+        let hasAny = false;
+        amenitiesList.forEach(item => {
+            if (data[item.key] === '1') {
+                hasAny = true;
+                const badge = document.createElement('span');
+                badge.className = 'px-2.5 py-1 bg-coinpel-primary/5 text-coinpel-primary text-xs font-semibold rounded-md border border-coinpel-primary/20';
+                badge.textContent = item.label;
+                amenitiesContainer.appendChild(badge);
+            }
+        });
+
+        if (!hasAny) {
+            amenitiesContainer.innerHTML = '<span class="text-sm text-gray-500">Nenhuma comodidade registrada.</span>';
+        }
+
+        detailOverlay.classList.remove('hidden');
+        setTimeout(() => detailOverlay.classList.add('opacity-100'), 10);
+        detailDrawer.classList.remove('translate-x-full');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetailDrawer() {
+        detailDrawer.classList.add('translate-x-full');
+        detailOverlay.classList.remove('opacity-100');
+        setTimeout(() => detailOverlay.classList.add('hidden'), 300);
+        document.body.style.overflow = '';
+    }
+
+    if(btnDetailClose) btnDetailClose.addEventListener('click', closeDetailDrawer);
+    if(detailOverlay) detailOverlay.addEventListener('click', closeDetailDrawer);
 
     document.getElementById('filter-toggle')?.addEventListener('click', function () {
         document.getElementById('filter-panel')?.classList.toggle('hidden');
