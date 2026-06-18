@@ -3,7 +3,7 @@
 @section('page-title', 'Contratos')
 
 @section('header-left')
-<div class="flex items-center gap-3">
+<div class="flex items-center gap-3 flex-wrap">
     <button id="btn-add-contract"
             class="inline-flex items-center gap-2 px-4 py-2 bg-coinpel-primary hover:opacity-95 text-white text-sm font-semibold rounded-lg transition shadow-sm shrink-0 cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -15,7 +15,7 @@
 @endsection
 
 @section('header-right-action')
-<div class="relative w-64 md:w-72">
+<div class="relative w-full sm:w-64 md:w-72">
     <input type="text"
            id="search"
            name="search"
@@ -35,8 +35,8 @@
 
     {{-- Table Container --}}
     <div class="flex-1 bg-white pb-12">
-        <div class="overflow-visible relative">
-            <table class="w-full text-left">
+        <div class="overflow-x-auto relative">
+            <table class="w-full min-w-[640px] text-left">
                 <thead>
                     <tr class="border-b border-gray-100">
                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Número</th>
@@ -169,7 +169,7 @@
      class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity duration-300 opacity-0"></div>
 
 <div id="contract-drawer"
-     class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+     class="fixed inset-y-0 right-0 w-full sm:w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
 
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <button id="drawer-close"
@@ -341,10 +341,8 @@
                 e.stopPropagation();
                 const menu = btn.closest('.contract-actions-wrapper').querySelector('.contract-actions-menu');
                 const isHidden = menu.classList.contains('hidden');
-                closeAllActionMenus();
-                if (isHidden) {
-                    menu.classList.remove('hidden');
-                }
+closeAllActionMenus();
+if (isHidden) window.openActionMenu(btn, menu);
             });
         });
 

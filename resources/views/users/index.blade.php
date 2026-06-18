@@ -35,8 +35,8 @@
 
     {{-- Table --}}
     <div class="flex-1 bg-white pb-12">
-        <div class="overflow-visible relative">
-        <table class="w-full text-left">
+        <div class="overflow-x-auto relative">
+        <table class="w-full min-w-[640px] text-left">
             <thead>
                 <tr class="border-b border-gray-100">
                     <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuário</th>
@@ -188,7 +188,7 @@
 
 <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
-<div id="user-drawer" class="fixed inset-y-0 right-0 w-[440px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+<div id="user-drawer" class="fixed inset-y-0 right-0 w-full sm:w-[440px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
 
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <div class="flex items-center gap-2">
@@ -656,8 +656,9 @@
         btn.addEventListener('click', function (e) {
             e.stopPropagation();
             const menu = btn.closest('.user-actions-wrapper').querySelector('.user-actions-menu');
-            closeAllActionMenus();
-            menu.classList.toggle('hidden');
+            const isHidden = menu.classList.contains('hidden');
+closeAllActionMenus();
+if (isHidden) window.openActionMenu(btn, menu);
         });
     });
 

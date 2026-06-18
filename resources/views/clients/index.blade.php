@@ -3,7 +3,7 @@
 @section('page-title', 'Clientes')
 
 @section('header-left')
-<div class="flex items-center gap-3">
+<div class="flex items-center gap-3 flex-wrap">
     <button id="btn-add-client"
             class="inline-flex items-center gap-2 px-4 py-2 bg-coinpel-primary hover:opacity-95 text-white text-sm font-semibold rounded-lg transition shadow-sm shrink-0 cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -15,7 +15,7 @@
 @endsection
 
 @section('header-right-action')
-<form method="GET" action="{{ route('customers.index') }}" class="relative w-64 md:w-72">
+<form method="GET" action="{{ route('customers.index') }}" class="relative w-full sm:w-64 md:w-72">
     <input type="text"
            id="search"
            name="search"
@@ -100,7 +100,7 @@
 
 <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
 
-<div id="client-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+<div id="client-drawer" class="fixed inset-y-0 right-0 w-full sm:w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
     
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
         <div class="flex items-center gap-2">

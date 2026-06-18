@@ -129,111 +129,46 @@
         </aside>
 
         <div class="flex-1 flex flex-col lg:pl-[188px] bg-coinpel-bg">
-            <header class="sticky top-0 z-20 flex items-center justify-between h-20 px-8 bg-white border-b border-gray-200/60 shrink-0">
-                <button onclick="toggleSidebar()" class="lg:hidden p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg focus:outline-none transition cursor-pointer">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
-                    </svg>
-                </button>
+            <header class="sticky top-0 z-20 bg-white border-b border-gray-200/60 shrink-0">
+    <div class="flex flex-wrap lg:flex-nowrap items-center gap-3 px-4 sm:px-6 lg:px-8 py-3 lg:h-20 lg:py-0">
 
-                <div class="flex items-center">
-                    @hasSection('header-left')
-                        @yield('header-left')
-                    @else
-                        <span class="text-xs font-semibold text-gray-400 font-sans tracking-wide uppercase hidden sm:inline">
-                            COINPEL
-                        </span>
-                        <span class="mx-2 text-gray-300 hidden sm:inline">/</span>
-                        <span class="text-sm font-bold text-gray-800 font-sans tracking-tight">
-                            @yield('page-title', 'Painel')
-                        </span>
-                    @endif
-                </div>
+        <button onclick="toggleSidebar()" class="lg:hidden p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg focus:outline-none transition cursor-pointer shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+            </svg>
+        </button>
 
-                <div class="flex items-center gap-4.5">
-                    @hasSection('header-right-action')
-                        @yield('header-right-action')
-                    @endif
+        {{-- título / botões da página --}}
+        <div class="flex items-center flex-wrap gap-2 min-w-0 order-1 flex-1">
+            @hasSection('header-left')
+                @yield('header-left')
+            @else
+                <span class="text-xs font-semibold text-gray-400 font-sans tracking-wide uppercase hidden sm:inline">COINPEL</span>
+                <span class="mx-2 text-gray-300 hidden sm:inline">/</span>
+                <span class="text-sm font-bold text-gray-800 font-sans tracking-tight">@yield('page-title', 'Painel')</span>
+            @endif
+        </div>
 
-                    <div class="relative" id="notification-dropdown">
-                        <button id="notification-btn" class="text-gray-400 hover:text-gray-600 focus:outline-none transition relative cursor-pointer p-1">
-                            <span id="notification-badge" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white hidden pointer-events-none"></span>
-                            <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"></path>
-                            </svg>
-                        </button>
+        {{-- sino + divisor + perfil: ficam na 1ª linha, à direita --}}
+        <div class="flex items-center gap-4.5 order-2 lg:order-3 ml-auto lg:ml-0 shrink-0">
+            <div class="relative" id="notification-dropdown">
+                {{-- mantenha exatamente o que já existe aqui (botão do sino + #notification-menu) --}}
+            </div>
+            <div class="w-px h-6 bg-gray-200"></div>
+            <div class="relative" id="profile-dropdown">
+                {{-- mantenha exatamente o que já existe aqui (avatar + #dropdown-menu) --}}
+            </div>
+        </div>
 
-                        <div id="notification-menu" class="hidden absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-50 transform origin-top-right flex flex-col overflow-hidden" style="max-height: 420px;" onclick="event.stopPropagation()">
-                            {{-- Header --}}
-                            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white shrink-0 relative z-10">
-                                <div class="flex items-center gap-2">
-                                    {{-- ícone sino roxo --}}
-                                    <svg class="w-5 h-5 text-[#593E75]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"></path>
-                                    </svg>
-                                    <span class="font-semibold text-gray-800 text-base">Notificações</span>
-                                    <span class="bg-[#593E75] text-white text-xs font-bold px-2 py-0.5 rounded-full" id="notif-badge-count">0</span>
-                                </div>
-                                <button onclick="closeNotifications()" class="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer p-0.5 rounded-lg hover:bg-gray-50">
-                                    {{-- ícone X 20px --}}
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            
-                            {{-- Content Scroll --}}
-                            <div id="notification-list" class="divide-y divide-gray-100 overflow-y-auto overscroll-contain flex-1 relative z-0">
-                                {{-- Carregado dinamicamente via JS --}}
-                            </div>
-                        </div>
-                    </div>
+        {{-- busca / filtros: força quebra para uma 2ª linha no mobile --}}
+        @hasSection('header-right-action')
+        <div class="flex items-center w-full order-3 lg:order-2 lg:w-auto lg:flex-1 lg:justify-end lg:ml-4">
+            @yield('header-right-action')
+        </div>
+        @endif
 
-                    <div class="w-px h-6 bg-gray-200"></div>
-
-                    <div class="relative" id="profile-dropdown">
-                        <button onclick="toggleDropdown(event)" class="flex items-center gap-3 focus:outline-none cursor-pointer text-left">
-                            <div class="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-gray-100 shadow-sm">
-                                @if(auth()->user()->profile_photo_path)
-                                    <img src="{{ Storage::url(auth()->user()->profile_photo_path) }}" alt="{{ auth()->user()->name }}" class="absolute inset-0 w-full h-full object-cover transition">
-                                @else
-                                    <div class="absolute inset-0 flex items-center justify-center bg-coinpel-primary text-white text-sm font-semibold uppercase">
-                                        {{ mb_substr(auth()->user()->name, 0, 1) }}{{ str_contains(auth()->user()->name, ' ') ? mb_substr(explode(' ', auth()->user()->name)[1], 0, 1) : '' }}
-                                    </div>
-                                @endif
-                            </div>
-                            
-                            <div class="hidden md:flex flex-col">
-                                <span class="text-sm font-bold text-gray-800 leading-none">{{ auth()->user()->name }}</span>
-                                <span class="text-[11px] font-medium text-gray-400 mt-1 leading-none">Administrador</span>
-                            </div>
-                        </button>
-
-                        <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 transform origin-top-right">
-                            <button onclick="openGlobalProfileDrawer()" class="flex items-center gap-2 w-full px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition cursor-pointer text-left">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
-                                </svg>
-                                <span>Editar perfil</span>
-                            </button>
-                            <div class="h-px bg-gray-100 my-1"></div>
-                            <a href="{{ route('users.index') }}" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0 1 10.089 21c-2.913 0-5.552-.843-7.76-2.3a4.125 4.125 0 0 1 7.533-2.493M15 9.75a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4.5 9.75a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"></path>
-                                </svg>
-                                <span>Usuários</span>
-                            </a>
-                            <div class="h-px bg-gray-100 my-1"></div>
-                            <button onclick="document.getElementById('logout-form').submit();" class="flex items-center gap-2 w-full text-left px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer">
-                                <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"></path>
-                                </svg>
-                                <span>Sair</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </header>
+    </div>
+</header>
 
             <main class="flex-1 flex flex-col p-6 bg-coinpel-bg">
                 @if (session('status'))
@@ -272,6 +207,20 @@
                 menu.classList.add('hidden');
             }
         });
+
+        window.openActionMenu = function (btn, menu) {
+    if (menu.dataset.portaled !== '1') {
+        document.body.appendChild(menu);
+        menu.dataset.portaled = '1';
+        menu.classList.remove('absolute');
+        menu.style.position = 'fixed';
+    }
+    const rect = btn.getBoundingClientRect();
+    menu.style.top = Math.min(rect.bottom + 4, window.innerHeight - 10) + 'px';
+    menu.style.right = Math.max(window.innerWidth - rect.right, 8) + 'px';
+    menu.style.left = 'auto';
+    menu.classList.remove('hidden');
+};
 
         async function fetchAddressByCep(cep, fieldPrefix) {
             const cleanCep = cep.replace(/\D/g, '');
@@ -623,7 +572,7 @@
 
     {{-- Global Profile Drawer --}}
     <div id="global-profile-drawer-overlay" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
-    <div id="global-profile-drawer" class="fixed inset-y-0 right-0 w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
+    <div id="global-profile-drawer" class="fixed inset-y-0 right-0 w-full sm:w-[480px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col h-full">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
             <div class="flex items-center gap-2">
                 <h2 class="text-lg font-bold text-gray-800">Editar Perfil</h2>

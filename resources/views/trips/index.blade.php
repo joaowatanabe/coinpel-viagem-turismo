@@ -3,7 +3,7 @@
 @section('page-title', 'Viagens')
 
 @section('header-left')
-<div class="flex items-center gap-3">
+<div class="flex items-center gap-3 flex-wrap">
     <a href="{{ route('trips.create') }}"
        class="inline-flex items-center gap-2 px-4 py-2 bg-coinpel-primary hover:opacity-95 text-white text-sm font-semibold rounded-lg transition shadow-sm shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -23,7 +23,7 @@
 @endsection
 
 @section('header-right-action')
-<form method="GET" action="{{ route('trips.index') }}" class="relative w-64 md:w-72">
+<form method="GET" action="{{ route('trips.index') }}" class="relative w-full sm:w-64 md:w-72">
     @foreach(request()->except(['search']) as $key => $value)
         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
     @endforeach
@@ -83,13 +83,13 @@
 
     {{-- Table --}}
     <div class="flex-1 bg-white pb-12">
-        <div class="overflow-visible relative">
-        <table class="w-full text-left">
-            <thead>
-                <tr class="border-b border-gray-100">
-                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
-                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Nome</th>
-                    <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Data</th>
+        <div class="overflow-x-auto relative">
+            <table class="w-full min-w-[640px] text-left">
+                <thead>
+                    <tr class="border-b border-gray-100">
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Nome</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Data</th>
                     <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Horário</th>
                     <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Rota</th>
                     <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Veículo</th>
